@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: b325a638c09c645b28d3d3979c1f2bb2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 15643
+  packageName: Todo
+  packageVersion: Todo 1.0.0
+  assetPath: Assets/Editor/Todo/TodoList.cs
+  uploadId: 3959
