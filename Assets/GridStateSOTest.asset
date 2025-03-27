@@ -12,6 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2751846a7c3990c4d9e72510dcac33e8, type: 3}
   m_Name: GridStateSOTest
   m_EditorClassIdentifier: Assembly-CSharp::Grid/GridStateSO
-  gridSize:
-    x: 5
-    y: 5
+  gridSize: {x: 10, y: 10}

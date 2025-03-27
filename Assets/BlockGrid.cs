@@ -14,15 +14,18 @@ public class BlockGrid : MonoBehaviour
 
     [Header("Grid State")]
     [SerializeField]
+    [InlineEditor]
     private GridStateSO startGridState;
     public GridStateSO StartGridState => startGridState;
 
     [Button]
-    public void LoadStateFromSO() {
+    public void LoadStateFromSO()
+    {
 
     }
     [Button]
-    public void SaveStateToSO() {
+    public void SaveStateToSO()
+    {
 
     }
 
@@ -33,7 +36,7 @@ public class BlockGrid : MonoBehaviour
         ActiveGridState.BlocksList = new List<BlockBehaviour>();
     }
 
-    [SerializeField]
+    [ReadOnly]
     public GridState ActiveGridState = new GridState(new BlockState[5, 5], new List<BlockBehaviour>());
 
     public int testVar;
@@ -49,8 +52,8 @@ public class BlockGrid : MonoBehaviour
     public BlockState QueryGridValidCoordBlockState(Vector2Int coord)
     {
         return ActiveGridState.GridBlockStates[coord.x, coord.y];
-        
-        
+
+
     }
 
     public Vector3 GetWorldSpaceFromCoord(Vector2Int coord)
@@ -65,7 +68,8 @@ public class BlockGrid : MonoBehaviour
         Vector2Int gridPos = new Vector2Int((int)floatGridPos.x, (int)floatGridPos.y);
 
 
-        if (!isValidGridCoord(gridPos) || QueryGridValidCoordBlockState(gridPos) != null) {
+        if (!isValidGridCoord(gridPos) || QueryGridValidCoordBlockState(gridPos) != null)
+        {
             //fail
             Debug.Log($"failed to add block at {gridPos}");
             return;
@@ -75,7 +79,7 @@ public class BlockGrid : MonoBehaviour
         //enter block into gridState
         ActiveGridState.GridBlockStates[gridPos.x, gridPos.y] = new BlockState();
         //snap to world pos
-        block.transform.position = GetBotLeftOriginPos() + Vector3.one*.5f + (Vector3Int)gridPos;
+        block.transform.position = GetBotLeftOriginPos() + Vector3.one * .5f + (Vector3Int)gridPos;
         block.coord = gridPos;
         ActiveGridState.BlocksList.Add(block);
         ActiveGridState.UpdateCoordList();
@@ -99,8 +103,10 @@ public class BlockGrid : MonoBehaviour
 
     public void ForEachCellAtCellCenter(Action<Vector2Int, Vector3> action)
     {
-        for (int x = 0; x<gridSize.x; x++) {
-            for(int y = 0; y<gridSize.y; y++) {
+        for (int x = 0; x < gridSize.x; x++)
+        {
+            for (int y = 0; y < gridSize.y; y++)
+            {
                 Vector3 cellCenterPos = GetBotLeftOriginPos() + Vector3.one * .5f + new Vector3(x, y);
                 action(new Vector2Int(x, y), cellCenterPos);
             }
@@ -118,11 +124,13 @@ public class BlockGrid : MonoBehaviour
     {
         //Draw Debug grid lines
         Vector3 botLeft = GetBotLeftOriginPos();
-        for(int i = 1; i<gridSize.x; i++) {
+        for (int i = 1; i < gridSize.x; i++)
+        {
             Vector3 start = botLeft + Vector3.right * i;
             Gizmos.DrawLine(start, start + Vector3.up * gridSize.y);
         }
-        for (int i = 1; i < gridSize.y; i++) {
+        for (int i = 1; i < gridSize.y; i++)
+        {
             Vector3 start = botLeft + Vector3.up * i;
             Gizmos.DrawLine(start, start + Vector3.right * gridSize.y);
         }

@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GridStateSO", menuName = "ScriptableObjects/GridStateSO")]
