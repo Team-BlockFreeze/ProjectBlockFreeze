@@ -12,11 +12,9 @@ public class BlockCoordinator : MonoBehaviour
         public bool
             up, down, left, right;
 
-        Vector2Int finalForce = Vector2Int.zero;
-
         public Vector2Int QueryForce()
         {
-            finalForce = Vector2Int.zero;
+            Vector2Int finalForce = Vector2Int.zero;
 
             if (up) finalForce += Vector2Int.up;
             if (down) finalForce += Vector2Int.down;
@@ -38,18 +36,15 @@ public class BlockCoordinator : MonoBehaviour
 
         public CellForce(CellForce original)
         {
-            up = original.up;
-            down = original.down;
-            left = original.left;
-            right = original.right;
+            SetForceFromVector2Int(original.QueryForce());
         }
 
         public void SetForceFromVector2Int(Vector2Int inForceVec2)
         {
-            if (inForceVec2.x != 0)
-                _ = inForceVec2.x > 0 ? right=true : left=true ;
-            if (inForceVec2.y != 0)
-                _ = inForceVec2.y > 0 ? up = true : down = true;
+            right = inForceVec2.x > 0;
+            left = inForceVec2.x < 0;
+            up = inForceVec2.y > 0;
+            down = inForceVec2.y < 0;
         }
 
         public void AddForceFromCell(CellForce otherCell)
@@ -87,6 +82,11 @@ public class BlockCoordinator : MonoBehaviour
         {
             return up && down;
         }
+        public override string ToString()
+        {
+            return $"CellForce: (Up: {up}, Down: {down}, Left: {left}, Right: {right})";
+        }
+
     }
 
     public CellForce[,] forceGrid;
@@ -122,8 +122,7 @@ public class BlockCoordinator : MonoBehaviour
         Debug.Log($"grid force iteration looped {timeout} times");
 
         timeout = 0;
-        int longerGridDimension = forceGrid.GetLength(0) > forceGrid.GetLength(1) ? 
-            forceGrid.GetLength(0) : forceGrid.GetLength(1);
+        int longerGridDimension = Mathf.Max(forceGrid.GetLength(0), forceGrid.GetLength(1));
 
         CheckBlockedBlocks();
         while (CheckBlockedBlocks() && timeout <= longerGridDimension) {
