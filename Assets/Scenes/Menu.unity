@@ -1684,13 +1684,49 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 97772254}
     m_Modifications:
+    - target: {fileID: 3746197624322831885, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3746197624322831885, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
+      propertyPath: m_SortingOrder
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3746197624322831885, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 6182327545162988710, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
+      propertyPath: UVModule.mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6182327545162988710, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
+      propertyPath: UVModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6182327545162988710, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
+      propertyPath: ShapeModule.m_Scale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6182327545162988710, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 6182327545162988710, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.a
+      value: 0.078431375
+      objectReference: {fileID: 0}
+    - target: {fileID: 6182327545162988710, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
+      propertyPath: UVModule.sprites.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 540b141eb0ec4494d9b42bd9ea32cd93, type: 3}
     - target: {fileID: 6796823544035051100, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
       propertyPath: m_Name
       value: TransitionParticles
       objectReference: {fileID: 0}
     - target: {fileID: 6796823544035051100, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7447054427036334174, guid: 799f2b75374365a45a41b614a4a7f2f8, type: 3}
       propertyPath: m_LocalScale.x
@@ -1900,7 +1936,7 @@ Transform:
   m_GameObject: {fileID: 5419920685936428348}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 19}
+  m_LocalPosition: {x: 0, y: -1, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6755,7 +6791,7 @@ Transform:
   m_GameObject: {fileID: 8643126785286711271}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: -100}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
