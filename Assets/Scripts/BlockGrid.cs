@@ -32,12 +32,12 @@ public class BlockGrid : MonoBehaviour
     [Button]
     public void ResetActiveGrid()
     {
-        ActiveGridState.GridBlockStates = new BlockState[startGridState.GridSize.x, startGridState.GridSize.y];
+        ActiveGridState.GridBlockStates = new BlockBehaviour[startGridState.GridSize.x, startGridState.GridSize.y];
         ActiveGridState.BlocksList = new List<BlockBehaviour>();
     }
 
     [ReadOnly]
-    public GridState ActiveGridState = new GridState(new BlockState[5, 5], new List<BlockBehaviour>());
+    public GridState ActiveGridState = new GridState(new BlockBehaviour[5, 5], new List<BlockBehaviour>());
 
     public int testVar;
 
@@ -49,11 +49,10 @@ public class BlockGrid : MonoBehaviour
         return isValid;
     }
 
-    public BlockState QueryGridValidCoordBlockState(Vector2Int coord)
+    public BlockBehaviour QueryGridCoordBlockState(Vector2Int coord)
     {
-        return ActiveGridState.GridBlockStates[coord.x, coord.y];
-
-
+        var isValid = isValidGridCoord(coord);
+        return !isValid? null : ActiveGridState.GridBlockStates[coord.x, coord.y];
     }
 
     public Vector3 GetWorldSpaceFromCoord(Vector2Int coord)
@@ -68,16 +67,16 @@ public class BlockGrid : MonoBehaviour
         Vector2Int gridPos = new Vector2Int((int)floatGridPos.x, (int)floatGridPos.y);
 
 
-        if (!isValidGridCoord(gridPos) || QueryGridValidCoordBlockState(gridPos) != null)
+        if (!isValidGridCoord(gridPos) || QueryGridCoordBlockState(gridPos) != null)
         {
             //fail
-            Debug.Log($"failed to add block at {gridPos}");
+            Debug.LogWarning($"failed to add block at {gridPos}");
             return;
         }
 
         //valid
         //enter block into gridState
-        ActiveGridState.GridBlockStates[gridPos.x, gridPos.y] = new BlockState();
+        ActiveGridState.GridBlockStates[gridPos.x, gridPos.y] = block;
         //snap to world pos
         block.transform.position = GetBotLeftOriginPos() + Vector3.one * .5f + (Vector3Int)gridPos;
         block.coord = gridPos;

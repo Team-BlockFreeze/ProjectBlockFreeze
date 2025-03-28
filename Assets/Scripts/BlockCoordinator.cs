@@ -1,5 +1,5 @@
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 public class BlockCoordinator : MonoBehaviour
 {
@@ -29,6 +29,11 @@ public class BlockCoordinator : MonoBehaviour
         public CellForce()
         {
 
+        }
+
+        public CellForce(Vector2Int inVec2Int)
+        {
+            this.SetForceFromVector2Int(inVec2Int);
         }
 
         public CellForce(CellForce original)
@@ -67,6 +72,21 @@ public class BlockCoordinator : MonoBehaviour
         {
             return !up && !down && !left && !right;
         }
+
+        public bool AllInputs()
+        {
+            return up && down && left && right;
+        }
+
+        public bool XLocked()
+        {
+            return left && right;
+        }
+
+        public bool YLocked()
+        {
+            return up && down;
+        }
     }
 
     public CellForce[,] forceGrid;
@@ -90,7 +110,7 @@ public class BlockCoordinator : MonoBehaviour
         InitilizeEmptyForceGrid();
 
         AddInitialForcesToForceGrid();
-        ReadForcesOnForceGrid();
+        //ReadForcesOnForceGrid();
 
         int timeout = 0;
         while (ReadForcesOnForceGrid() && timeout <= 5) {
@@ -111,8 +131,11 @@ public class BlockCoordinator : MonoBehaviour
         }
         Debug.Log($"grid blocked check iteration looped {timeout} times");
 
+        gridRef.ActiveGridState.ClearBlockStateGrid();
         foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
             b.Move();
+            //add back onto gridblockstate
+            gridRef.ActiveGridState.GridBlockStates[b.coord.x, b.coord.y] = b;
             Debug.Log($"moving {b.gameObject.name}");
         }
 
@@ -135,8 +158,9 @@ public class BlockCoordinator : MonoBehaviour
             Vector2Int moveIntent = b.GetMovementIntention();
             Vector2Int targetCell = b.coord + moveIntent;
 
-            b.lastForces.SetForceFromVector2Int(b.GetMovementIntention());
-            Debug.Log($"{b.name} just set force to {b.lastForces.QueryForce()} from moveIntent {b.GetMovementIntention()}");
+            b.lastForces = new CellForce();
+            b.lastForces.SetForceFromVector2Int(moveIntent);
+            //Debug.Log($"{b.name} just set force to {b.lastForces.QueryForce()} from moveIntent {b.GetMovementIntention()}");
 
             //block target cell isnt on grid (at edge)
             if(!gridRef.isValidGridCoord(targetCell)) {
@@ -149,15 +173,23 @@ public class BlockCoordinator : MonoBehaviour
 
     public void AddDerivedForcesToForceGrid()
     {
-        foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {;
-            Vector2Int targetCell = b.coord + b.lastForces.QueryForce();
+        foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
+            Vector2Int collapsedForce = b.lastForces.QueryForce();
+            Vector2Int targetCell = b.coord + collapsedForce;
 
             //block target cell isnt on grid (at edge)
             if (!gridRef.isValidGridCoord(targetCell) || targetCell == b.coord) {
                 continue;
             }
 
-            forceGrid[targetCell.x, targetCell.y] = new CellForce(b.lastForces);
+            forceGrid[targetCell.x, targetCell.y].AddForceFromCell(new CellForce(collapsedForce));
+            //diagonal force
+            if(collapsedForce.x!=0 && collapsedForce.y!=0) {
+                var xTarget = b.coord + new Vector2Int(collapsedForce.x, 0);
+                forceGrid[xTarget.x, xTarget.y].AddForceFromCell(new CellForce(new Vector2Int(collapsedForce.x, 0)));
+                var yTarget = b.coord + new Vector2Int(0, collapsedForce.y);
+                forceGrid[yTarget.x, yTarget.y].AddForceFromCell(new CellForce(new Vector2Int(0, collapsedForce.y)));
+            }
         }
     }
 
@@ -171,15 +203,16 @@ public class BlockCoordinator : MonoBehaviour
 
             var forces = new CellForce();
 
-            //add force on current cell
-            forces.AddForceFromCell(forceGrid[b.coord.x, b.coord.y]);
             //add force from target cell
+            //target cell is added first because otherwise other forces would change it before it could read them
             if (!gridRef.isValidGridCoord(targetCell)) {
                 Debug.LogWarning($"tried to read forces from invalid cell {targetCell}");
             }
             else {
                 forces.AddForceFromCell(forceGrid[targetCell.x, targetCell.y]);
             }
+            //add force on current cell
+            forces.AddForceFromCell(forceGrid[b.coord.x, b.coord.y]);
 
             if (!b.lastForces.Equals(forces))
                 changes = true;
@@ -195,31 +228,64 @@ public class BlockCoordinator : MonoBehaviour
         bool changes = false;
 
         foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
-            if (b.blocked) continue;
+            if (b.blocked || b.lastForces.NoInputs()) continue;
 
             Vector2Int moveIntent = b.lastForces.QueryForce();
             Vector2Int targetCell = b.coord + moveIntent;
 
-
-
+            //progressive checks for different block conditions
+            //if target cell is on grid
             if (!gridRef.isValidGridCoord(targetCell)) {
-                Debug.Log($"{b.name} move target cell is not valid and is now blocked");
-                changes = true;
                 b.blocked = true;
-                b.lastForces = new CellForce();
+                Debug.Log($"{b.name} is blocked, target cell {targetCell} is not valid");
+                //b.lastForces = new CellForce();
             }
+            //if recieving forces in all directions
+            else if(b.lastForces.AllInputs()) {
+                b.blocked = true;
+                Debug.Log($"{b.name} is blocked, recieving all forces, deadlocked");
+            }
+            //if target cell is occupied and that block is blocked or cant be pushed
+            else {
+                var otherB = gridRef.QueryGridCoordBlockState(targetCell);
 
-            //temp, check more intelligently by coord instead of looping later
-            if(!b.blocked) {
-                foreach(BlockBehaviour otherB in gridRef.ActiveGridState.BlocksList) {
-                    if (b.GetInstanceID() == otherB.GetInstanceID()) continue;
+                if (otherB == null) { }
+                else if (otherB.blocked || otherB.lastForces.AllInputs()) {
+                    b.blocked = true;
+                }
+                else {
+                    //check if block at target cell can move out your way
+                    var otherForce = otherB.lastForces.QueryForce();
 
-                    if(targetCell == otherB.coord && otherB.blocked) {
-                        changes = true;
+                    bool xBlocked = otherB.lastForces.XLocked() || otherForce.x != moveIntent.x;
+                    bool yBlocked = otherB.lastForces.YLocked() || otherForce.y != moveIntent.y;
+
+                    if (moveIntent.x != 0 && xBlocked || moveIntent.y != 0 && yBlocked) {
                         b.blocked = true;
-                        b.lastForces = new CellForce();
                     }
                 }
+
+                //check extra for diagonals
+                //TODO
+                if (!b.blocked && moveIntent.x != 0 && moveIntent.y != 0) {  //diagonal
+                    var xBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(moveIntent.x, 0));
+                    var yBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(0, moveIntent.y));
+
+                    bool blockedOnX = false;
+                    if(xBlock != null) 
+                        blockedOnX = xBlock.blocked || xBlock.lastForces.XLocked() || moveIntent.x != xBlock.lastForces.QueryForce().x;
+                    bool blockedOnY = false;
+                    if(yBlock != null)
+                        blockedOnY = yBlock != null && yBlock.blocked || yBlock.lastForces.YLocked() || moveIntent.y != yBlock.lastForces.QueryForce().y;
+
+                    if (blockedOnX || blockedOnY) b.blocked = true;
+                }
+            }
+
+            //if now blocked, update other variables
+            if (b.blocked) {
+                changes = true;
+                //b.lastForces = new CellForce();
             }
         }
 
@@ -233,6 +299,11 @@ public class BlockCoordinator : MonoBehaviour
         gridRef.ForEachCellAtCellCenter((Vector2Int coord, Vector3 pos) => DrawDirectionalSquares(coord, pos));
     }
 
+    /// <summary>
+    /// Draws all Forces a grid coord is recieving as gizmo
+    /// </summary>
+    /// <param name="coord"></param>
+    /// <param name="center"></param>
     public void DrawDirectionalSquares(Vector2Int coord, Vector3 center)
     {
         // Half the length of the square (0.5f makes total size 1 unit)

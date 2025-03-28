@@ -5,8 +5,8 @@ using Sirenix.OdinInspector;
 [System.Serializable]
 public class GridState
 {
-    private BlockState[,] gridBlockStates;
-    public BlockState[,] GridBlockStates { 
+    private BlockBehaviour[,] gridBlockStates;
+    public BlockBehaviour[,] GridBlockStates { 
         get { return gridBlockStates; } 
         set { 
             GridWidth = value.GetLength(0);
@@ -38,12 +38,17 @@ public class GridState
         //Debug.Log("this all happened");
     }
 
-    public int GridWidth;
-    public int GridHeight;
+    [ReadOnly]
+    public int GridWidth, GridHeight;
 
-    public GridState(BlockState[,] bStates, List<BlockBehaviour> blockList)
+    public GridState(BlockBehaviour[,] bStates, List<BlockBehaviour> blockList)
     {
         GridBlockStates = bStates;
         BlocksList = blockList;
+    }
+
+    public void ClearBlockStateGrid()
+    {
+        gridBlockStates = new BlockBehaviour[GridWidth, GridHeight];
     }
 }

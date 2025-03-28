@@ -28,6 +28,7 @@ public class BlockBehaviour : MonoBehaviour
 
     private Tween activeTween;
 
+    [ReadOnly]
     public BlockCoordinator.CellForce lastForces = new BlockCoordinator.CellForce();
 
     private void Start()
@@ -38,6 +39,9 @@ public class BlockBehaviour : MonoBehaviour
 
         //InvokeRepeating(nameof(QueueNextTween), .1f, 1f);
     }
+
+    [SerializeField]
+    private SpriteRenderer moveIntentionVisual;
 
     private void QueueNextTween()
     {
@@ -58,21 +62,45 @@ public class BlockBehaviour : MonoBehaviour
         return (Vector2Int)vec3;
     }
 
+    Tween moveTween;
+
     public void Move()
     {
+        moveTween?.Kill();
         //make sure starting at right point
         transform.position = gridRef.GetWorldSpaceFromCoord(coord);
 
         Vector2Int movement = lastForces.QueryForce();
-        coord += movement;
+        if (!blocked) {
+            coord += movement;
 
-        //transform.position += (Vector3)(Vector2)movement;
-        //move towards next coord
-        transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), 1f).SetEase(Ease.Linear);
+            //transform.position += (Vector3)(Vector2)movement;
+            //move towards next coord
+            transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), 1f).SetEase(Ease.Linear);
+        }
 
-        lastForces = new BlockCoordinator.CellForce();
+        //update movement visualiser
+        var colRef = moveIntentionVisual.color;
+        if(GetMovementIntention() == Vector2Int.zero) {
+            colRef.a = 0;
+            moveIntentionVisual.color = colRef;
+        } else {
+            colRef.a = 1;
+            moveIntentionVisual.color = colRef;
+            moveIntentionVisual.transform.up = (Vector3Int)GetMovementIntention();
+        }
+
         AdvanceMoveIdx();
+
+        //block animation
+        if (blocked || !lastForces.NoInputs() && lastForces.QueryForce() == Vector2Int.zero) {
+            moveTween = transform.DOShakePosition(.3f, .1f).OnComplete(
+                () => transform.position = gridRef.GetWorldSpaceFromCoord(coord)
+            );
+            moveTween.Play();
+        }
         blocked = false;
+        //lastForces = new BlockCoordinator.CellForce();
 
         Debug.Log($"{gameObject.name} tried to move from {coord - movement} to {coord}");
     }
@@ -96,10 +124,21 @@ public class BlockBehaviour : MonoBehaviour
         }
         return dirVec;
     }
+#if UNITY_EDITOR
 
-//    private void OnDrawGizmosSelected()
-//    {
-//        Handles.PositionHandle()
-//        Handles.DrawAAPolyLine
-//    }
+    private void OnDrawGizmos()
+    {
+        //draw force line
+        Gizmos.color = Color.red;
+        if (lastForces.AllInputs()) Gizmos.DrawWireCube(transform.position, Vector3.one * .2f); 
+        else Gizmos.DrawLine(transform.position, transform.position + (Vector3)(Vector3Int)lastForces.QueryForce() * .35f);
+    }
+
+    //    private void OnDrawGizmosSelected()
+    //    {
+    //        Handles.PositionHandle()
+    //        Handles.DrawAAPolyLine
+    //    }
+
+#endif
 }
