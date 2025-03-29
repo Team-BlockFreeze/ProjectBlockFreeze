@@ -47,3 +47,9 @@ MonoBehaviour:
       index: 0
     task: implement sfx for level select
     isComplete: 0
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: particle fx and animation when LevelOpened function is called.
+    isComplete: 0
