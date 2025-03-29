@@ -3,6 +3,8 @@ using DG.Tweening;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using Ami.BroAudio;
+using System;
 
 public class PlayButtonAnimation : MonoBehaviour, IPointerDownHandler
 {
@@ -21,8 +23,14 @@ public class PlayButtonAnimation : MonoBehaviour, IPointerDownHandler
     private Color highlightedColor = Color.grey;
     private Color clickedColor = Color.blue;
 
-    public ParticleSystem backgroundParticles;  // Reference to background particle system
-    public GameObject transitionParticlesPrefab; // Prefab for transition effect
+    public ParticleSystem backgroundParticles;
+    public GameObject transitionParticlesPrefab;
+
+    //! SFX
+
+    public SoundID playButtonSFX;
+    public SoundSource menuAmbienceSFX; // Original Vol: 1
+    public SoundSource windAmbienceSFX; // Original Vol: 1
 
     void Start()
     {
@@ -35,27 +43,46 @@ public class PlayButtonAnimation : MonoBehaviour, IPointerDownHandler
 
         if (playButtonUI != null)
         {
-            playButtonUI.onClick.AddListener(AnimateButton);
+            playButtonUI.onClick.AddListener(PlayButtonClicked);
         }
+    }
+
+    private void PlayButtonClicked()
+    {
+        playButtonSFX.Play();
+
+        float fadeDuration = 1.25f;
+
+        windAmbienceSFX.SetPitch(3f, fadeDuration);
+        DOVirtual.DelayedCall(0.5f, () => windAmbienceSFX.SetVolume(2, fadeDuration)).OnComplete(
+            () => DOVirtual.DelayedCall(1.25f, () =>
+            {
+                windAmbienceSFX.SetPitch(1f, 2f);
+                windAmbienceSFX.SetVolume(0.25f, 2f);
+            })
+        );
+
+
+        menuAmbienceSFX.SetPitch(0.95f, fadeDuration);
+        DOVirtual.DelayedCall(0.25f, () => menuAmbienceSFX.SetVolume(0, fadeDuration));
+
+        AnimateButton();
+        SpawnTransitionEffect();
     }
 
     public void AnimateButton()
     {
-        // Move and fade out title and options panels
         titlePanel.transform.DOMoveY(titlePanel.transform.position.y - moveDistance, animationDuration).SetEase(Ease.InOutSine);
         optionsPanel.transform.DOMoveY(optionsPanel.transform.position.y - moveDistance, animationDuration).SetEase(Ease.InOutSine);
         titlePanel.GetComponent<CanvasGroup>().DOFade(0, animationDuration).SetEase(Ease.InOutSine);
         optionsPanel.GetComponent<CanvasGroup>().DOFade(0, animationDuration).SetEase(Ease.InOutSine);
 
-        // Create sequence for play button animation
         Sequence playButtonSequence = DOTween.Sequence();
 
         playButtonSequence.Join(playButton.transform.DOScale(Vector3.one * scaleFactor, animationDuration / 2).SetEase(Ease.OutBack))
                           .Join(playButton.GetComponent<CanvasGroup>().DOFade(0, animationDuration + 1f).SetEase(Ease.InOutSine))
-                          .Join(playText.DOColor(Color.grey, animationDuration).SetEase(Ease.InOutSine))
-                          .OnComplete(SpawnTransitionEffect);  // Call transition effect after animation
+                          .Join(playText.DOColor(Color.grey, animationDuration).SetEase(Ease.InOutSine));
 
-        // Fade out background particles
         if (backgroundParticles != null)
         {
             var emission = backgroundParticles.emission;
@@ -63,7 +90,6 @@ public class PlayButtonAnimation : MonoBehaviour, IPointerDownHandler
         }
     }
 
-    // Handle click effect when mouse button is pressed
     public void OnPointerDown(PointerEventData eventData)
     {
         playButton.transform.DOScale(Vector3.one * (scaleFactor - 0.1f), 0.1f).SetEase(Ease.OutQuad);
