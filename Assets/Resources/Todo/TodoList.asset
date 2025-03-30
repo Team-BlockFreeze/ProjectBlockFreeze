@@ -25,37 +25,31 @@ MonoBehaviour:
   items:
   - owner:
       name: Kerry
-      color: {r: 1, g: 0.4009434, b: 0.4508326, a: 1}
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
-    task: sdsdsd
+    task: sfx for menu ui
+    isComplete: 1
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: smooth scene loading transition on play
     isComplete: 0
   - owner:
-      name: Ryan
-      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
-      index: 1
-    task: asdasd
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: 'design level select ui '
     isComplete: 0
   - owner:
-      name: Other
-      color: {r: 0.4198113, g: 1, b: 1, a: 1}
-      index: 2
-    task: asdasd
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: implement sfx for level select
     isComplete: 0
   - owner:
-      name: Ryan
-      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
-      index: 1
-    task: asdasdasdasda
-    isComplete: 0
-  - owner:
-      name: Other
-      color: {r: 0.4198113, g: 1, b: 1, a: 1}
-      index: 2
-    task: fdfdfdfdf
-    isComplete: 0
-  - owner:
-      name: Other
-      color: {r: 0.4198113, g: 1, b: 1, a: 1}
-      index: 2
-    task: efwefwefew
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: particle fx and animation when LevelOpened function is called.
     isComplete: 0
