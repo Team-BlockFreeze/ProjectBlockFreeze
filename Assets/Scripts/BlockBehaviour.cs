@@ -2,15 +2,33 @@ using UnityEngine;
 using UnityEditor;
 using Sirenix.OdinInspector;
 using DG.Tweening;
+using UnityEngine.Events;
 
 [System.Serializable]
 public class BlockBehaviour : MonoBehaviour
 {
     [SerializeField]
     private BlockGrid gridRef;
+    public BlockGrid GridRef => gridRef;
+
+    public enum BlockMoveState { teleport, pingpong, patrol, still }
+    public BlockMoveState moveMode = BlockMoveState.patrol;
+
+    private bool pingpongIsForward = true;
 
     private Vector3Int GetNextMoveVec => DirToVec3Int(movePath[moveIdx++]);
-    private void AdvanceMoveIdx() { moveIdx = (moveIdx+1)% movePath.Length; }
+    private void AdvanceMoveIdx() { 
+        switch(moveMode) {
+            case BlockMoveState.pingpong:
+                int nextIdx = moveIdx + (pingpongIsForward ? 1 : -1);
+                if (nextIdx < 0 || nextIdx >= movePath.Length) pingpongIsForward = !pingpongIsForward;
+                else moveIdx = pingpongIsForward ? ++moveIdx : --moveIdx;
+                break;
+            default:
+                moveIdx = (moveIdx+1)% movePath.Length;
+                break;
+        }
+    }
 
     [Button]
     public void TryAddToGrid()
@@ -33,7 +51,7 @@ public class BlockBehaviour : MonoBehaviour
 
     private void Start()
     {
-        
+        UpdateMovementVisualiser();
         //activeTween = transform.DOMove(GetNextMoveVec, 1f).SetRelative().SetEase(Ease.Linear);
         //AdvanceMoveIdx();
 
@@ -56,19 +74,59 @@ public class BlockBehaviour : MonoBehaviour
     [SerializeField]
     private Direction[] movePath;
 
+    private Direction GetOppositeDir(Direction dir)
+    {
+        if (dir == Direction.up) return Direction.down;
+        if (dir == Direction.down) return Direction.up;
+        if (dir == Direction.left) return Direction.right;
+        if (dir == Direction.right) return Direction.left;
+        return Direction.wait;
+    }
+
     public Vector2Int GetMovementIntention()
     {
-        var vec3 = DirToVec3Int(movePath[moveIdx]);
-        return (Vector2Int)vec3;
+        Direction moveDir;
+        moveDir = movePath[moveIdx];
+
+        switch (moveMode) {
+            case BlockMoveState.pingpong:
+                moveDir = pingpongIsForward ? moveDir : GetOppositeDir(moveDir);
+                break;
+            default:
+                break;
+        }
+
+        return (Vector2Int)DirToVec3Int(moveDir);
     }
 
     Tween moveTween;
 
+    [SerializeField]
+    private MeshRenderer cubeRenderer;
+
+    [SerializeField]
+    private Material
+        normalMat, frozenMat;
+
+    public UnityEvent Event_NextMoveBegan = new UnityEvent();
+
     public void Move()
     {
+
         moveTween?.Kill();
         //make sure starting at right point
-        transform.position = gridRef.GetWorldSpaceFromCoord(coord);
+        //transform.position = gridRef.GetWorldSpaceFromCoord(coord);
+
+        //is cube frozen by player logic
+        //cubeRenderer.material = frozen ? frozenMat : normalMat;
+        if(frozen) {
+            blocked = true;
+            Debug.Log($"{gameObject.name} is frozen on {coord}");
+            return;
+        }
+
+        //update movement visualiser
+        UpdateMovementVisualiser();
 
         Vector2Int movement = lastForces.QueryForce();
         if (!blocked) {
@@ -76,33 +134,41 @@ public class BlockBehaviour : MonoBehaviour
 
             //transform.position += (Vector3)(Vector2)movement;
             //move towards next coord
-            transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), 1f).SetEase(Ease.Linear);
+            moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), 1f).SetEase(Ease.Linear);
         }
+        //block animation
+        else if (!frozen && blocked && !lastForces.NoInputs() && lastForces.QueryForce() != Vector2Int.zero) {
+            //shake on spot
+            //moveTween = transform.DOShakePosition(.3f, .1f).OnComplete(
+            //    () => transform.position = gridRef.GetWorldSpaceFromCoord(coord)
+            //);
 
-        //update movement visualiser
+            Vector3 bumpTargetPos = ((gridRef.GetWorldSpaceFromCoord(coord)+(Vector3Int)lastForces.QueryForce()) - transform.position) * .15f;
+            moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo);
+
+            moveTween.Play();
+        }
+        AdvanceMoveIdx();
+        blocked = false;
+        //lastForces = new BlockCoordinator.CellForce();
+
+        Event_NextMoveBegan?.Invoke();
+        Debug.Log($"{gameObject.name} tried to move from {coord - movement} to {coord}");
+    }
+
+    [Button]
+    private void UpdateMovementVisualiser()
+    {
         var colRef = moveIntentionVisual.color;
-        if(GetMovementIntention() == Vector2Int.zero) {
+        if (GetMovementIntention() == Vector2Int.zero || frozen) {
             colRef.a = 0;
             moveIntentionVisual.color = colRef;
-        } else {
+        }
+        else {
             colRef.a = 1;
             moveIntentionVisual.color = colRef;
             moveIntentionVisual.transform.up = (Vector3Int)GetMovementIntention();
         }
-
-        AdvanceMoveIdx();
-
-        //block animation
-        if (blocked || !lastForces.NoInputs() && lastForces.QueryForce() == Vector2Int.zero) {
-            moveTween = transform.DOShakePosition(.3f, .1f).OnComplete(
-                () => transform.position = gridRef.GetWorldSpaceFromCoord(coord)
-            );
-            moveTween.Play();
-        }
-        blocked = false;
-        //lastForces = new BlockCoordinator.CellForce();
-
-        Debug.Log($"{gameObject.name} tried to move from {coord - movement} to {coord}");
     }
 
     private Vector3Int DirToVec3Int(Direction dir)
@@ -124,8 +190,32 @@ public class BlockBehaviour : MonoBehaviour
         }
         return dirVec;
     }
-#if UNITY_EDITOR
 
+    [ReadOnly]
+    public bool frozen = false;
+    public static UnityEvent OnFreezeBlock;
+
+    //click on block
+    private void OnMouseDown()
+    {
+        frozen = !frozen;
+        blocked = frozen;
+
+        cubeRenderer.material = frozen ? frozenMat : normalMat;
+
+        OnFreezeBlock?.Invoke();
+    }
+
+    private void OnDestroy()
+    {
+        moveTween.Kill();
+
+        bool wasOnList = gridRef.ActiveGridState.BlocksList.Remove(this);
+        if(wasOnList && gridRef.isValidGridCoord(coord))
+            gridRef.ActiveGridState.GridBlockStates[coord.x, coord.y] = null;
+    }
+
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         //draw force line

@@ -3,9 +3,20 @@ using UnityEngine;
 
 public class BlockCoordinator : MonoBehaviour
 {
+    public static BlockCoordinator Coordinator => coordinator;
+    private static BlockCoordinator coordinator;
+
     [SerializeField]
     private BlockGrid gridRef;
+    public BlockGrid GridRef => gridRef;
 
+    [SerializeField]
+    private AudioSource bellSound;
+
+    /// <summary>
+    /// Class to hold the forces acting upon a grid cell, stored as 4 booleans, one for each direction. 
+    /// Forces are stored as booleans so that forces to do not prematurely cancel out with Vector Math and create unpredicatable outcomes.
+    /// </summary>
     [System.Serializable]
     public class CellForce
     {
@@ -57,8 +68,10 @@ public class BlockCoordinator : MonoBehaviour
 
         public bool Equals(CellForce otherCell)
         {
-            if (up == otherCell.up && down == otherCell.down && 
-                left == otherCell.left && right == otherCell.right)
+            if (up == otherCell.up && 
+                    down == otherCell.down && 
+                    left == otherCell.left && 
+                    right == otherCell.right)
                 return true;
             return false;
         }
@@ -93,6 +106,10 @@ public class BlockCoordinator : MonoBehaviour
 
     private void Awake()
     {
+        if (coordinator == null)
+            coordinator = this;
+        else Destroy(this);
+
         if (gridRef == null)
             gridRef = GetComponent<BlockGrid>();
     }
@@ -102,9 +119,19 @@ public class BlockCoordinator : MonoBehaviour
         forceGrid = new CellForce[gridRef.StartGridState.GridSize.x, gridRef.StartGridState.GridSize.y];
         InitilizeEmptyForceGrid();
 
-        InvokeRepeating(nameof(IterateBlockMovement), 1f, 1f);
+        //Time.timeScale = .5f;
+        Invoke(nameof(RingBell), 1.4f);
+        InvokeRepeating(nameof(IterateBlockMovement), 2f, 1f);
     }
 
+    private void RingBell()
+    {
+        bellSound.Play();
+    }
+
+    /// <summary>
+    /// the main loop of the force system, steps one iteration forward and then begins the animations.
+    /// </summary>
     public void IterateBlockMovement()
     {
         InitilizeEmptyForceGrid();
@@ -154,6 +181,10 @@ public class BlockCoordinator : MonoBehaviour
     public void AddInitialForcesToForceGrid()
     {
         foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
+            if (b.frozen) continue;
+
+            gridRef.ActiveGridState.GridBlockStates[b.coord.x, b.coord.y] = b;
+
             Vector2Int moveIntent = b.GetMovementIntention();
             Vector2Int targetCell = b.coord + moveIntent;
 
@@ -173,6 +204,8 @@ public class BlockCoordinator : MonoBehaviour
     public void AddDerivedForcesToForceGrid()
     {
         foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
+            if (b.frozen) continue;
+
             Vector2Int collapsedForce = b.lastForces.QueryForce();
             Vector2Int targetCell = b.coord + collapsedForce;
 
@@ -197,15 +230,17 @@ public class BlockCoordinator : MonoBehaviour
         bool changes = false;
 
         foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
+            if (b.frozen) continue;
+
             Vector2Int moveIntent = b.lastForces.QueryForce();
             Vector2Int targetCell = b.coord + moveIntent;
 
-            var forces = new CellForce();
+            var forces = new CellForce(b.lastForces);
 
             //add force from target cell
             //target cell is added first because otherwise other forces would change it before it could read them
             if (!gridRef.isValidGridCoord(targetCell)) {
-                Debug.LogWarning($"tried to read forces from invalid cell {targetCell}");
+                //Debug.LogWarning($"tried to read forces from invalid cell {targetCell}");
             }
             else {
                 forces.AddForceFromCell(forceGrid[targetCell.x, targetCell.y]);
@@ -227,9 +262,11 @@ public class BlockCoordinator : MonoBehaviour
         bool changes = false;
 
         foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
+            if (b.frozen) continue;
             if (b.blocked || b.lastForces.NoInputs()) continue;
 
             Vector2Int moveIntent = b.lastForces.QueryForce();
+            if (moveIntent == Vector2Int.zero) continue;
             Vector2Int targetCell = b.coord + moveIntent;
 
             //progressive checks for different block conditions
@@ -266,19 +303,19 @@ public class BlockCoordinator : MonoBehaviour
 
                 //check extra for diagonals
                 //TODO
-                if (!b.blocked && moveIntent.x != 0 && moveIntent.y != 0) {  //diagonal
+                //if (!b.blocked && moveIntent.x != 0 && moveIntent.y != 0) {  //diagonal
                     var xBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(moveIntent.x, 0));
                     var yBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(0, moveIntent.y));
 
                     bool blockedOnX = false;
-                    if(xBlock != null) 
+                    if(xBlock != null && moveIntent.x!=0) 
                         blockedOnX = xBlock.blocked || xBlock.lastForces.XLocked() || moveIntent.x != xBlock.lastForces.QueryForce().x;
                     bool blockedOnY = false;
-                    if(yBlock != null)
+                    if(yBlock != null && moveIntent.y!=0)
                         blockedOnY = yBlock != null && yBlock.blocked || yBlock.lastForces.YLocked() || moveIntent.y != yBlock.lastForces.QueryForce().y;
 
                     if (blockedOnX || blockedOnY) b.blocked = true;
-                }
+                //}
             }
 
             //if now blocked, update other variables

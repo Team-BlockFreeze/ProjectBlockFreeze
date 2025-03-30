@@ -9,7 +9,9 @@ public class BlockGrid : MonoBehaviour
     [SerializeField]
     private Vector2Int gridSize = new Vector2Int(5, 5);
 
-
+    [SerializeField]
+    private Vector2Int goalCoord;
+    public Vector2Int GoalCoord => goalCoord;
 
 
     [Header("Grid State")]
@@ -57,7 +59,14 @@ public class BlockGrid : MonoBehaviour
 
     public Vector3 GetWorldSpaceFromCoord(Vector2Int coord)
     {
-        return GetBotLeftOriginPos() + (Vector3.right + Vector3.up) * .5f + (Vector3Int)coord;
+        return GetBotLeftOriginPos() + (Vector3)Vector2.one * .5f + (Vector3Int)coord;
+    }
+
+    public Vector3 GetWorldPosSnappedToGrid(Vector3 pos)
+    {
+        var floatGridPos = pos - GetBotLeftOriginPos();
+        Vector2Int gridPos = new Vector2Int((int)floatGridPos.x, (int)floatGridPos.y);
+        return GetWorldSpaceFromCoord(gridPos);
     }
 
     public void TryPlaceOnGrid(BlockBehaviour block)
@@ -75,10 +84,14 @@ public class BlockGrid : MonoBehaviour
         }
 
         //valid
+        //try remove existing entry
+        ActiveGridState.BlocksList.Remove(block);
+        ActiveGridState.GridBlockStates[block.coord.x, block.coord.y] = null;
+
         //enter block into gridState
         ActiveGridState.GridBlockStates[gridPos.x, gridPos.y] = block;
         //snap to world pos
-        block.transform.position = GetBotLeftOriginPos() + Vector3.one * .5f + (Vector3Int)gridPos;
+        block.transform.position = GetBotLeftOriginPos() + (Vector3)Vector2.one * .5f + (Vector3Int)gridPos;
         block.coord = gridPos;
         ActiveGridState.BlocksList.Add(block);
         ActiveGridState.UpdateCoordList();
