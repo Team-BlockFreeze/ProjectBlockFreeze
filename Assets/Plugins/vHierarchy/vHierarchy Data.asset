@@ -87,6 +87,10 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-72a63bc0c57b65344805a49f8bf961f0-910901147-0
         - globalObjectIdString: GlobalObjectId_V1-2-72a63bc0c57b65344805a49f8bf961f0-8643126785286711271-0
         - globalObjectIdString: GlobalObjectId_V1-2-72a63bc0c57b65344805a49f8bf961f0-1684934190-0
+        - globalObjectIdString: GlobalObjectId_V1-2-72a63bc0c57b65344805a49f8bf961f0-563309198-0
+        - globalObjectIdString: GlobalObjectId_V1-2-72a63bc0c57b65344805a49f8bf961f0-1298175321-0
+        - globalObjectIdString: GlobalObjectId_V1-2-72a63bc0c57b65344805a49f8bf961f0-1804666741-0
+        - globalObjectIdString: GlobalObjectId_V1-2-72a63bc0c57b65344805a49f8bf961f0-1949798987-0
         values:
         - colorIndex: 0
           iconNameOrGuid: Camera Icon
@@ -101,9 +105,9 @@ MonoBehaviour:
         - colorIndex: 0
           iconNameOrGuid: Canvas Icon
         - colorIndex: 1
-          iconNameOrGuid: 
+          iconNameOrGuid: Folder Icon
         - colorIndex: 2
-          iconNameOrGuid: 
+          iconNameOrGuid: Folder Icon
         - colorIndex: 0
           iconNameOrGuid: Canvas Icon
         - colorIndex: 0
@@ -114,3 +118,11 @@ MonoBehaviour:
           iconNameOrGuid: Camera Icon
         - colorIndex: 0
           iconNameOrGuid: AudioSource Icon
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+        - colorIndex: 1
+          iconNameOrGuid: 

@@ -5,8 +5,10 @@ using TMPro;
 using UnityEngine.EventSystems;
 using Ami.BroAudio;
 using System;
+using Systems.SceneManagement;
+using Sirenix.OdinInspector;
 
-public class PlayButtonAnimation : MonoBehaviour, IPointerDownHandler
+public class PressedPlayButton : MonoBehaviour, IPointerDownHandler
 {
     public Image playButton;
     public Image titlePanel;
@@ -47,6 +49,8 @@ public class PlayButtonAnimation : MonoBehaviour, IPointerDownHandler
         }
     }
 
+
+
     private void PlayButtonClicked()
     {
         playButtonSFX.Play();
@@ -68,6 +72,8 @@ public class PlayButtonAnimation : MonoBehaviour, IPointerDownHandler
 
         AnimateButton();
         SpawnTransitionEffect();
+
+        SceneLoader.Instance.LoadSceneGroup(index: 1, delayInSeconds: 4f);
     }
 
     public void AnimateButton()
