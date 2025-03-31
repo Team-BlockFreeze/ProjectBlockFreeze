@@ -253,27 +253,17 @@ MonoBehaviour:
         asset: {fileID: 102900000, guid: 8c9cfa26abfee488c85f1582747f6a02, type: 3}
         guid: 8c9cfa26abfee488c85f1582747f6a02
       SceneType: 1
+  - GroupName: RYanLevel
+    Scenes:
     - Reference:
-        asset: {fileID: 102900000, guid: 72a63bc0c57b65344805a49f8bf961f0, type: 3}
-        guid: 72a63bc0c57b65344805a49f8bf961f0
-      SceneType: 1
-    - Reference:
-        asset: {fileID: 102900000, guid: e9dc0d281bbf81643a711ae17b6936ff, type: 3}
-        guid: e9dc0d281bbf81643a711ae17b6936ff
+        asset: {fileID: 102900000, guid: 4b3d677016c165e409376b2f30677a0b, type: 3}
+        guid: 4b3d677016c165e409376b2f30677a0b
       SceneType: 1
   - GroupName: Level Select
     Scenes:
     - Reference:
         asset: {fileID: 102900000, guid: 72a63bc0c57b65344805a49f8bf961f0, type: 3}
         guid: 72a63bc0c57b65344805a49f8bf961f0
-      SceneType: 1
-    - Reference:
-        asset: {fileID: 102900000, guid: e9dc0d281bbf81643a711ae17b6936ff, type: 3}
-        guid: e9dc0d281bbf81643a711ae17b6936ff
-      SceneType: 1
-    - Reference:
-        asset: {fileID: 102900000, guid: 8c9cfa26abfee488c85f1582747f6a02, type: 3}
-        guid: 8c9cfa26abfee488c85f1582747f6a02
       SceneType: 1
 --- !u!4 &257358134
 Transform:

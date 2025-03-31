@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      zen-garden_0: 5173742835680327805
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
