@@ -190,14 +190,14 @@ public class BlockCoordinator : MonoBehaviour
 
             b.lastForces = new CellForce();
             b.lastForces.SetForceFromVector2Int(moveIntent);
-            //Debug.Log($"{b.name} just set force to {b.lastForces.QueryForce()} from moveIntent {b.GetMovementIntention()}");
 
             //block target cell isnt on grid (at edge)
             if(!gridRef.isValidGridCoord(targetCell)) {
                 continue;
             }
+            Debug.Log($"{b.name} just set force to {b.lastForces.QueryForce()} at {targetCell} from moveIntent {b.GetMovementIntention()}");
 
-            forceGrid[targetCell.x, targetCell.y].SetForceFromVector2Int(moveIntent);
+            forceGrid[targetCell.x, targetCell.y].AddForceFromCell(b.lastForces);
         }
     }
 
@@ -211,16 +211,19 @@ public class BlockCoordinator : MonoBehaviour
 
             //block target cell isnt on grid (at edge)
             if (!gridRef.isValidGridCoord(targetCell) || targetCell == b.coord) {
+                Debug.Log($"{gameObject.name} can't add force to grid, target cell out of bounds");
                 continue;
             }
 
             forceGrid[targetCell.x, targetCell.y].AddForceFromCell(new CellForce(collapsedForce));
+            Debug.Log($"{gameObject.name} adding force {collapsedForce} to grid at {targetCell}");
             //diagonal force
             if(collapsedForce.x!=0 && collapsedForce.y!=0) {
                 var xTarget = b.coord + new Vector2Int(collapsedForce.x, 0);
                 forceGrid[xTarget.x, xTarget.y].AddForceFromCell(new CellForce(new Vector2Int(collapsedForce.x, 0)));
                 var yTarget = b.coord + new Vector2Int(0, collapsedForce.y);
                 forceGrid[yTarget.x, yTarget.y].AddForceFromCell(new CellForce(new Vector2Int(0, collapsedForce.y)));
+                Debug.Log($"{gameObject} is moving diagonally, adding orthogonal forces at {xTarget} and {yTarget}");
             }
         }
     }

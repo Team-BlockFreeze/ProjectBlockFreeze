@@ -99,6 +99,20 @@ public class BlockBehaviour : MonoBehaviour
         return (Vector2Int)DirToVec3Int(moveDir);
     }
 
+    public Vector2Int PeekNextMovementIntention()
+    {
+        int holdIdx = moveIdx;
+        bool holdForward = pingpongIsForward;
+
+        AdvanceMoveIdx();
+
+        var moveIntent = GetMovementIntention();
+        moveIdx = holdIdx;
+        pingpongIsForward = holdForward;
+
+        return moveIntent;
+    }
+
     Tween moveTween;
 
     [SerializeField]
@@ -156,6 +170,9 @@ public class BlockBehaviour : MonoBehaviour
         Debug.Log($"{gameObject.name} tried to move from {coord - movement} to {coord}");
     }
 
+    [SerializeField]
+    private SpriteRenderer littleDirTriangle;
+
     [Button]
     private void UpdateMovementVisualiser()
     {
@@ -168,6 +185,21 @@ public class BlockBehaviour : MonoBehaviour
             colRef.a = 1;
             moveIntentionVisual.color = colRef;
             moveIntentionVisual.transform.up = (Vector3Int)GetMovementIntention();
+        }
+
+        //next move indactor
+        colRef = littleDirTriangle.color;
+        var nextDir = PeekNextMovementIntention();
+        if (nextDir == Vector2Int.zero || frozen)
+        {
+            colRef.a = 0;
+            littleDirTriangle.color = colRef;
+        }
+        else
+        {
+            colRef.a = 1;
+            littleDirTriangle.color = colRef;
+            littleDirTriangle.transform.up = (Vector3Int)nextDir;
         }
     }
 
@@ -206,13 +238,15 @@ public class BlockBehaviour : MonoBehaviour
         OnFreezeBlock?.Invoke();
     }
 
+    [Button]
     private void OnDestroy()
     {
-        moveTween.Kill();
+        moveTween?.Kill();
 
         bool wasOnList = gridRef.ActiveGridState.BlocksList.Remove(this);
         if(wasOnList && gridRef.isValidGridCoord(coord))
             gridRef.ActiveGridState.GridBlockStates[coord.x, coord.y] = null;
+        gridRef.ActiveGridState.UpdateCoordList();
     }
 
 #if UNITY_EDITOR

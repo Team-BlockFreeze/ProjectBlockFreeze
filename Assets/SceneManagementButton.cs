@@ -16,6 +16,6 @@ public class SceneManagementButton : MonoBehaviour
             return;
         }
 
-        SceneManager.LoadScene(i+1);
+        SceneManager.LoadScene(i);
     }
 }
