@@ -30,6 +30,11 @@ public class BlockBehaviour : MonoBehaviour
         }
     }
 
+    //private void OnValidate()
+    //{
+    //    gridRef.TryPlaceOnGrid(this);
+    //}
+
     [Button]
     public void TryAddToGrid()
     {

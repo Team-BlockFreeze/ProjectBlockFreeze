@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class Bootstrapper : PersistentSingleton<Bootstrapper>
 {
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    //[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 
 
     static async void Init()
