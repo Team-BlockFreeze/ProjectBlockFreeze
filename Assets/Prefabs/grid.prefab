@@ -27,12 +27,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1628009087297911179}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0.5}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 8, y: 0, z: 0.5}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 6377627252547341763}
+  m_Father: {fileID: 1339202477508604938}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &2915529007838600459
 MeshFilter:
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0fe1b73763e1be545888d59b7a354f4c, type: 2}
+  - {fileID: 2100000, guid: b0fefd3cbe9f6a64b8e5437a894500bc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -392,6 +392,38 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &7043511621139937964
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1339202477508604938}
+  m_Layer: 0
+  m_Name: GridParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1339202477508604938
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7043511621139937964}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.5, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3112251631186772317}
+  m_Father: {fileID: 6377627252547341763}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8182765344510954997
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,7 +457,7 @@ Transform:
   m_Children:
   - {fileID: 5542007589028382966}
   - {fileID: 6634506735757690637}
-  - {fileID: 3112251631186772317}
+  - {fileID: 1339202477508604938}
   - {fileID: 6318634610875558324}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -443,16 +475,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSize: {x: 5, y: 5}
   goalCoord: {x: 4, y: 2}
-  startGridState: {fileID: 11400000, guid: 6628760bc43f2b548bdd4f98ada4f2b4, type: 2}
+  startGridStateSO: {fileID: 11400000, guid: 6628760bc43f2b548bdd4f98ada4f2b4, type: 2}
+  validGridSprite: {fileID: 6524471923862907378}
+  gridPlaneParentT: {fileID: 1339202477508604938}
+  gridPlaneMeshR: {fileID: 5805035223219789282}
   ActiveGridState:
-    blocksList:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    BlockCoordList:
-    - {x: 3, y: 2}
-    - {x: 0, y: 2}
-    - {x: 1, y: 2}
+    blocksList: []
+    BlockCoordList: []
     GridWidth: 5
     GridHeight: 5
   testVar: 0

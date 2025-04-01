@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using UnityEditor;
 
 [System.Serializable]
 public class GridState
@@ -40,7 +41,8 @@ public class GridState
     }
 
     [ReadOnly]
-    public int GridWidth, GridHeight;
+    [SerializeField]
+    private int GridWidth, GridHeight;
 
     public GridState(BlockBehaviour[,] bStates, List<BlockBehaviour> blockList)
     {
