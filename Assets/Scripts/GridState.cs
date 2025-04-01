@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 [System.Serializable]
 public class GridState
 {
+    [SerializeField]
     private BlockBehaviour[,] gridBlockStates;
     public BlockBehaviour[,] GridBlockStates { 
         get { return gridBlockStates; } 
@@ -16,7 +17,7 @@ public class GridState
     }
 
     [SerializeField]
-    private List<BlockBehaviour> blocksList = new List<BlockBehaviour>();
+    private List<BlockBehaviour> blocksList;
     public List<BlockBehaviour> BlocksList {
         get { return blocksList; }
         set {
@@ -26,7 +27,7 @@ public class GridState
     }
 
     [SerializeField]
-    public Vector2Int[] BlockCoordList = new Vector2Int[0];
+    public Vector2Int[] BlockCoordList;
     [Button]
     public void UpdateCoordList()
     {

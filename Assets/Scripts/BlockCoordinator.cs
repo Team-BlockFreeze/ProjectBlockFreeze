@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 public class BlockCoordinator : MonoBehaviour
 {
@@ -116,7 +117,7 @@ public class BlockCoordinator : MonoBehaviour
 
     private void Start()
     {
-        forceGrid = new CellForce[gridRef.StartGridState.GridSize.x, gridRef.StartGridState.GridSize.y];
+        forceGrid = new CellForce[gridRef.StartGridStateSO.GridSize.x, gridRef.StartGridStateSO.GridSize.y];
         InitilizeEmptyForceGrid();
 
         //Time.timeScale = .5f;
@@ -169,9 +170,12 @@ public class BlockCoordinator : MonoBehaviour
         Debug.Log("Full block grid iteration");
     }
 
+    [Button]
     private void InitilizeEmptyForceGrid()
     {
-        for(int x=0; x<forceGrid.GetLength(0); x++) {
+        forceGrid = new CellForce[gridRef.StartGridStateSO.GridSize.x, gridRef.StartGridStateSO.GridSize.y];
+
+        for (int x=0; x<forceGrid.GetLength(0); x++) {
             for(int y=0; y<forceGrid.GetLength(1); y++) {
                 forceGrid[x, y] = new CellForce();
             }
