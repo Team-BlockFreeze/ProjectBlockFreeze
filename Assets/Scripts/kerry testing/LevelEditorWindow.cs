@@ -38,13 +38,14 @@ public class LevelEditorWindow : EditorWindow {
     }
 
 
-    private void OnGUI() {
-        //! Init grid size
-        gridSize = levelData.GridSize;
 
+    private void OnGUI() {
         PopulateMoveListOnMouseHover();
 
-        DrawLevelDataLabel();
+        GUILayout.Label("Level Editor", EditorStyles.boldLabel);
+        levelData = (LevelData)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelData), false);
+
+        if (levelData == null) return;
 
         GUILayout.Space(10);
 
@@ -58,6 +59,8 @@ public class LevelEditorWindow : EditorWindow {
 
         GUILayout.Space(10);
 
+        gridSize = levelData.GridSize;
+
         DrawPresetButtons();
 
         GUILayout.Space(10);
@@ -65,14 +68,6 @@ public class LevelEditorWindow : EditorWindow {
         DrawGrid();
 
         TrackMouseHover();
-    }
-
-    private void DrawLevelDataLabel() {
-        GUILayout.Label("Level Editor", EditorStyles.boldLabel);
-        levelData = (LevelData)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelData), false);
-
-        if (levelData == null) return;
-
     }
 
     private void PopulateMoveListOnMouseHover() {
@@ -127,7 +122,7 @@ public class LevelEditorWindow : EditorWindow {
         GUILayout.Label("Select Block Preset", EditorStyles.boldLabel);
 
         GUIStyle selectedStyle = new GUIStyle(GUI.skin.button);
-        selectedStyle.normal.background = MakeTex(2, 2, new Color(.5f, 1, 1, .5f));
+        selectedStyle.normal.background = MakeTex(2, 2, new Color(0f, 1, 1, .5f));
 
         foreach (var preset in availablePresets) {
             if (selectedPreset == preset) {
@@ -226,17 +221,18 @@ public class LevelEditorWindow : EditorWindow {
             for (int x = 0; x < gridSize.x; x++) {
                 GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
                 string blockSymbol = " ";
+
                 Vector2Int cellPosition = new Vector2Int(x, y);
 
-                int overlapCount = pathCells.FindAll(cell => cell == cellPosition).Count;
-                float alpha = Mathf.Clamp(0.15f + (overlapCount * 0.25f), 0.15f, 1f);
-
+                // light green
                 if (selectedBlockState != null && selectedBlockStatePosition == cellPosition) {
-                    buttonStyle.normal.background = MakeTex(30, 30, new Color(1, 0.475f, 0.914f, 0.5f));
+                    buttonStyle.normal.background = MakeTex(30, 30, new Color(0.353f, 1, 0.471f, 0.5f));
                     blockSymbol = "■";
                 }
-                else if (isDrawing && overlapCount > 0) { // Pink to blue
-                    buttonStyle.normal.background = MakeTex(30, 30, new Color(1 - alpha, 1, 1, alpha));
+
+                // lighter light green
+                if (isDrawing && pathCells.Contains(cellPosition)) {
+                    buttonStyle.normal.background = MakeTex(30, 30, new Color(0.353f, 1, 0.471f, 0.15f));
                     blockSymbol = "■";
                 }
 
@@ -245,7 +241,6 @@ public class LevelEditorWindow : EditorWindow {
             GUILayout.EndHorizontal();
         }
     }
-    //
 
     private void DrawPathLines() {
         if (pathCells.Count < 2) return;
