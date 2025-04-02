@@ -2,6 +2,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System;
+using UnityEditor;
 
 public class BlockGrid : MonoBehaviour
 {
@@ -9,12 +10,14 @@ public class BlockGrid : MonoBehaviour
     [SerializeField]
     [ReadOnly]
     private Vector2Int gridSize;
+    public Vector2Int GridSize => gridSize;
 
     [SerializeField]
     private Vector2Int goalCoord;
     public void SetGoalCoord(Vector2Int coord)
     {
         goalCoord = coord;
+        EditorUtility.SetDirty(this);
     }
     public Vector2Int GoalCoord => goalCoord;
 
@@ -50,16 +53,39 @@ public class BlockGrid : MonoBehaviour
 
     }
 
+    [SerializeField]
+    private SpriteRenderer validGridSprite;
+    [SerializeField]
+    private Transform gridPlaneParentT;
+    [SerializeField]
+    private MeshRenderer gridPlaneMeshR;
+
     [Button]
     public void ResetActiveGrid()
     {
         gridSize = startGridStateSO.GridSize;
         ActiveGridState.GridBlockStates = new BlockBehaviour[startGridStateSO.GridSize.x, startGridStateSO.GridSize.y];
         ActiveGridState.BlocksList = new List<BlockBehaviour>();
+
+        //if (validGridSprite.drawMode == SpriteDrawMode.Sliced)
+            validGridSprite.size = new Vector2(gridSize.x, gridSize.y);
+
+        //move plane bg so it aligns
+        float planePosY = gridSize.y%2==0 ? 0 : -.5f/gridPlaneParentT.localScale.y;
+        gridPlaneParentT.position = new Vector3(GetBotLeftOriginPos().x, planePosY, 0);
+
+        //set goal position in shader
+#if UNITY_EDITOR
+        gridPlaneMeshR.sharedMaterial.SetVector("_HoleWorldPos", GetWorldSpaceFromCoord(goalCoord) - Vector3.one*.5f);
+#else
+        gridPlaneMeshR.material.SetVector("_HoleWorldPos", GetWorldSpaceFromCoord(goalCoord) - Vector3.one*.5f);
+#endif
     }
 
     //[ReadOnly]
     [SerializeField]
+    //[SerializeReference]
+    //[InlineEditor]
     public GridState ActiveGridState;
 
     public int testVar;
@@ -135,6 +161,10 @@ public class BlockGrid : MonoBehaviour
         ActiveGridState.BlocksList.Add(block);
         ActiveGridState.UpdateCoordList();
         Debug.Log($"block added to grid at {gridPos}");
+
+#if UNITY_EDITOR
+        EditorUtility.SetDirty( this );
+#endif
     }
 
     public Vector3 GetTopLeftOriginPos()
@@ -144,6 +174,8 @@ public class BlockGrid : MonoBehaviour
 
     public Vector3 GetBotLeftOriginPos()
     {
+        //float xAdd = gridSize.x % 2 == 0 ? 0f : .5f;
+        //float yAdd = gridSize.y % 2 == 0 ? 0f : .5f;
         return transform.position + new Vector3(-(float)gridSize.x * .5f, -(float)gridSize.y * .5f);
     }
 

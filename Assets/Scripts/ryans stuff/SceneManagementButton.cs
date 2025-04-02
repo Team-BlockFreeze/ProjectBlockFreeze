@@ -16,6 +16,7 @@ public class SceneManagementButton : MonoBehaviour
             return;
         }
 
+        Time.timeScale = 1;
         SceneManager.LoadScene(i);
     }
 }

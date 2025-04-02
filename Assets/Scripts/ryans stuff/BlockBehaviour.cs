@@ -140,15 +140,14 @@ public class BlockBehaviour : MonoBehaviour
 
         //is cube frozen by player logic
         //cubeRenderer.material = frozen ? frozenMat : normalMat;
-        if (frozen)
-        {
+        if(frozen) {
+            UpdateMovementVisualiser();
             blocked = true;
             Debug.Log($"{gameObject.name} is frozen on {coord}");
             return;
         }
 
         //update movement visualiser
-        UpdateMovementVisualiser();
 
         Vector2Int movement = lastForces.QueryForce();
         if (!blocked)
@@ -177,6 +176,7 @@ public class BlockBehaviour : MonoBehaviour
         //lastForces = new BlockCoordinator.CellForce();
 
         Event_NextMoveBegan?.Invoke();
+        UpdateMovementVisualiser();
         Debug.Log($"{gameObject.name} tried to move from {coord - movement} to {coord}");
     }
 
@@ -187,8 +187,7 @@ public class BlockBehaviour : MonoBehaviour
     private void UpdateMovementVisualiser()
     {
         var colRef = moveIntentionVisual.color;
-        if (GetMovementIntention() == Vector2Int.zero || frozen)
-        {
+        if (GetMovementIntention() == Vector2Int.zero) {
             colRef.a = 0;
             moveIntentionVisual.color = colRef;
         }
@@ -202,7 +201,7 @@ public class BlockBehaviour : MonoBehaviour
         //next move indactor
         colRef = littleDirTriangle.color;
         var nextDir = PeekNextMovementIntention();
-        if (nextDir == Vector2Int.zero || frozen)
+        if (nextDir == Vector2Int.zero)
         {
             colRef.a = 0;
             littleDirTriangle.color = colRef;
@@ -236,13 +235,15 @@ public class BlockBehaviour : MonoBehaviour
         return dirVec;
     }
 
-    [ReadOnly]
+    public bool canBeFrozen = true;
     public bool frozen = false;
     public static UnityEvent OnFreezeBlock;
 
     //click on block
     private void OnMouseDown()
     {
+        if (!canBeFrozen) return;
+
         frozen = !frozen;
         blocked = frozen;
 
