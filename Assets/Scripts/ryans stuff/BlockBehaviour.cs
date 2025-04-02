@@ -15,17 +15,18 @@ public class BlockBehaviour : MonoBehaviour
     public BlockMoveState moveMode = BlockMoveState.patrol;
 
     private bool pingpongIsForward = true;
-
     private Vector3Int GetNextMoveVec => DirToVec3Int(movePath[moveIdx++]);
-    private void AdvanceMoveIdx() { 
-        switch(moveMode) {
+    private void AdvanceMoveIdx()
+    {
+        switch (moveMode)
+        {
             case BlockMoveState.pingpong:
                 int nextIdx = moveIdx + (pingpongIsForward ? 1 : -1);
                 if (nextIdx < 0 || nextIdx >= movePath.Length) pingpongIsForward = !pingpongIsForward;
                 else moveIdx = pingpongIsForward ? ++moveIdx : --moveIdx;
                 break;
             default:
-                moveIdx = (moveIdx+1)% movePath.Length;
+                moveIdx = (moveIdx + 1) % movePath.Length;
                 break;
         }
     }
@@ -75,7 +76,7 @@ public class BlockBehaviour : MonoBehaviour
         AdvanceMoveIdx();
     }
 
-    private enum Direction { up, down, left, right, wait}
+    private enum Direction { up, down, left, right, wait }
     [SerializeField]
     private Direction[] movePath;
 
@@ -93,7 +94,8 @@ public class BlockBehaviour : MonoBehaviour
         Direction moveDir;
         moveDir = movePath[moveIdx];
 
-        switch (moveMode) {
+        switch (moveMode)
+        {
             case BlockMoveState.pingpong:
                 moveDir = pingpongIsForward ? moveDir : GetOppositeDir(moveDir);
                 break;
@@ -138,7 +140,8 @@ public class BlockBehaviour : MonoBehaviour
 
         //is cube frozen by player logic
         //cubeRenderer.material = frozen ? frozenMat : normalMat;
-        if(frozen) {
+        if (frozen)
+        {
             blocked = true;
             Debug.Log($"{gameObject.name} is frozen on {coord}");
             return;
@@ -148,7 +151,8 @@ public class BlockBehaviour : MonoBehaviour
         UpdateMovementVisualiser();
 
         Vector2Int movement = lastForces.QueryForce();
-        if (!blocked) {
+        if (!blocked)
+        {
             coord += movement;
 
             //transform.position += (Vector3)(Vector2)movement;
@@ -156,13 +160,14 @@ public class BlockBehaviour : MonoBehaviour
             moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), 1f).SetEase(Ease.Linear);
         }
         //block animation
-        else if (!frozen && blocked && !lastForces.NoInputs() && lastForces.QueryForce() != Vector2Int.zero) {
+        else if (!frozen && blocked && !lastForces.NoInputs() && lastForces.QueryForce() != Vector2Int.zero)
+        {
             //shake on spot
             //moveTween = transform.DOShakePosition(.3f, .1f).OnComplete(
             //    () => transform.position = gridRef.GetWorldSpaceFromCoord(coord)
             //);
 
-            Vector3 bumpTargetPos = ((gridRef.GetWorldSpaceFromCoord(coord)+(Vector3Int)lastForces.QueryForce()) - transform.position) * .15f;
+            Vector3 bumpTargetPos = ((gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)lastForces.QueryForce()) - transform.position) * .15f;
             moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo);
 
             moveTween.Play();
@@ -182,11 +187,13 @@ public class BlockBehaviour : MonoBehaviour
     private void UpdateMovementVisualiser()
     {
         var colRef = moveIntentionVisual.color;
-        if (GetMovementIntention() == Vector2Int.zero || frozen) {
+        if (GetMovementIntention() == Vector2Int.zero || frozen)
+        {
             colRef.a = 0;
             moveIntentionVisual.color = colRef;
         }
-        else {
+        else
+        {
             colRef.a = 1;
             moveIntentionVisual.color = colRef;
             moveIntentionVisual.transform.up = (Vector3Int)GetMovementIntention();
@@ -211,7 +218,8 @@ public class BlockBehaviour : MonoBehaviour
     private Vector3Int DirToVec3Int(Direction dir)
     {
         Vector3Int dirVec = Vector3Int.zero;
-        switch (dir) {
+        switch (dir)
+        {
             case Direction.up:
                 dirVec = Vector3Int.up;
                 break;
@@ -249,7 +257,7 @@ public class BlockBehaviour : MonoBehaviour
         moveTween?.Kill();
 
         bool wasOnList = gridRef.ActiveGridState.BlocksList.Remove(this);
-        if(wasOnList && gridRef.isValidGridCoord(coord))
+        if (wasOnList && gridRef.isValidGridCoord(coord))
             gridRef.ActiveGridState.GridBlockStates[coord.x, coord.y] = null;
         gridRef.ActiveGridState.UpdateCoordList();
     }
@@ -259,7 +267,7 @@ public class BlockBehaviour : MonoBehaviour
     {
         //draw force line
         Gizmos.color = Color.red;
-        if (lastForces.AllInputs()) Gizmos.DrawWireCube(transform.position, Vector3.one * .2f); 
+        if (lastForces.AllInputs()) Gizmos.DrawWireCube(transform.position, Vector3.one * .2f);
         else Gizmos.DrawLine(transform.position, transform.position + (Vector3)(Vector3Int)lastForces.QueryForce() * .35f);
     }
 

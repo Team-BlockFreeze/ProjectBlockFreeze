@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 
 [CreateAssetMenu(fileName = "LevelData", menuName = "ScriptableObjects/Level Data")]
-public class LevelData : ScriptableObject
-{
+public class LevelData : ScriptableObject {
 
     [BoxGroup("Grid Settings")]
     [SerializeField, MinValue(1)]
@@ -19,13 +18,12 @@ public class LevelData : ScriptableObject
 }
 
 [System.Serializable]
-public class BlockPlacement
-{
-    [HorizontalGroup]
+public class BlockPlacement {
+    [BoxGroup]
     [SerializeField]
     public Vector2Int position;
 
-    [HorizontalGroup]
+    [BoxGroup]
     [SerializeField, InlineEditor]
     public BlockStateSO blockType;
 

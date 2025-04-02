@@ -3,8 +3,7 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "BlockState", menuName = "ScriptableObjects/BlockState")]
-public class BlockStateSO : ScriptableObject
-{
+public class BlockStateSO : ScriptableObject {
     [SerializeField] private GameObject fabRef;
 
     public enum BlockMoveState { Teleport, PingPong, Patrol, Still }
@@ -15,12 +14,9 @@ public class BlockStateSO : ScriptableObject
 
     public GameObject FabRef => fabRef;
     public BlockMoveState MoveState => moveState;
-    private Vector2Int[] MoveList => moveList;
+    public List<MovementDirection> MoveList = new List<MovementDirection>();
 
-    public List<MovementDirection> MoveList2 = new List<MovementDirection>();
-
-    public enum MovementDirection
-    {
+    public enum MovementDirection {
         Up,
         Down,
         Left,
