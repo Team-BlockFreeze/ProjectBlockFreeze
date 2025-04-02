@@ -13,3 +13,7 @@ MonoBehaviour:
   m_Name: GridStateSOTest 5x5
   m_EditorClassIdentifier: Assembly-CSharp::Grid/GridStateSO
   gridSize: {x: 5, y: 5}
+  blocks:
+  - fabRef: {fileID: 0}
+    moveState: 2
+    moveList: []
