@@ -2455,7 +2455,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8540571337747136039, guid: be9818aa5ae5e56489e45f8c7697cff3, type: 3}
       propertyPath: gameTickRepeatRate
-      value: 0.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8540571337747136039, guid: be9818aa5ae5e56489e45f8c7697cff3, type: 3}
       propertyPath: bellSound._sourceAsset
