@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using Ami.BroAudio;
 
 public class BlockCoordinator : MonoBehaviour {
     public static BlockCoordinator Coordinator => coordinator;
@@ -8,14 +9,14 @@ public class BlockCoordinator : MonoBehaviour {
 
 
 
-    public static float gameTickRepeatRate = 5f; // in seconds
+    public static float gameTickRepeatRate = 1f; // in seconds
 
     [SerializeField]
     private BlockGrid gridRef;
     public BlockGrid GridRef => gridRef;
 
     [SerializeField]
-    private AudioSource bellSound;
+    private SoundID bellSoundSFX;
 
     /// <summary>
     /// Class to hold the forces acting upon a grid cell, stored as 4 booleans, one for each direction. 
@@ -115,7 +116,7 @@ public class BlockCoordinator : MonoBehaviour {
 
 
     private void RingBell() {
-        bellSound.Play();
+        bellSoundSFX.Play();
     }
 
     /// <summary>

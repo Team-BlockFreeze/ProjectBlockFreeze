@@ -27,12 +27,6 @@ MonoBehaviour:
       name: Kerry
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
-    task: sfx for menu ui
-    isComplete: 1
-  - owner:
-      name: Kerry
-      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
-      index: 0
     task: smooth scene loading transition on play
     isComplete: 0
   - owner:
