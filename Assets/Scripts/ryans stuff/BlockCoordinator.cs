@@ -2,19 +2,26 @@ using UnityEditor;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using Ami.BroAudio;
+using Unity.VisualScripting;
+using System.Collections;
+using DG.Tweening;
 
-public class BlockCoordinator : MonoBehaviour {
+public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     public static BlockCoordinator Coordinator => coordinator;
     private static BlockCoordinator coordinator;
 
 
 
-    public static float gameTickRepeatRate = 1f; // in seconds
+    [SerializeField] private float gameTickRepeatRate = 1f;
+    public float GameTickRepeatRate() => gameTickRepeatRate;
 
+
+    [Header("References")]
     [SerializeField]
     private BlockGrid gridRef;
     public BlockGrid GridRef => gridRef;
 
+    [Header("Audio")]
     [SerializeField]
     private SoundID bellSoundSFX;
 
@@ -96,7 +103,8 @@ public class BlockCoordinator : MonoBehaviour {
 
     public CellForce[,] forceGrid;
 
-    private void Awake() {
+    protected override void Awake() {
+        base.Awake();
         if (coordinator == null)
             coordinator = this;
         else Destroy(this);
@@ -109,10 +117,33 @@ public class BlockCoordinator : MonoBehaviour {
         forceGrid = new CellForce[gridRef.StartGridStateSO.GridSize.x, gridRef.StartGridStateSO.GridSize.y];
         InitilizeEmptyForceGrid();
 
-        //Time.timeScale = .5f;
         Invoke(nameof(RingBell), 1.4f);
-        InvokeRepeating(nameof(IterateBlockMovement), time: 2f, repeatRate: gameTickRepeatRate); //
+
+        DOVirtual.DelayedCall(delay: 2, () => StartGameTickLoop());
     }
+
+
+    private Coroutine gameTickCoroutine;
+    private void StartGameTickLoop() {
+        if (gameTickCoroutine != null)
+            StopCoroutine(gameTickCoroutine);
+
+        gameTickCoroutine = StartCoroutine(GameTickLoop());
+    }
+
+    private IEnumerator GameTickLoop() {
+        while (true) {
+            IterateBlockMovement();
+            yield return new WaitForSeconds(gameTickRepeatRate);
+        }
+    }
+
+    public void UpdateGameTickRate(float newRate) {
+        gameTickRepeatRate = newRate;
+        StartGameTickLoop(); //! Restart loop with updated repeat rate
+    }
+
+
 
 
     private void RingBell() {

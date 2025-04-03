@@ -106,7 +106,7 @@ public class BlockBehaviour : MonoBehaviour {
 
     private void QueueNextTween() {
         //Debug.Log("Queueing tween");
-        Tween nextTween = transform.DOMove(DirToVec3Int(movePath[moveIdx++]), BlockCoordinator.gameTickRepeatRate).SetRelative().SetEase(Ease.Linear).Pause();
+        Tween nextTween = transform.DOMove(DirToVec3Int(movePath[moveIdx++]), BlockCoordinator.Instance.GameTickRepeatRate()).SetRelative().SetEase(Ease.Linear).Pause();
         activeTween.OnComplete(() => nextTween.Play());
         activeTween = nextTween;
         AdvanceMoveIdx();
@@ -183,7 +183,7 @@ public class BlockBehaviour : MonoBehaviour {
 
             //transform.position += (Vector3)(Vector2)movement;
             //move towards next coord
-            moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), BlockCoordinator.gameTickRepeatRate).SetEase(Ease.Linear);
+            moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), BlockCoordinator.Instance.GameTickRepeatRate()).SetEase(Ease.Linear);
         }
         //block animation
         else if (!frozen && blocked && !lastForces.NoInputs() && lastForces.QueryForce() != Vector2Int.zero) {
