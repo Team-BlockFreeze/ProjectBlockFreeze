@@ -11,8 +11,8 @@ public class BlockBehaviour : MonoBehaviour
     private BlockGrid gridRef;
     public BlockGrid GridRef => gridRef;
 
-    public enum BlockMoveState { teleport, pingpong, patrol, still }
-    public BlockMoveState moveMode = BlockMoveState.patrol;
+    public enum BlockMoveState { still, loop, pingpong, teleport }
+    public BlockMoveState moveMode = BlockMoveState.loop;
 
     private bool pingpongIsForward = true;
     private Vector3Int GetNextMoveVec => DirToVec3Int(movePath[moveIdx++]);
@@ -76,7 +76,7 @@ public class BlockBehaviour : MonoBehaviour
         AdvanceMoveIdx();
     }
 
-    private enum Direction { up, down, left, right, wait }
+    public enum Direction { up, down, left, right, wait }
     [SerializeField]
     private Direction[] movePath;
 
@@ -96,6 +96,9 @@ public class BlockBehaviour : MonoBehaviour
 
         switch (moveMode)
         {
+            case BlockMoveState.still:
+                moveDir = Direction.wait;
+                break;
             case BlockMoveState.pingpong:
                 moveDir = pingpongIsForward ? moveDir : GetOppositeDir(moveDir);
                 break;

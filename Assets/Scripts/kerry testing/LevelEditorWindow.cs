@@ -1,51 +1,115 @@
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
+//using Sirenix.OdinInspector.Editor;
 using static BlockStateSO;
 using System;
 
+using MoveDirection = BlockBehaviour.Direction;
+using UnityEditorInternal;
+
 public class LevelEditorWindow : EditorWindow {
-    private LevelData levelData;
-    private Vector2Int gridSize;
+    /// <summary>
+    /// String name for a custom persistent Editor preferences key.
+    /// Global unique identifier (GUID) for file in project.
+    /// Stores a reference to the last level selected so it persists upon opening and closing the window, and Unity application itself
+    /// </summary>
+    private static string PrefKey_SelectedLevelDataSO_GUID => "SelectedLevelSO_GUID";
+    private LevelDataSO levelData;
+    //private Vector2Int levelData.GridSize; 
 
-    private BlockStateSO selectedPreset;
-    private List<BlockStateSO> availablePresets = new List<BlockStateSO>();
+    private static string PrefKey_AvailableBlocksSO_GUID => "AvailableBlocksSOForEditor_GUID";
+    private BlockTypesListSO availableBlocks;
+    private GameObject selectedBlockTypeToPlace;
 
-    private const string ASSET_PATH = "Assets/Scripts/kerry testing/Test Level/";
-    private const string PRESETS_ASSET_PATH = "Assets/Scripts/kerry testing/BlockPresets/";
-
-    [MenuItem("Tools/Level Editor")]
-    public static void ShowWindow() {
-        GetWindow<LevelEditorWindow>("Level Editor");
-    }
-
-    private void OnEnable() {
-        LoadBlockPresets();
-    }
-
-    private void LoadBlockPresets() {
-        availablePresets.Clear();
-        //
-        // TODO: global string path variable
-        string[] guids = AssetDatabase.FindAssets("t:BlockStateSO", new[] { PRESETS_ASSET_PATH });
-
-        foreach (string guid in guids) {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            BlockStateSO blockPreset = AssetDatabase.LoadAssetAtPath<BlockStateSO>(path);
-            if (blockPreset != null)
-                availablePresets.Add(blockPreset);
+    private BlockData selectedBlockOfLevel;
+    private BlockData SelectedBlockOfLevel {
+        get { return selectedBlockOfLevel; }
+        set {
+            selectedBlockOfLevel = value;
+            proxySelectedBlockMoveList.list = selectedBlockOfLevel?.movePath;
         }
     }
 
+    [MenuItem("Tools/Level Editor")]
+    public static void ShowWindow() {
+        GetWindow<LevelEditorWindow>("Level Editor").Show();
+    }
 
+    private void OnEnable() {
+        TryLoadAssetByEditorKeyGUID<LevelDataSO>(PrefKey_AvailableBlocksSO_GUID, ref levelData);
+        TryLoadAssetByEditorKeyGUID<BlockTypesListSO>(PrefKey_AvailableBlocksSO_GUID, ref availableBlocks);
+
+        //wtf
+        setupReordableProxyMoveList();
+    }
+
+    private void setupReordableProxyMoveList() {
+        proxySelectedBlockMoveList = new ReorderableList(SelectedBlockOfLevel.movePath, typeof(MoveDirection), true, true, true, true);
+
+        proxySelectedBlockMoveList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
+            if (SelectedBlockOfLevel == null || SelectedBlockOfLevel.movePath == null || index >= SelectedBlockOfLevel.movePath.Count) return;
+
+            var element = SelectedBlockOfLevel.movePath[index];
+            rect.y += 2;
+            element = (MoveDirection)EditorGUI.EnumPopup(
+                new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight),
+                "Step " + index, // More descriptive label
+                element);
+            if (SelectedBlockOfLevel.movePath[index] != element) {
+                Undo.RecordObject(this, "Changed Move Path Element");
+                SelectedBlockOfLevel.movePath[index] = element;
+                EditorUtility.SetDirty(this);
+            }
+        };
+
+        proxySelectedBlockMoveList.drawHeaderCallback = (Rect rect) => {
+            EditorGUI.LabelField(rect, "Move Path");
+        };
+
+        proxySelectedBlockMoveList.onAddCallback = (ReorderableList list) => {
+            Undo.RecordObject(this, "Added Move Direction to Path");
+            SelectedBlockOfLevel.movePath.Add(MoveDirection.wait); // Add a default value
+            EditorUtility.SetDirty(this);
+        };
+
+        proxySelectedBlockMoveList.onRemoveCallback = (ReorderableList list) => {
+            if (EditorUtility.DisplayDialog("Warning!", "Are you sure you want to remove this move step?", "Yes", "No")) {
+                Undo.RecordObject(this, "Removed Move Direction from Path");
+                SelectedBlockOfLevel.movePath.RemoveAt(list.index);
+                EditorUtility.SetDirty(this);
+            }
+        };
+
+        proxySelectedBlockMoveList.onReorderCallback = (ReorderableList list) => {
+            Undo.RecordObject(this, "Reordered Move Path");
+            EditorUtility.SetDirty(this);
+        };
+    }
+
+    private void TryLoadAssetByEditorKeyGUID<T>(string EidtorPrefKeyForGUID, ref T targetVar) where T : UnityEngine.Object {
+        string guid = EditorPrefs.GetString(EidtorPrefKeyForGUID, null);
+        if (string.IsNullOrEmpty(guid)) return;
+
+        string path = AssetDatabase.GUIDToAssetPath(guid);
+        if (string.IsNullOrEmpty(path)) return;
+
+        targetVar = AssetDatabase.LoadAssetAtPath<T>(path);
+    }
 
     private void OnGUI() {
         PopulateMoveListOnMouseHover();
 
         GUILayout.Label("Level Editor", EditorStyles.boldLabel);
-        levelData = (LevelData)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelData), false);
+        levelData = (LevelDataSO)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelDataSO), false);
+        if (levelData == null) {
+            EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
+            return;
+        }
+        levelData.GridSize = EditorGUILayout.Vector2IntField("Grid Size", levelData.GridSize);
 
-        if (levelData == null) return;
+        availableBlocks = (BlockTypesListSO)EditorGUILayout.ObjectField("Available Blocks", availableBlocks, typeof(BlockTypesListSO), false);
+
 
         GUILayout.Space(10);
 
@@ -59,8 +123,6 @@ public class LevelEditorWindow : EditorWindow {
 
         GUILayout.Space(10);
 
-        gridSize = levelData.GridSize;
-
         DrawPresetButtons();
 
         GUILayout.Space(10);
@@ -68,6 +130,43 @@ public class LevelEditorWindow : EditorWindow {
         DrawGrid();
 
         TrackMouseHover();
+
+        DrawSelectedBlockPathMoveList();
+    }
+
+    ReorderableList proxySelectedBlockMoveList;
+
+    /// <summary>
+    /// i cant believe i need a whole proxy list of type ReorderableList to show a list of enums
+    /// this part i used some AI - Ryan
+    /// </summary>
+    private void DrawSelectedBlockPathMoveList() {
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Current Block MovePath", EditorStyles.boldLabel);
+
+        // In a real scenario, you'd likely have a way to select the BlockData instance
+        // For this example, we'll just assume selectedBlockOfLevel is initialized in OnEnable
+        if (SelectedBlockOfLevel != null) {
+            EditorGUILayout.LabelField($"Block at {SelectedBlockOfLevel.gridCoord}", EditorStyles.label);
+            if (proxySelectedBlockMoveList != null) {
+                proxySelectedBlockMoveList.DoLayoutList();
+            }
+            else {
+                EditorGUILayout.HelpBox("Move path list not initialized.", MessageType.Warning);
+            }
+        }
+        else {
+            EditorGUILayout.HelpBox("No BlockData selected.", MessageType.Info);
+        }
+    }
+
+    private MoveDirection GetMoveDirFromVector2Int(Vector2Int sourceVec) {
+        if (sourceVec.y > 0) return MoveDirection.up;
+        if (sourceVec.y < 0) return MoveDirection.down;
+        if (sourceVec.x > 0) return MoveDirection.right;
+        if (sourceVec.x < 0) return MoveDirection.left;
+
+        return MoveDirection.wait;
     }
 
     private void PopulateMoveListOnMouseHover() {
@@ -80,21 +179,19 @@ public class LevelEditorWindow : EditorWindow {
 
         if (e.type == EventType.MouseUp && e.button == 0) {
             isDrawing = false;
-            List<MovementDirection> moveList = new List<MovementDirection>();
+            List<MoveDirection> moveList = new List<MoveDirection>();
 
             for (int i = 1; i < pathCells.Count; i++) {
                 Vector2Int prev = pathCells[i - 1];
                 Vector2Int current = pathCells[i];
 
-                if (current.x > prev.x) moveList.Add(MovementDirection.Right);
-                else if (current.x < prev.x) moveList.Add(MovementDirection.Left);
-                else if (current.y > prev.y) moveList.Add(MovementDirection.Down);
-                else if (current.y < prev.y) moveList.Add(MovementDirection.Up);
+                moveList.Add(GetMoveDirFromVector2Int(current - prev));
             }
 
-            if (selectedBlockState != null && moveList.Count > 0) {
-                selectedBlockState.MoveList = moveList;
-                EditorUtility.SetDirty(selectedBlockState); //! Marks asset as changed
+            if (SelectedBlockOfLevel != null && moveList.Count > 0) {
+                SelectedBlockOfLevel.movePath = moveList;
+                proxySelectedBlockMoveList.list = selectedBlockOfLevel.movePath;
+                EditorUtility.SetDirty(levelData); //! Marks asset as changed
             }
 
             // Debug.Log("Drawn Path: " + string.Join(", ", pathCells.ConvertAll(cell => $"({cell.x}, {cell.y})")));
@@ -104,15 +201,10 @@ public class LevelEditorWindow : EditorWindow {
 
     private void DrawClearButton() {
         if (GUILayout.Button("Clear Level")) {
-            foreach (var block in levelData.Blocks) {
-                if (block.blockType != null) {
-                    string path = ASSET_PATH + block.blockType.name + ".asset";
-                    Debug.Log("Deleting: " + path);
-
-                    AssetDatabase.DeleteAsset(path);
-                } //"Assets/Scripts/kerry testing/Test Level/
-            }
             levelData.Blocks.Clear();
+            selectedBlockOfLevel = null;
+            proxySelectedBlockMoveList.list = selectedBlockOfLevel?.movePath;
+
             EditorUtility.SetDirty(levelData);
             AssetDatabase.SaveAssets();
         }
@@ -121,21 +213,30 @@ public class LevelEditorWindow : EditorWindow {
     private void DrawPresetButtons() {
         GUILayout.Label("Select Block Preset", EditorStyles.boldLabel);
 
+        if(availableBlocks==null) {
+            GUILayout.Label("Reference to available blocks list is null, please assign", EditorStyles.label);
+            return;
+        }
+
+        EditorGUILayout.BeginHorizontal();
+
         GUIStyle selectedStyle = new GUIStyle(GUI.skin.button);
         selectedStyle.normal.background = MakeTex(2, 2, new Color(0f, 1, 1, .5f));
 
-        foreach (var preset in availablePresets) {
-            if (selectedPreset == preset) {
-                if (GUILayout.Button(preset.name, selectedStyle)) {
-                    selectedPreset = preset;
+        foreach (var blockType in availableBlocks.blockTypes) {
+            if (selectedBlockTypeToPlace == blockType) {
+                if (GUILayout.Button(blockType.name, selectedStyle)) {
+                    selectedBlockTypeToPlace = blockType;
                 }
             }
             else {
-                if (GUILayout.Button(preset.name)) {
-                    selectedPreset = preset;
+                if (GUILayout.Button(blockType.name)) {
+                    selectedBlockTypeToPlace = blockType;
                 }
             }
         }
+
+        EditorGUILayout.EndHorizontal();
 
     }
 
@@ -143,23 +244,23 @@ public class LevelEditorWindow : EditorWindow {
     private bool isDrawing = false;
     private Vector2Int lastHoveredCell = new Vector2Int(-1, -1);
 
-    private static readonly Vector2 GRID_OFFSET = new Vector2(4f, 75f);
+    private Vector2 gridOffset = new Vector2();
 
 
     private bool IsMouseInsidePathCreator() {
         Vector2 mousePosition = Event.current.mousePosition;
-        Vector2 adjustedMousePosition = mousePosition - GRID_OFFSET;
+        Vector2 adjustedMousePosition = mousePosition - gridOffset;
         int cellWidth = 30;
         int cellHeight = 30;
         return adjustedMousePosition.x >= 0 && adjustedMousePosition.y >= 0 &&
-               adjustedMousePosition.x < gridSize.x * cellWidth &&
-               adjustedMousePosition.y < gridSize.y * cellHeight;
+               adjustedMousePosition.x < levelData.GridSize.x * cellWidth &&
+               adjustedMousePosition.y < levelData.GridSize.y * cellHeight;
     }
 
 
     private void TrackMouseHover() {
         Vector2 mousePosition = Event.current.mousePosition;
-        Vector2 adjustedMousePosition = mousePosition - GRID_OFFSET;
+        Vector2 adjustedMousePosition = mousePosition - gridOffset;
 
         if (adjustedMousePosition.x >= 0 && adjustedMousePosition.y >= 0) {
             int cellWidth = 30;
@@ -168,7 +269,7 @@ public class LevelEditorWindow : EditorWindow {
             int hoveredX = (int)(adjustedMousePosition.x / cellWidth);
             int hoveredY = (int)(adjustedMousePosition.y / cellHeight);
 
-            if (hoveredX >= 0 && hoveredX < gridSize.x && hoveredY >= 0 && hoveredY < gridSize.y) {
+            if (hoveredX >= 0 && hoveredX < levelData.GridSize.x && hoveredY >= 0 && hoveredY < levelData.GridSize.y) {
                 Vector2Int hoveredCell = new Vector2Int(hoveredX, hoveredY);
 
                 if (isDrawing && hoveredCell != lastHoveredCell) {
@@ -198,12 +299,21 @@ public class LevelEditorWindow : EditorWindow {
         GUILayout.Label("Level Creator", EditorStyles.boldLabel);
 
         GUILayout.Space(10);
-        for (int y = 0; y < gridSize.y; y++) {
+        for (int y = 0; y < levelData.GridSize.y; y++) {
             GUILayout.BeginHorizontal();
-            for (int x = 0; x < gridSize.x; x++) {
-                if (GUILayout.Button(GetBlockSymbol(x, y), GUILayout.Width(30), GUILayout.Height(30))) {
-                    PlaceBlock(new Vector2Int(x, y));
+            for (int x = 0; x < levelData.GridSize.x; x++) {
+
+                Vector2Int actualGridCoord = new Vector2Int(x, levelData.GridSize.y - 1 -y);
+
+                var defaultColor = GUI.backgroundColor;
+                var color = actualGridCoord == levelData.GoalCoord ? Color.red : defaultColor;
+                GUI.backgroundColor = color;
+
+                if (GUILayout.Button(GetBlockSymbol(actualGridCoord), GUILayout.Width(30), GUILayout.Height(30))) {
+                    PlaceBlock(actualGridCoord);
                 }
+
+                GUI.backgroundColor = defaultColor;
             }
             GUILayout.EndHorizontal();
         }
@@ -216,22 +326,25 @@ public class LevelEditorWindow : EditorWindow {
         GUILayout.Label("Path Creator", EditorStyles.boldLabel);
         GUILayout.Space(10);
 
-        for (int y = 0; y < gridSize.y; y++) {
+        var lastRect = GUILayoutUtility.GetLastRect();
+        gridOffset = lastRect.position + Vector2.up * lastRect.height;
+
+        for (int y = 0; y < levelData.GridSize.y; y++) {
             GUILayout.BeginHorizontal();
-            for (int x = 0; x < gridSize.x; x++) {
+            for (int x = 0; x < levelData.GridSize.x; x++) {
                 GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
                 string blockSymbol = " ";
 
-                Vector2Int cellPosition = new Vector2Int(x, y);
+                Vector2Int cellToGridCoord = new Vector2Int(x, levelData.GridSize.y - 1 - y);
 
                 // light green
-                if (selectedBlockState != null && selectedBlockStatePosition == cellPosition) {
+                if (SelectedBlockOfLevel != null && SelectedBlockOfLevel.gridCoord == cellToGridCoord) {
                     buttonStyle.normal.background = MakeTex(30, 30, new Color(0.353f, 1, 0.471f, 0.5f));
                     blockSymbol = "■";
                 }
 
                 // lighter light green
-                if (isDrawing && pathCells.Contains(cellPosition)) {
+                if (isDrawing && pathCells.Contains(new Vector2Int(x, y))) {
                     buttonStyle.normal.background = MakeTex(30, 30, new Color(0.353f, 1, 0.471f, 0.15f));
                     blockSymbol = "■";
                 }
@@ -253,8 +366,8 @@ public class LevelEditorWindow : EditorWindow {
             Vector2Int prevCell = pathCells[i - 1];
             Vector2Int currentCell = pathCells[i];
 
-            Vector2 startPos = new Vector2(prevCell.x * cellSize, prevCell.y * cellSize) + GRID_OFFSET + new Vector2(cellSize / 2, cellSize / 2);
-            Vector2 endPos = new Vector2(currentCell.x * cellSize, currentCell.y * cellSize) + GRID_OFFSET + new Vector2(cellSize / 2, cellSize / 2);
+            Vector2 startPos = new Vector2(prevCell.x * cellSize, prevCell.y * cellSize) + gridOffset + new Vector2(cellSize / 2, cellSize / 2);
+            Vector2 endPos = new Vector2(currentCell.x * cellSize, currentCell.y * cellSize) + gridOffset + new Vector2(cellSize / 2, cellSize / 2);
 
             Handles.DrawLine(startPos, endPos);
         }
@@ -263,13 +376,16 @@ public class LevelEditorWindow : EditorWindow {
 
 
 
-    private string GetBlockSymbol(int x, int y) {
+    private string GetBlockSymbol(Vector2Int coord) {
         foreach (var block in levelData.Blocks) {
-            if (block.position == new Vector2Int(x, y)) {
-                if (block.blockType.name.Contains("Goal")) {
-                    return "★";
+            if (block.gridCoord == coord) {
+                //safety is something fucked up creating a block
+                if(block.blockTypeFab==null) {
+                    levelData.Blocks.Remove(block);
+                    continue;
                 }
-                else if (block.blockType.name.Contains("Key")) {
+
+                if (block.blockTypeFab.name.Contains("Key")) {
                     return "🔑";
                 }
                 else {
@@ -280,36 +396,26 @@ public class LevelEditorWindow : EditorWindow {
         return "□";
     }
 
-    private BlockStateSO selectedBlockState;
-    private Vector2Int selectedBlockStatePosition;
 
     private void PlaceBlock(Vector2Int position) {
-        if (selectedPreset == null) return;
+        if (selectedBlockTypeToPlace == null) return;
 
-        var existingBlock = levelData.Blocks.Find(b => b.position == position);
+        var existingBlock = levelData.Blocks.Find(b => b.gridCoord == position);
+
+        if(selectedBlockTypeToPlace.name.Contains("oal")) {
+            levelData.GoalCoord = position;
+            EditorUtility.SetDirty(levelData);
+            return;
+        }
 
         if (existingBlock != null) {
-            string path = ASSET_PATH + existingBlock.blockType.name + ".asset";
-            AssetDatabase.DeleteAsset(path);
             levelData.Blocks.Remove(existingBlock);
         }
         else {
-            BlockStateSO clonedBlockState = ScriptableObject.Instantiate(selectedPreset);
-            selectedBlockState = clonedBlockState;
-            selectedBlockStatePosition = position;
-
-            string path = ASSET_PATH + selectedPreset.name + position.x + "_" + position.y + ".asset";
-            AssetDatabase.CreateAsset(clonedBlockState, path);
-            AssetDatabase.SaveAssets();
-
-            levelData.Blocks.Add(new BlockPlacement {
-                position = position,
-                blockType = clonedBlockState
-            });
+            var newBlock = new BlockData(selectedBlockTypeToPlace, position);
+            levelData.Blocks.Add(newBlock);
+            SelectedBlockOfLevel = levelData.Blocks[levelData.Blocks.Count-1];
         }
-
-        //
-
 
         EditorUtility.SetDirty(levelData);
     }
