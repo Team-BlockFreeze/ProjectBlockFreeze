@@ -37,15 +37,15 @@ public class LevelEditorWindow : EditorWindow {
     }
 
     private void OnEnable() {
-        TryLoadAssetByEditorKeyGUID<LevelDataSO>(PrefKey_AvailableBlocksSO_GUID, ref levelData);
-        TryLoadAssetByEditorKeyGUID<BlockTypesListSO>(PrefKey_AvailableBlocksSO_GUID, ref availableBlocks);
+        levelData = TryLoadAssetByEditorKeyGUID<LevelDataSO>(PrefKey_AvailableBlocksSO_GUID, ref levelData);
+        availableBlocks = TryLoadAssetByEditorKeyGUID<BlockTypesListSO>(PrefKey_AvailableBlocksSO_GUID, ref availableBlocks);
 
         //wtf
         setupReordableProxyMoveList();
     }
 
     private void setupReordableProxyMoveList() {
-        proxySelectedBlockMoveList = new ReorderableList(SelectedBlockOfLevel.movePath, typeof(MoveDirection), true, true, true, true);
+        proxySelectedBlockMoveList = new ReorderableList(SelectedBlockOfLevel?.movePath, typeof(MoveDirection), true, true, true, true);
 
         proxySelectedBlockMoveList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
             if (SelectedBlockOfLevel == null || SelectedBlockOfLevel.movePath == null || index >= SelectedBlockOfLevel.movePath.Count) return;
@@ -87,29 +87,49 @@ public class LevelEditorWindow : EditorWindow {
         };
     }
 
-    private void TryLoadAssetByEditorKeyGUID<T>(string EidtorPrefKeyForGUID, ref T targetVar) where T : UnityEngine.Object {
+    private T TryLoadAssetByEditorKeyGUID<T>(string EidtorPrefKeyForGUID, ref T targetVar) where T : UnityEngine.Object {
         string guid = EditorPrefs.GetString(EidtorPrefKeyForGUID, null);
-        if (string.IsNullOrEmpty(guid)) return;
+        if (string.IsNullOrEmpty(guid)) return null;
 
         string path = AssetDatabase.GUIDToAssetPath(guid);
-        if (string.IsNullOrEmpty(path)) return;
+        if (string.IsNullOrEmpty(path)) return null;
 
-        targetVar = AssetDatabase.LoadAssetAtPath<T>(path);
+        return AssetDatabase.LoadAssetAtPath<T>(path);
     }
 
     private void OnGUI() {
         PopulateMoveListOnMouseHover();
 
+        //GUI.changed = false;
         GUILayout.Label("Level Editor", EditorStyles.boldLabel);
         levelData = (LevelDataSO)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelDataSO), false);
         if (levelData == null) {
             EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
             return;
         }
-        levelData.GridSize = EditorGUILayout.Vector2IntField("Grid Size", levelData.GridSize);
+        //if (GUI.changed) // Detect change
+        //{
+            //Debug.Log("trying to set editor prefs for leveldata");
+            //string path = AssetDatabase.GetAssetPath(levelData);
+            //GUID gUID = AssetDatabase.GUIDFromAssetPath(path);
+            //EditorPrefs.SetString(PrefKey_SelectedLevelDataSO_GUID, gUID.ToString());
+            //levelData.GridSize = EditorGUILayout.Vector2IntField("Grid Size", levelData.GridSize);
 
+            //Debug.Log($"level data guid is {EditorPrefs.GetString(PrefKey_SelectedLevelDataSO_GUID)}");
+        //}
+
+        //GUI.changed = false;
         availableBlocks = (BlockTypesListSO)EditorGUILayout.ObjectField("Available Blocks", availableBlocks, typeof(BlockTypesListSO), false);
+        //if (GUI.changed) // Detect change
+        //{
+            //Debug.Log("trying to set editor prefs for blocklist");
 
+            //path = AssetDatabase.GetAssetPath(availableBlocks);
+            //gUID = AssetDatabase.GUIDFromAssetPath(path);
+            //EditorPrefs.SetString(PrefKey_AvailableBlocksSO_GUID, gUID.ToString());
+
+            //Debug.Log($"block list guid is {EditorPrefs.GetString(PrefKey_AvailableBlocksSO_GUID)}");
+        //}
 
         GUILayout.Space(10);
 
@@ -132,6 +152,8 @@ public class LevelEditorWindow : EditorWindow {
         TrackMouseHover();
 
         DrawSelectedBlockPathMoveList();
+
+        
     }
 
     ReorderableList proxySelectedBlockMoveList;
