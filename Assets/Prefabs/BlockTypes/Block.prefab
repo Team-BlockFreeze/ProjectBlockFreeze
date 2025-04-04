@@ -109,24 +109,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridRef: {fileID: 0}
   moveMode: 2
+  canBeFrozen: 1
   coord: {x: 3, y: 3}
+  movePath: 0200000002000000000000000200000001000000010000000100000001000000
+  cubeRenderer: {fileID: 7441460586598380325}
+  normalMat: {fileID: 2100000, guid: a7c5947e5cb9058428c2256076061cf4, type: 2}
+  frozenMat: {fileID: 2100000, guid: 6553f9e4d30cb1b469189d915c02d5de, type: 2}
+  moveIntentionVisual: {fileID: 7816804011719650362}
+  littleDirTriangle: {fileID: 5501142072554771676}
+  frozen: 0
   blocked: 0
   lastForces:
     up: 0
     down: 0
     left: 0
     right: 0
-  moveIntentionVisual: {fileID: 7816804011719650362}
-  movePath: 0200000002000000000000000200000001000000010000000100000001000000
-  cubeRenderer: {fileID: 7441460586598380325}
-  normalMat: {fileID: 2100000, guid: a7c5947e5cb9058428c2256076061cf4, type: 2}
-  frozenMat: {fileID: 2100000, guid: 6553f9e4d30cb1b469189d915c02d5de, type: 2}
+  animationDuration: 5
   Event_NextMoveBegan:
     m_PersistentCalls:
       m_Calls: []
-  littleDirTriangle: {fileID: 5501142072554771676}
-  canBeFrozen: 1
-  frozen: 0
 --- !u!114 &5174078030499856777
 MonoBehaviour:
   m_ObjectHideFlags: 0

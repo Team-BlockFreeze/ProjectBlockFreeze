@@ -197,12 +197,20 @@ public class BlockBehaviour : MonoBehaviour {
 
             moveTween.Play();
         }
+        else {
+            Debug.Log("triggering fall back animation");
+            Vector3 bumpTargetPos = (gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)GetMovementIntention() - transform.position) * .5f;
+            moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo);
+
+            moveTween.Play();
+        }
+
         AdvanceMoveIdx();
         blocked = false;
         //lastForces = new BlockCoordinator.CellForce();
 
-        Event_NextMoveBegan?.Invoke();
         UpdateMovementVisualiser();
+        Event_NextMoveBegan?.Invoke();
         UpdateMovementVisualiser();
         Debug.Log($"{gameObject.name} tried to move from {coord - movement} to {coord}");
     }
@@ -212,31 +220,34 @@ public class BlockBehaviour : MonoBehaviour {
     [Button]
     private void UpdateMovementVisualiser() {
         var colRef = moveIntentionVisual.color;
-        if (GetMovementIntention() == Vector2Int.zero) {
-            if (GetMovementIntention() == Vector2Int.zero) {
-                colRef.a = 0;
-                moveIntentionVisual.color = colRef;
-            }
-            else {
-                colRef.a = 1;
-                moveIntentionVisual.color = colRef;
-                moveIntentionVisual.transform.up = (Vector3Int)GetMovementIntention();
-            }
+        var moveIntent = GetMovementIntention();
+        //Debug.Log($"{gameObject.name} block updating movement visual for dir {moveIntent}, is this working?");
 
-            //next move indactor
-            colRef = littleDirTriangle.color;
-            var nextDir = PeekNextMovementIntention();
-            if (nextDir == Vector2Int.zero) {
+
+        if (moveIntent == Vector2Int.zero) {
                 colRef.a = 0;
-                littleDirTriangle.color = colRef;
-            }
-            else {
-                colRef.a = 1;
-                littleDirTriangle.color = colRef;
-                littleDirTriangle.transform.up = (Vector3Int)nextDir;
-            }
+                moveIntentionVisual.color = colRef;
+        }
+        else {
+            colRef.a = 1;
+            moveIntentionVisual.color = colRef;
+            moveIntentionVisual.transform.up = (Vector3Int)moveIntent;
+        }
+
+        //next move indactor
+        colRef = littleDirTriangle.color;
+        var nextDir = PeekNextMovementIntention();
+        if (nextDir == Vector2Int.zero) {
+            colRef.a = 0;
+            littleDirTriangle.color = colRef;
+        }
+        else {
+            colRef.a = 1;
+            littleDirTriangle.color = colRef;
+            littleDirTriangle.transform.up = (Vector3Int)nextDir;
         }
     }
+
     private Vector3Int DirToVec3Int(Direction dir) {
         Vector3Int dirVec = Vector3Int.zero;
         switch (dir) {

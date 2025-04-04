@@ -16,6 +16,9 @@ public class BlockGrid : MonoBehaviour {
     private GridStateSO startGridStateSO;
     public GridStateSO StartGridStateSO => startGridStateSO;
 
+    [SerializeField, InlineEditor]
+    private LevelDataSO levelData;
+
     [FoldoutGroup("Grid Rendering"), SerializeField]
     private SpriteRenderer validGridSprite;
 
@@ -26,7 +29,17 @@ public class BlockGrid : MonoBehaviour {
     private MeshRenderer gridPlaneMeshR;
 
     [FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
-    public void LoadStateFromSO() { }
+    public void LoadStateFromSO() {
+        //destroy current blocks
+        foreach (var b in ActiveGridState.BlocksList)
+            GameObject.Destroy(b.gameObject);
+
+        //clear active grid state
+        ResetActiveGrid();
+
+        //load data from level data SO
+
+    }
 
     [FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
     public void SaveStateToSO() { }
@@ -37,16 +50,25 @@ public class BlockGrid : MonoBehaviour {
         ActiveGridState.GridBlockStates = new BlockBehaviour[startGridStateSO.GridSize.x, startGridStateSO.GridSize.y];
         ActiveGridState.BlocksList = new List<BlockBehaviour>();
 
+        ReloadGridVisuals();
+    }
+
+    [FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
+    public void ReloadGridVisuals() {
         validGridSprite.size = new Vector2(gridSize.x, gridSize.y);
 
         float planePosY = gridSize.y % 2 == 0 ? 0 : -0.5f / gridPlaneParentT.localScale.y;
         gridPlaneParentT.position = new Vector3(GetBotLeftOriginPos().x, planePosY, 0);
 
-#if UNITY_EDITOR
-        gridPlaneMeshR.sharedMaterial.SetVector("_HoleWorldPos", GetWorldSpaceFromCoord(goalCoord) - Vector3.one * 0.5f);
-#else
-        gridPlaneMeshR.material.SetVector("_HoleWorldPos", GetWorldSpaceFromCoord(goalCoord) - Vector3.one * 0.5f);
-#endif
+        var goalWorldPos = GetWorldSpaceFromCoord(goalCoord) - Vector3.one * 0.5f;
+
+    #if UNITY_EDITOR
+        gridPlaneMeshR.sharedMaterial.SetVector("_HoleWorldPos", goalWorldPos);
+        validGridSprite.sharedMaterial.SetVector("_HoleWorldPos", goalWorldPos);
+    #else
+        gridPlaneMeshR.material.SetVector("_HoleWorldPos", goalWorldPos);
+        validGridSprite.material.SetVector("_HoleWorldPos", goalWorldPos);
+    #endif
     }
 
     //[ReadOnly]
@@ -72,6 +94,8 @@ public class BlockGrid : MonoBehaviour {
 
             ActiveGridState.BlocksList.Add(block);
         }
+
+        ReloadGridVisuals();
     }
 
     public bool isValidGridCoord(Vector2Int coord) {
