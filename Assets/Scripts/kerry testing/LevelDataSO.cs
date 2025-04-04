@@ -29,7 +29,7 @@ public class BlockData {
     public BlockBehaviour.BlockMoveState pathMode;
     public List<BlockBehaviour.Direction> movePath;
 
-    //public bool canBeFrozen;
+    public bool startFrozen;
 
     //[BoxGroup]
     //[SerializeField, InlineEditor]

@@ -37,7 +37,9 @@ public class LevelEditorWindow : EditorWindow {
     }
 
     private void OnEnable() {
-        levelData = TryLoadAssetByEditorKeyGUID<LevelDataSO>(PrefKey_AvailableBlocksSO_GUID, ref levelData);
+        isDrawingPath = false;
+
+        levelData = TryLoadAssetByEditorKeyGUID<LevelDataSO>(PrefKey_SelectedLevelDataSO_GUID, ref levelData);
         availableBlocks = TryLoadAssetByEditorKeyGUID<BlockTypesListSO>(PrefKey_AvailableBlocksSO_GUID, ref availableBlocks);
 
         //wtf
@@ -87,14 +89,31 @@ public class LevelEditorWindow : EditorWindow {
         };
     }
 
-    private T TryLoadAssetByEditorKeyGUID<T>(string EidtorPrefKeyForGUID, ref T targetVar) where T : UnityEngine.Object {
-        string guid = EditorPrefs.GetString(EidtorPrefKeyForGUID, null);
+    private T TryLoadAssetByEditorKeyGUID<T>(string EditorPrefKeyForGUID, ref T targetVar) where T : UnityEngine.Object {
+        string guid = EditorPrefs.GetString(EditorPrefKeyForGUID, null);
         if (string.IsNullOrEmpty(guid)) return null;
 
         string path = AssetDatabase.GUIDToAssetPath(guid);
         if (string.IsNullOrEmpty(path)) return null;
 
         return AssetDatabase.LoadAssetAtPath<T>(path);
+    }
+
+    private void OnDisable() {
+        Debug.Log("trying to set editor prefs for leveldata");
+        string path = AssetDatabase.GetAssetPath(levelData);
+        GUID gUID = AssetDatabase.GUIDFromAssetPath(path);
+        EditorPrefs.SetString(PrefKey_SelectedLevelDataSO_GUID, gUID.ToString());
+
+        Debug.Log($"level data guid is {EditorPrefs.GetString(PrefKey_SelectedLevelDataSO_GUID)}");
+
+        Debug.Log("trying to set editor prefs for blocklist");
+
+        path = AssetDatabase.GetAssetPath(availableBlocks);
+        gUID = AssetDatabase.GUIDFromAssetPath(path);
+        EditorPrefs.SetString(PrefKey_AvailableBlocksSO_GUID, gUID.ToString());
+
+        Debug.Log($"block list guid is {EditorPrefs.GetString(PrefKey_AvailableBlocksSO_GUID)}");
     }
 
     private void OnGUI() {
@@ -107,35 +126,25 @@ public class LevelEditorWindow : EditorWindow {
             EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
             return;
         }
-        //if (GUI.changed) // Detect change
-        //{
-            //Debug.Log("trying to set editor prefs for leveldata");
-            //string path = AssetDatabase.GetAssetPath(levelData);
-            //GUID gUID = AssetDatabase.GUIDFromAssetPath(path);
-            //EditorPrefs.SetString(PrefKey_SelectedLevelDataSO_GUID, gUID.ToString());
-            //levelData.GridSize = EditorGUILayout.Vector2IntField("Grid Size", levelData.GridSize);
-
-            //Debug.Log($"level data guid is {EditorPrefs.GetString(PrefKey_SelectedLevelDataSO_GUID)}");
-        //}
-
-        //GUI.changed = false;
-        availableBlocks = (BlockTypesListSO)EditorGUILayout.ObjectField("Available Blocks", availableBlocks, typeof(BlockTypesListSO), false);
-        //if (GUI.changed) // Detect change
-        //{
-            //Debug.Log("trying to set editor prefs for blocklist");
-
-            //path = AssetDatabase.GetAssetPath(availableBlocks);
-            //gUID = AssetDatabase.GUIDFromAssetPath(path);
-            //EditorPrefs.SetString(PrefKey_AvailableBlocksSO_GUID, gUID.ToString());
-
-            //Debug.Log($"block list guid is {EditorPrefs.GetString(PrefKey_AvailableBlocksSO_GUID)}");
-        //}
+        GUILayout.BeginHorizontal();
+        levelData.GridSize = EditorGUILayout.Vector2IntField("Grid Size", levelData.GridSize);
+        GUILayout.Space(20);
+        levelData.GoalCoord = EditorGUILayout.Vector2IntField("Goal Coord", levelData.GoalCoord);
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
 
         GUILayout.Space(10);
 
+        //check start hover
+        if (Event.current.type == EventType.MouseDown && IsMouseInsidePathCreator()) {
+            Debug.Log("tried to start drawing");
+            isDrawingPath = true;
+        }
+        TrackMouseHover();
 
         DrawPathGrid();
         DrawPathLines();
+
 
         GUILayout.Space(10);
 
@@ -149,11 +158,14 @@ public class LevelEditorWindow : EditorWindow {
 
         DrawGrid();
 
-        TrackMouseHover();
 
         DrawSelectedBlockPathMoveList();
 
         
+
+        //debug visualise grid offset
+        GUI.backgroundColor = Color.red;
+        GUI.Button(new Rect(gridOffset.x-5, gridOffset.y-5, 10, 10), "");
     }
 
     ReorderableList proxySelectedBlockMoveList;
@@ -164,12 +176,13 @@ public class LevelEditorWindow : EditorWindow {
     /// </summary>
     private void DrawSelectedBlockPathMoveList() {
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Current Block MovePath", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Current Block Details", EditorStyles.boldLabel);
 
         // In a real scenario, you'd likely have a way to select the BlockData instance
         // For this example, we'll just assume selectedBlockOfLevel is initialized in OnEnable
         if (SelectedBlockOfLevel != null) {
             EditorGUILayout.LabelField($"Block at {SelectedBlockOfLevel.gridCoord}", EditorStyles.label);
+            selectedBlockOfLevel.startFrozen = EditorGUILayout.Toggle("Start Frozen?", selectedBlockOfLevel.startFrozen); 
             if (proxySelectedBlockMoveList != null) {
                 proxySelectedBlockMoveList.DoLayoutList();
             }
@@ -205,7 +218,9 @@ public class LevelEditorWindow : EditorWindow {
 
             for (int i = 1; i < pathCells.Count; i++) {
                 Vector2Int prev = pathCells[i - 1];
+                prev.y *= -1;
                 Vector2Int current = pathCells[i];
+                current.y *= -1;
 
                 moveList.Add(GetMoveDirFromVector2Int(current - prev));
             }
@@ -233,6 +248,8 @@ public class LevelEditorWindow : EditorWindow {
     }
 
     private void DrawPresetButtons() {
+        availableBlocks = (BlockTypesListSO)EditorGUILayout.ObjectField("Available Blocks", availableBlocks, typeof(BlockTypesListSO), false);
+
         GUILayout.Label("Select Block Preset", EditorStyles.boldLabel);
 
         if(availableBlocks==null) {
@@ -279,22 +296,26 @@ public class LevelEditorWindow : EditorWindow {
                adjustedMousePosition.y < levelData.GridSize.y * cellHeight;
     }
 
+    private bool isDrawingPath = false;
 
     private void TrackMouseHover() {
+        if (!isDrawingPath) return;
+
         Vector2 mousePosition = Event.current.mousePosition;
         Vector2 adjustedMousePosition = mousePosition - gridOffset;
 
+        int cellWidth = 30;
+        int cellHeight = 30;
         if (adjustedMousePosition.x >= 0 && adjustedMousePosition.y >= 0) {
-            int cellWidth = 30;
-            int cellHeight = 30;
 
             int hoveredX = (int)(adjustedMousePosition.x / cellWidth);
-            int hoveredY = (int)(adjustedMousePosition.y / cellHeight);
+            int hoveredY = Mathf.Max(0, (int)(adjustedMousePosition.y / cellHeight));
+            //Debug.Log($"drawing grid relative mouse position = {adjustedMousePosition} in grid coords: ({hoveredX}, {hoveredY})");
 
             if (hoveredX >= 0 && hoveredX < levelData.GridSize.x && hoveredY >= 0 && hoveredY < levelData.GridSize.y) {
                 Vector2Int hoveredCell = new Vector2Int(hoveredX, hoveredY);
 
-                if (isDrawing && hoveredCell != lastHoveredCell) {
+                if (hoveredCell != lastHoveredCell || Mathf.Abs(hoveredCell.y - lastHoveredCell.y) > 1) {
                     pathCells.Add(hoveredCell);
                     lastHoveredCell = hoveredCell;
                 }
@@ -302,6 +323,8 @@ public class LevelEditorWindow : EditorWindow {
         }
 
         if (Event.current.type == EventType.MouseUp) {
+            Debug.Log("mouse up, exiting drawing");
+            isDrawingPath = false;
             pathCells.Clear();
             lastHoveredCell = new Vector2Int(-1, -1);
         }
@@ -319,7 +342,7 @@ public class LevelEditorWindow : EditorWindow {
 
     private void DrawGrid() {
         GUILayout.Label("Level Creator", EditorStyles.boldLabel);
-
+        EditorGUILayout.HelpBox("Grid Coordinate Origin is the bottom left.", MessageType.Info);
         GUILayout.Space(10);
         for (int y = 0; y < levelData.GridSize.y; y++) {
             GUILayout.BeginHorizontal();
@@ -327,34 +350,41 @@ public class LevelEditorWindow : EditorWindow {
 
                 Vector2Int actualGridCoord = new Vector2Int(x, levelData.GridSize.y - 1 -y);
 
-                var defaultColor = GUI.backgroundColor;
-                var color = actualGridCoord == levelData.GoalCoord ? Color.red : defaultColor;
-                GUI.backgroundColor = color;
+                var defaultBgColor = GUI.backgroundColor;
+                var goalColor = actualGridCoord == levelData.GoalCoord ? Color.red : defaultBgColor;
+                GUI.backgroundColor = goalColor;
+
+                var defaultContColor = GUI.contentColor;
+                if(selectedBlockOfLevel!=null)
+                    GUI.contentColor = selectedBlockOfLevel?.gridCoord == actualGridCoord ? Color.yellow : defaultContColor;
 
                 if (GUILayout.Button(GetBlockSymbol(actualGridCoord), GUILayout.Width(30), GUILayout.Height(30))) {
                     PlaceBlock(actualGridCoord);
                 }
 
-                GUI.backgroundColor = defaultColor;
+                GUI.backgroundColor = defaultBgColor;
+                GUI.contentColor = defaultContColor;
             }
             GUILayout.EndHorizontal();
         }
     }
 
-
-    // private Vector2Int highlightedPathCell = new Vector2Int(-1, -1);
-
     private void DrawPathGrid() {
         GUILayout.Label("Path Creator", EditorStyles.boldLabel);
         GUILayout.Space(10);
 
-        var lastRect = GUILayoutUtility.GetLastRect();
-        gridOffset = lastRect.position + Vector2.up * lastRect.height;
+        var lastRect = new Rect(GUILayoutUtility.GetLastRect());
+        if (lastRect.position.y > 50) {
+            gridOffset = lastRect.position + Vector2.up * lastRect.height;
+            //Debug.Log(gridOffset);
+        }
 
         for (int y = 0; y < levelData.GridSize.y; y++) {
             GUILayout.BeginHorizontal();
             for (int x = 0; x < levelData.GridSize.x; x++) {
                 GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+                buttonStyle.margin = new RectOffset(0, 0, 0, 0);
+
                 string blockSymbol = " ";
 
                 Vector2Int cellToGridCoord = new Vector2Int(x, levelData.GridSize.y - 1 - y);
@@ -375,10 +405,15 @@ public class LevelEditorWindow : EditorWindow {
             }
             GUILayout.EndHorizontal();
         }
+
+
+        GUILayout.Label($"started drawing is {isDrawingPath} - mouse is in drawing grid? {IsMouseInsidePathCreator()}");
+        if (pathCells.Count > 1)
+            GUILayout.Label($"current cell is {pathCells[pathCells.Count-1]} - last cell is {pathCells[pathCells.Count - 2]}");
     }
 
     private void DrawPathLines() {
-        if (pathCells.Count < 2) return;
+        if (!isDrawingPath || pathCells.Count < 2) return;
 
         Handles.color = Color.green;
 
@@ -386,10 +421,12 @@ public class LevelEditorWindow : EditorWindow {
 
         for (int i = 1; i < pathCells.Count; i++) {
             Vector2Int prevCell = pathCells[i - 1];
+            //prevCell.y = levelData.GridSize.y - prevCell.y - 1;
             Vector2Int currentCell = pathCells[i];
+            //currentCell.y = levelData.GridSize.y - currentCell.y - 1;
 
-            Vector2 startPos = new Vector2(prevCell.x * cellSize, prevCell.y * cellSize) + gridOffset + new Vector2(cellSize / 2, cellSize / 2);
-            Vector2 endPos = new Vector2(currentCell.x * cellSize, currentCell.y * cellSize) + gridOffset + new Vector2(cellSize / 2, cellSize / 2);
+            Vector2 startPos = new Vector2(prevCell.x * cellSize, prevCell.y * cellSize) + gridOffset + Vector2.one*cellSize/2f;
+            Vector2 endPos = new Vector2(currentCell.x * cellSize, currentCell.y * cellSize) + gridOffset + Vector2.one * cellSize / 2f;
 
             Handles.DrawLine(startPos, endPos);
         }
@@ -431,10 +468,17 @@ public class LevelEditorWindow : EditorWindow {
         }
 
         if (existingBlock != null) {
-            levelData.Blocks.Remove(existingBlock);
+            if (existingBlock == selectedBlockOfLevel)
+                levelData.Blocks.Remove(existingBlock);
+            else {
+                selectedBlockOfLevel = existingBlock;
+                proxySelectedBlockMoveList.list = selectedBlockOfLevel.movePath;
+            }
         }
         else {
             var newBlock = new BlockData(selectedBlockTypeToPlace, position);
+            if (selectedBlockTypeToPlace.name.Contains("Wall"))
+                newBlock.startFrozen = true;
             levelData.Blocks.Add(newBlock);
             SelectedBlockOfLevel = levelData.Blocks[levelData.Blocks.Count-1];
         }
