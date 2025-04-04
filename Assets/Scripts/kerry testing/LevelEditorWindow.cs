@@ -9,6 +9,9 @@ using MoveDirection = BlockBehaviour.Direction;
 using UnityEditorInternal;
 
 public class LevelEditorWindow : EditorWindow {
+    private static string PrefKey_DefaultLevelsFolder_Path => "DefaultLevelsFolder_Path";
+    private string defaultLevelFolderPath;
+
     /// <summary>
     /// String name for a custom persistent Editor preferences key.
     /// Global unique identifier (GUID) for file in project.
@@ -41,6 +44,7 @@ public class LevelEditorWindow : EditorWindow {
 
         levelData = TryLoadAssetByEditorKeyGUID<LevelDataSO>(PrefKey_SelectedLevelDataSO_GUID, ref levelData);
         availableBlocks = TryLoadAssetByEditorKeyGUID<BlockTypesListSO>(PrefKey_AvailableBlocksSO_GUID, ref availableBlocks);
+        defaultLevelFolderPath = EditorPrefs.GetString(PrefKey_DefaultLevelsFolder_Path, "");
 
         //wtf
         setupReordableProxyMoveList();
@@ -114,6 +118,8 @@ public class LevelEditorWindow : EditorWindow {
         EditorPrefs.SetString(PrefKey_AvailableBlocksSO_GUID, gUID.ToString());
 
         Debug.Log($"block list guid is {EditorPrefs.GetString(PrefKey_AvailableBlocksSO_GUID)}");
+
+        EditorPrefs.SetString(PrefKey_DefaultLevelsFolder_Path, defaultLevelFolderPath);
     }
 
     private void OnGUI() {
@@ -121,11 +127,39 @@ public class LevelEditorWindow : EditorWindow {
 
         //GUI.changed = false;
         GUILayout.Label("Level Editor", EditorStyles.boldLabel);
+
+        EditorGUILayout.BeginHorizontal();
+        defaultLevelFolderPath = EditorGUILayout.TextField("Levels Folder Path", defaultLevelFolderPath);
+        if (GUILayout.Button("Select", GUILayout.MaxWidth(60))) {
+            string selected = EditorUtility.OpenFolderPanel("Select Folder", "Assets", "");
+            if (!string.IsNullOrEmpty(selected)) {
+                // Convert absolute path to relative (Unity uses relative paths)
+                if (selected.StartsWith(Application.dataPath)) {
+                    defaultLevelFolderPath = "Assets" + selected.Substring(Application.dataPath.Length);
+                }
+            }
+        }
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
         levelData = (LevelDataSO)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelDataSO), false);
+        if(GUILayout.Button(" + ", GUILayout.Width(60))) {
+            string path = EditorUtility.SaveFilePanelInProject("Create New Level File", "NewLevel", "asset", "Enter name", defaultLevelFolderPath);
+            if (!string.IsNullOrEmpty(path)) {
+                var newAsset = ScriptableObject.CreateInstance<LevelDataSO>();
+                AssetDatabase.CreateAsset(newAsset, path);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+
+                levelData = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
+            }
+        }
+        EditorGUILayout.EndHorizontal();
+
         if (levelData == null) {
             EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
             return;
         }
+
         GUILayout.BeginHorizontal();
         levelData.GridSize = EditorGUILayout.Vector2IntField("Grid Size", levelData.GridSize);
         GUILayout.Space(20);
