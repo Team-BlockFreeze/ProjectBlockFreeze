@@ -216,6 +216,7 @@ public class LevelEditorWindow : EditorWindow {
         // For this example, we'll just assume selectedBlockOfLevel is initialized in OnEnable
         if (SelectedBlockOfLevel != null) {
             EditorGUILayout.LabelField($"Block at {SelectedBlockOfLevel.gridCoord}", EditorStyles.label);
+            selectedBlockOfLevel.pathMode = (BlockBehaviour.BlockMoveState)EditorGUILayout.EnumPopup(selectedBlockOfLevel.pathMode);
             selectedBlockOfLevel.startFrozen = EditorGUILayout.Toggle("Start Frozen?", selectedBlockOfLevel.startFrozen); 
             if (proxySelectedBlockMoveList != null) {
                 proxySelectedBlockMoveList.DoLayoutList();

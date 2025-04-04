@@ -114,7 +114,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     }
 
     private void Start() {
-        forceGrid = new CellForce[gridRef.StartGridStateSO.GridSize.x, gridRef.StartGridStateSO.GridSize.y];
+        forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
         InitilizeEmptyForceGrid();
 
         Invoke(nameof(RingBell), 1.4f);
@@ -191,7 +191,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
     [Button]
     private void InitilizeEmptyForceGrid() {
-        forceGrid = new CellForce[gridRef.StartGridStateSO.GridSize.x, gridRef.StartGridStateSO.GridSize.y];
+        forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
 
         for (int x = 0; x < forceGrid.GetLength(0); x++) {
             for (int y = 0; y < forceGrid.GetLength(1); y++) {

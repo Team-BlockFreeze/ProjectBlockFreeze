@@ -31,7 +31,7 @@ public class BlockKey : MonoBehaviour
     {
         if (block.coord != block.GridRef.GoalCoord) return;
 
-        BlockCoordinator.Coordinator.CancelInvoke();
+        BlockCoordinator.Coordinator.StopAllCoroutines();
         Invoke(nameof(LevelCompleteAnimation), 1.5f);
         Debug.Log("Recognised Level Complete");
     }

@@ -13,10 +13,12 @@ public class BlockBehaviour : MonoBehaviour {
     private BlockGrid gridRef;
     public BlockGrid GridRef => gridRef;
 
-    public enum BlockMoveState { teleport, pingpong, patrol, still }
+    public void SetGridRef(BlockGrid grid) { gridRef = grid; }
+
+    public enum BlockMoveState { loop, pingpong, teleport, still }
     [Title("Movement Settings")]
     [EnumToggleButtons]
-    public BlockMoveState moveMode = BlockMoveState.patrol;
+    public BlockMoveState moveMode = BlockMoveState.loop;
 
     private bool pingpongIsForward = true;
     public bool canBeFrozen = true;
@@ -32,6 +34,10 @@ public class BlockBehaviour : MonoBehaviour {
     public enum Direction { up, down, left, right, wait }
     [SerializeField]
     private Direction[] movePath;
+
+    public void SetMovePath(Direction[] newPath) {
+        movePath = newPath;
+    }
 
     public Direction[] GetMovePath() => movePath;
 
@@ -124,7 +130,7 @@ public class BlockBehaviour : MonoBehaviour {
 
     public Vector2Int GetMovementIntention() {
         Direction moveDir;
-        moveDir = movePath[moveIdx];
+        moveDir = movePath != null ? movePath[moveIdx] : Direction.wait;
 
         switch (moveMode) {
             case BlockMoveState.still:
@@ -218,7 +224,7 @@ public class BlockBehaviour : MonoBehaviour {
 
 
     [Button]
-    private void UpdateMovementVisualiser() {
+    public void UpdateMovementVisualiser() {
         var colRef = moveIntentionVisual.color;
         var moveIntent = GetMovementIntention();
         //Debug.Log($"{gameObject.name} block updating movement visual for dir {moveIntent}, is this working?");
@@ -273,6 +279,19 @@ public class BlockBehaviour : MonoBehaviour {
         if (!canBeFrozen) return;
 
         frozen = !frozen;
+        blocked = frozen;
+
+        cubeRenderer.material = frozen ? frozenMat : normalMat;
+
+        OnFreezeBlock?.Invoke();
+    }
+
+    public void TrySetFreeze(bool? freezeState = null) {
+        if (!canBeFrozen) return;
+
+        if (freezeState == null) freezeState = !frozen;
+
+        frozen = freezeState.Value;
         blocked = frozen;
 
         cubeRenderer.material = frozen ? frozenMat : normalMat;

@@ -13,11 +13,8 @@ public class BlockGrid : MonoBehaviour {
     [SerializeField] private Vector2Int goalCoord;
 
     [SerializeField, InlineEditor]
-    private GridStateSO startGridStateSO;
-    public GridStateSO StartGridStateSO => startGridStateSO;
-
-    [SerializeField, InlineEditor]
     private LevelDataSO levelData;
+    public LevelDataSO LevelData => levelData;
 
     [FoldoutGroup("Grid Rendering"), SerializeField]
     private SpriteRenderer validGridSprite;
@@ -28,17 +25,41 @@ public class BlockGrid : MonoBehaviour {
     [FoldoutGroup("Grid Rendering"), SerializeField]
     private MeshRenderer gridPlaneMeshR;
 
+    [FoldoutGroup("Grid Rendering"), SerializeField]
+    private SnapToGrid goalBlockScript;
+
     [FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
     public void LoadStateFromSO() {
         //destroy current blocks
         foreach (var b in ActiveGridState.BlocksList)
-            GameObject.Destroy(b.gameObject);
+            GameObject.DestroyImmediate(b.gameObject);
 
         //clear active grid state
         ResetActiveGrid();
 
         //load data from level data SO
+        gridSize = levelData.GridSize;
+        goalCoord = levelData.GoalCoord;
 
+        ResetActiveGrid();
+
+        //load blocks from level data SO
+        foreach(var bData in levelData.Blocks) {
+            BlockBehaviour newBlock = GameObject.Instantiate(bData.blockTypeFab).GetComponent<BlockBehaviour>();
+            newBlock.transform.position = GetWorldSpaceFromCoord(bData.gridCoord);
+            newBlock.SetGridRef(this);
+            newBlock.TryAddToGrid();
+
+            newBlock.moveMode = bData.pathMode;
+            newBlock.SetMovePath(bData.movePath?.ToArray());
+
+            if (bData.startFrozen)
+                newBlock.TrySetFreeze(true);
+
+            newBlock.UpdateMovementVisualiser();
+        }
+
+        EditorUtility.SetDirty(this);
     }
 
     [FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
@@ -46,8 +67,8 @@ public class BlockGrid : MonoBehaviour {
 
     [FoldoutGroup("Actions"), Button(ButtonSizes.Large)]
     public void ResetActiveGrid() {
-        gridSize = startGridStateSO.GridSize;
-        ActiveGridState.GridBlockStates = new BlockBehaviour[startGridStateSO.GridSize.x, startGridStateSO.GridSize.y];
+        gridSize = levelData.GridSize;
+        ActiveGridState.GridBlockStates = new BlockBehaviour[levelData.GridSize.x, levelData.GridSize.y];
         ActiveGridState.BlocksList = new List<BlockBehaviour>();
 
         ReloadGridVisuals();
@@ -65,10 +86,13 @@ public class BlockGrid : MonoBehaviour {
     #if UNITY_EDITOR
         gridPlaneMeshR.sharedMaterial.SetVector("_HoleWorldPos", goalWorldPos);
         validGridSprite.sharedMaterial.SetVector("_HoleWorldPos", goalWorldPos);
-    #else
+#else
         gridPlaneMeshR.material.SetVector("_HoleWorldPos", goalWorldPos);
         validGridSprite.material.SetVector("_HoleWorldPos", goalWorldPos);
-    #endif
+#endif
+
+        goalBlockScript.transform.position = GetWorldSpaceFromCoord(goalCoord);
+        goalBlockScript.SnapToGridWorldPos();
     }
 
     //[ReadOnly]
@@ -89,11 +113,11 @@ public class BlockGrid : MonoBehaviour {
 
         ActiveGridState.GridBlockStates = new BlockBehaviour[gridSize.x, gridSize.y];
 
-        foreach (var block in ActiveGridState.GridBlockStates) {
-            if (block == null) continue;
+        //foreach (var block in ActiveGridState.GridBlockStates) {
+        //    if (block == null) continue;
 
-            ActiveGridState.BlocksList.Add(block);
-        }
+        //    ActiveGridState.BlocksList.Add(block);
+        //}
 
         ReloadGridVisuals();
     }

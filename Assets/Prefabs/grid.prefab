@@ -679,6 +679,7 @@ Transform:
   - {fileID: 6634506735757690637}
   - {fileID: 1339202477508604938}
   - {fileID: 6318634610875558324}
+  - {fileID: 7115533310690020513}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4054432160713654793
@@ -695,10 +696,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSize: {x: 7, y: 1}
   goalCoord: {x: 4, y: 0}
-  startGridStateSO: {fileID: 11400000, guid: 4626ee8b083c6f246a4507660ce8505d, type: 2}
+  levelData: {fileID: 0}
   validGridSprite: {fileID: 6524471923862907378}
   gridPlaneParentT: {fileID: 1339202477508604938}
   gridPlaneMeshR: {fileID: 5805035223219789282}
+  goalBlockScript: {fileID: 3431867088735520115}
   ActiveGridState:
     blocksList:
     - {fileID: 0}
@@ -728,3 +730,84 @@ MonoBehaviour:
     ID: 1073741839
     _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
     <DebugObject>k__BackingField: {fileID: 8182765344510954997}
+--- !u!1001 &3084510294479739329
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6377627252547341763}
+    m_Modifications:
+    - target: {fileID: 391269089931123890, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: offset.z
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 391269089931123890, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: internalCoord.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5949555245932228306, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_Name
+      value: GoalSquare
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+--- !u!114 &3431867088735520115 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 391269089931123890, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+  m_PrefabInstance: {fileID: 3084510294479739329}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc637054e8092041bdf66dfd173257e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &7115533310690020513 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+  m_PrefabInstance: {fileID: 3084510294479739329}
+  m_PrefabAsset: {fileID: 0}
