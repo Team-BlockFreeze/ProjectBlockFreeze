@@ -62,8 +62,8 @@ public class BlockGrid : MonoBehaviour {
         EditorUtility.SetDirty(this);
     }
 
-    [FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
-    public void SaveStateToSO() { }
+    //[FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
+    //public void SaveStateToSO() { }
 
     [FoldoutGroup("Actions"), Button(ButtonSizes.Large)]
     public void ResetActiveGrid() {

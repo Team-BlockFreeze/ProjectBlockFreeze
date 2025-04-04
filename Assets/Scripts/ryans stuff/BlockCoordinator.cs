@@ -306,7 +306,9 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             else {
                 var otherB = gridRef.QueryGridCoordBlockState(targetCell);
 
-                if (otherB == null) { }
+                if (otherB == null) { 
+                    
+                }
                 else if (otherB.blocked || otherB.lastForces.AllInputs()) {
                     b.blocked = true;
                 }
@@ -326,6 +328,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
                 //TODO
                 //if (!b.blocked && moveIntent.x != 0 && moveIntent.y != 0) {  //diagonal
                 var xBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(moveIntent.x, 0));
+                Debug.Log($"block {b.name} queried {b.coord + new Vector2Int(moveIntent.x, 0)} and found {xBlock?.gameObject.name}");
                 var yBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(0, moveIntent.y));
 
                 bool blockedOnX = false;
@@ -333,7 +336,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
                     blockedOnX = xBlock.blocked || xBlock.lastForces.XLocked() || moveIntent.x != xBlock.lastForces.QueryForce().x;
                 bool blockedOnY = false;
                 if (yBlock != null && moveIntent.y != 0)
-                    blockedOnY = yBlock != null && yBlock.blocked || yBlock.lastForces.YLocked() || moveIntent.y != yBlock.lastForces.QueryForce().y;
+                    blockedOnY = yBlock.blocked || yBlock.lastForces.YLocked() || moveIntent.y != yBlock.lastForces.QueryForce().y;
 
                 if (blockedOnX || blockedOnY) b.blocked = true;
                 //}

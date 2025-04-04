@@ -55,12 +55,11 @@ public class BlockBehaviour : MonoBehaviour {
     private SpriteRenderer littleDirTriangle;
 
     [FoldoutGroup("Debug")]
-
-    [ReadOnly]
+    //[ReadOnly]
     public bool frozen = false;
 
     [FoldoutGroup("Debug")]
-    [ReadOnly]
+    //[ReadOnly]
     public bool blocked = false;
 
     // private void Awake() {
