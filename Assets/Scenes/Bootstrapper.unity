@@ -423,17 +423,17 @@ MonoBehaviour:
         asset: {fileID: 102900000, guid: 8c9cfa26abfee488c85f1582747f6a02, type: 3}
         guid: 8c9cfa26abfee488c85f1582747f6a02
       SceneType: 1
-  - GroupName: RYanLevel
+  - GroupName: Level Selector
     Scenes:
     - Reference:
-        asset: {fileID: 102900000, guid: 4b3d677016c165e409376b2f30677a0b, type: 3}
-        guid: 4b3d677016c165e409376b2f30677a0b
+        asset: {fileID: 102900000, guid: 2af8acded51c8f54a976fee23398cf56, type: 3}
+        guid: 2af8acded51c8f54a976fee23398cf56
       SceneType: 1
-  - GroupName: Level Select
+  - GroupName: Empty Level Base
     Scenes:
     - Reference:
-        asset: {fileID: 102900000, guid: 72a63bc0c57b65344805a49f8bf961f0, type: 3}
-        guid: 72a63bc0c57b65344805a49f8bf961f0
+        asset: {fileID: 102900000, guid: 744b06f5956fdd1498a8c69f9fe5db3d, type: 3}
+        guid: 744b06f5956fdd1498a8c69f9fe5db3d
       SceneType: 1
 --- !u!4 &257358134
 Transform:

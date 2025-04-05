@@ -8,18 +8,29 @@ public class CameraScaler : MonoBehaviour
     private BlockGrid gridRef;
 
     [SerializeField]
-    private float widthMargin = 4f;
+    private float camBlockMargin = 4f;
 
     private Camera cam;
 
     private void Start()
     {
         cam = GetComponent<Camera>();
+        //AdjustCameraSize(10);
     }
+
+    private Vector2 lastScreenSize = Vector2.zero;
+    private Vector2 currentScreenSize = Vector2.zero;
 
     // Update is called once per frame
     void Update()
     {
+        //if (gridRef != null && !gridRef.enabled) {
+        //    AdjustCameraSize(10);
+        //    return;
+        //}
+        //currentScreenSize = new Vector2(Screen.width, Screen.height);
+        //if (lastScreenSize == currentScreenSize) return;
+        
         GetCamWidth();
     }
 
@@ -34,7 +45,8 @@ public class CameraScaler : MonoBehaviour
             return;
         }
 
-        var width = gridRef.GridSize.x + widthMargin;
+        lastScreenSize = currentScreenSize;
+        var width = gridRef.GridSize.x + camBlockMargin;
 
         AdjustCameraSize(width);
     }
@@ -47,7 +59,9 @@ public class CameraScaler : MonoBehaviour
         if (cam.orthographic)
         {
             float screenAspect = (float)Screen.width / Screen.height;
-            cam.orthographicSize = targetWidth / (2f * screenAspect);
+
+            float heightSize = (gridRef.GridSize.y + camBlockMargin*2f) * .5f;
+            cam.orthographicSize = Mathf.Max(targetWidth / (2f * screenAspect), heightSize);
         }
     }
 }

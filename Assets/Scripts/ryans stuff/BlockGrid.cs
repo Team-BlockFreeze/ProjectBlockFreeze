@@ -16,6 +16,9 @@ public class BlockGrid : MonoBehaviour {
     private LevelDataSO levelData;
     public LevelDataSO LevelData => levelData;
 
+    [SerializeField]
+    private bool loadFromLvlSelectOnStart = false;
+
     [FoldoutGroup("Grid Rendering"), SerializeField]
     private SpriteRenderer validGridSprite;
 
@@ -45,8 +48,9 @@ public class BlockGrid : MonoBehaviour {
 
         //load blocks from level data SO
         foreach(var bData in levelData.Blocks) {
-            BlockBehaviour newBlock = GameObject.Instantiate(bData.blockTypeFab).GetComponent<BlockBehaviour>();
+            BlockBehaviour newBlock = GameObject.Instantiate(bData.blockTypeFab, transform).GetComponent<BlockBehaviour>();
             newBlock.transform.position = GetWorldSpaceFromCoord(bData.gridCoord);
+            //newBlock.transform.parent
             newBlock.SetGridRef(this);
             newBlock.TryAddToGrid();
 
@@ -110,6 +114,10 @@ public class BlockGrid : MonoBehaviour {
 
     private void Start() {
         //gridSize = startGridStateSO.GridSize;
+        if(loadFromLvlSelectOnStart) {
+            levelData = LevelSelector.Instance.ChosenLevel;
+            LoadStateFromSO();
+        }
 
         ActiveGridState.GridBlockStates = new BlockBehaviour[gridSize.x, gridSize.y];
 
@@ -120,6 +128,8 @@ public class BlockGrid : MonoBehaviour {
         //}
 
         ReloadGridVisuals();
+
+        BlockCoordinator.Instance?.ManualStart();
     }
 
     public bool isValidGridCoord(Vector2Int coord) {

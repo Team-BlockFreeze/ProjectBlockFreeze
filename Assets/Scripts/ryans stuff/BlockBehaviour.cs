@@ -182,33 +182,44 @@ public class BlockBehaviour : MonoBehaviour {
 
         //update movement visualiser
 
-        Vector2Int movement = lastForces.QueryForce();
-        if (!blocked) {
-            coord += movement;
+        Vector2Int currentForceVec2I = lastForces.QueryForce();
+        if (!blocked && currentForceVec2I != Vector2Int.zero) {
+            Debug.Log("regular movement anim", gameObject);
+            coord += currentForceVec2I;
 
             //transform.position += (Vector3)(Vector2)movement;
             //move towards next coord
             moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), BlockCoordinator.Instance.GameTickRepeatRate()).SetEase(Ease.Linear);
         }
+        else if (!frozen && lastForces.YLocked() || lastForces.XLocked() && lastForces.XLocked() != lastForces.YLocked()) {
+            Debug.Log("triggering fall back animation", gameObject);
+            Vector3 bumpTargetPos = (gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)lastForces.firstDir - transform.position) * .15f - Vector3.back * coord.y * .01f;
+
+            //Vector3 ogScale = transform.localScale;
+            //transform.localScale = ogScale * .99f;
+            moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo);
+                //.OnComplete(() => { transform.localScale = ogScale; });
+
+            moveTween.Play();
+        }
         //block animation
-        else if (!frozen && blocked && !lastForces.NoInputs() && lastForces.QueryForce() != Vector2Int.zero) {
+        else { //(!frozen && blocked && !lastForces.NoInputs() && currentForce != Vector2Int.zero) { 
             //shake on spot
             //moveTween = transform.DOShakePosition(.3f, .1f).OnComplete(
             //    () => transform.position = gridRef.GetWorldSpaceFromCoord(coord)
             //);
 
-            Vector3 bumpTargetPos = ((gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)lastForces.QueryForce()) - transform.position) * .15f;
+            Debug.Log($"{gameObject.name} blocked bump anim");
+            Vector3 bumpTargetPos = ((gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)currentForceVec2I) - transform.position) * .15f - Vector3.back*coord.y*.01f;
+
+            //Vector3 ogScale = transform.localScale;
+            //transform.localScale = ogScale * .99f;
             moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo);
+                //.OnComplete(() => { transform.localScale = ogScale; });
 
             moveTween.Play();
         }
-        else {
-            Debug.Log("triggering fall back animation");
-            Vector3 bumpTargetPos = (gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)GetMovementIntention() - transform.position) * .5f;
-            moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo);
 
-            moveTween.Play();
-        }
 
         AdvanceMoveIdx();
         blocked = false;
@@ -217,7 +228,7 @@ public class BlockBehaviour : MonoBehaviour {
         UpdateMovementVisualiser();
         Event_NextMoveBegan?.Invoke();
         UpdateMovementVisualiser();
-        Debug.Log($"{gameObject.name} tried to move from {coord - movement} to {coord}");
+        Debug.Log($"{gameObject.name} tried to move from {coord - currentForceVec2I} to {coord}");
     }
 
 
@@ -301,6 +312,8 @@ public class BlockBehaviour : MonoBehaviour {
     [Button]
     private void OnDestroy() {
         moveTween?.Kill();
+
+        if (gridRef == null) return;
 
         bool wasOnList = gridRef.ActiveGridState.BlocksList.Remove(this);
         if (wasOnList && gridRef.isValidGridCoord(coord))

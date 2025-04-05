@@ -34,6 +34,8 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         public bool
             up, down, left, right;
 
+        public Vector2Int firstDir = Vector2Int.zero;
+
         public Vector2Int QueryForce() {
             Vector2Int finalForce = Vector2Int.zero;
 
@@ -69,6 +71,9 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             down = down || otherCell.down;
             left = left || otherCell.left;
             right = right || otherCell.right;
+
+            if (firstDir == Vector2.zero)
+                firstDir = this.QueryForce();
         }
 
         public bool Equals(CellForce otherCell) {
@@ -95,6 +100,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         public bool YLocked() {
             return up && down;
         }
+
         public override string ToString() {
             return $"CellForce: (Up: {up}, Down: {down}, Left: {left}, Right: {right})";
         }
@@ -113,7 +119,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             gridRef = GetComponent<BlockGrid>();
     }
 
-    private void Start() {
+    public void ManualStart() {
         forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
         InitilizeEmptyForceGrid();
 
@@ -352,6 +358,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         return changes;
     }
 
+    #region debug
 #if UNITY_EDITOR
 
     private void OnDrawGizmos() {
@@ -394,4 +401,5 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         Gizmos.DrawWireCube(center + Vector3.down * dist, Vector3.one * size);
     }
 #endif
+    #endregion
 }

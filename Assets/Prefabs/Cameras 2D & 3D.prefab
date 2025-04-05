@@ -321,4 +321,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridRef: {fileID: 0}
-  widthMargin: 4
+  camBlockMargin: 2
