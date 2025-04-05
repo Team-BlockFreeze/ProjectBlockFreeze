@@ -40,11 +40,6 @@ MonoBehaviour:
     pathMode: 0
     movePath: 0300000003000000030000000300000003000000
     startFrozen: 1
-  - gridCoord: {x: 6, y: 3}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 1
-    movePath: 01000000
-    startFrozen: 1
   - gridCoord: {x: 0, y: 5}
     blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
     pathMode: 0
@@ -85,3 +80,8 @@ MonoBehaviour:
     pathMode: 0
     movePath: 04000000
     startFrozen: 1
+  - gridCoord: {x: 6, y: 3}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 1
+    movePath: 01000000
+    startFrozen: 0

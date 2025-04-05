@@ -29,4 +29,4 @@ MonoBehaviour:
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 1
     movePath: 02000000020000000200000002000000020000000200000002000000
-    startFrozen: 0
+    startFrozen: 1
