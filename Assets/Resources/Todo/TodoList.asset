@@ -22,28 +22,4 @@ MonoBehaviour:
   - name: Other
     color: {r: 0.4198113, g: 1, b: 1, a: 1}
     index: 2
-  items:
-  - owner:
-      name: Kerry
-      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
-      index: 0
-    task: smooth scene loading transition on play
-    isComplete: 0
-  - owner:
-      name: Kerry
-      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
-      index: 0
-    task: 'design level select ui '
-    isComplete: 0
-  - owner:
-      name: Kerry
-      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
-      index: 0
-    task: implement sfx for level select
-    isComplete: 0
-  - owner:
-      name: Kerry
-      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
-      index: 0
-    task: particle fx and animation when LevelOpened function is called.
-    isComplete: 0
+  items: []
