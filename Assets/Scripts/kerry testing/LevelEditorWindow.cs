@@ -142,7 +142,7 @@ public class LevelEditorWindow : EditorWindow {
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         levelData = (LevelDataSO)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelDataSO), false);
-        if(GUILayout.Button(" + ", GUILayout.Width(60))) {
+        if (GUILayout.Button(" + ", GUILayout.Width(60))) {
             string path = EditorUtility.SaveFilePanelInProject("Create New Level File", "NewLevel", "asset", "Enter name", defaultLevelFolderPath);
             if (!string.IsNullOrEmpty(path)) {
                 var newAsset = ScriptableObject.CreateInstance<LevelDataSO>();
@@ -195,11 +195,11 @@ public class LevelEditorWindow : EditorWindow {
 
         DrawSelectedBlockPathMoveList();
 
-        
+
 
         //debug visualise grid offset
         GUI.backgroundColor = Color.red;
-        GUI.Button(new Rect(gridOffset.x-5, gridOffset.y-5, 10, 10), "");
+        GUI.Button(new Rect(gridOffset.x - 5, gridOffset.y - 5, 10, 10), "");
     }
 
     ReorderableList proxySelectedBlockMoveList;
@@ -217,7 +217,7 @@ public class LevelEditorWindow : EditorWindow {
         if (SelectedBlockOfLevel != null) {
             EditorGUILayout.LabelField($"Block at {SelectedBlockOfLevel.gridCoord}", EditorStyles.label);
             selectedBlockOfLevel.pathMode = (BlockBehaviour.BlockMoveState)EditorGUILayout.EnumPopup(selectedBlockOfLevel.pathMode);
-            selectedBlockOfLevel.startFrozen = EditorGUILayout.Toggle("Start Frozen?", selectedBlockOfLevel.startFrozen); 
+            selectedBlockOfLevel.startFrozen = EditorGUILayout.Toggle("Start Frozen?", selectedBlockOfLevel.startFrozen);
             if (proxySelectedBlockMoveList != null) {
                 proxySelectedBlockMoveList.DoLayoutList();
             }
@@ -287,7 +287,7 @@ public class LevelEditorWindow : EditorWindow {
 
         GUILayout.Label("Select Block Preset", EditorStyles.boldLabel);
 
-        if(availableBlocks==null) {
+        if (availableBlocks == null) {
             GUILayout.Label("Reference to available blocks list is null, please assign", EditorStyles.label);
             return;
         }
@@ -383,14 +383,14 @@ public class LevelEditorWindow : EditorWindow {
             GUILayout.BeginHorizontal();
             for (int x = 0; x < levelData.GridSize.x; x++) {
 
-                Vector2Int actualGridCoord = new Vector2Int(x, levelData.GridSize.y - 1 -y);
+                Vector2Int actualGridCoord = new Vector2Int(x, levelData.GridSize.y - 1 - y);
 
                 var defaultBgColor = GUI.backgroundColor;
                 var goalColor = actualGridCoord == levelData.GoalCoord ? Color.red : defaultBgColor;
                 GUI.backgroundColor = goalColor;
 
                 var defaultContColor = GUI.contentColor;
-                if(selectedBlockOfLevel!=null)
+                if (selectedBlockOfLevel != null)
                     GUI.contentColor = selectedBlockOfLevel?.gridCoord == actualGridCoord ? Color.yellow : defaultContColor;
 
                 if (GUILayout.Button(GetBlockSymbol(actualGridCoord), GUILayout.Width(30), GUILayout.Height(30))) {
@@ -444,7 +444,7 @@ public class LevelEditorWindow : EditorWindow {
 
         GUILayout.Label($"started drawing is {isDrawingPath} - mouse is in drawing grid? {IsMouseInsidePathCreator()}");
         if (pathCells.Count > 1)
-            GUILayout.Label($"current cell is {pathCells[pathCells.Count-1]} - last cell is {pathCells[pathCells.Count - 2]}");
+            GUILayout.Label($"current cell is {pathCells[pathCells.Count - 1]} - last cell is {pathCells[pathCells.Count - 2]}");
     }
 
     private void DrawPathLines() {
@@ -460,7 +460,7 @@ public class LevelEditorWindow : EditorWindow {
             Vector2Int currentCell = pathCells[i];
             //currentCell.y = levelData.GridSize.y - currentCell.y - 1;
 
-            Vector2 startPos = new Vector2(prevCell.x * cellSize, prevCell.y * cellSize) + gridOffset + Vector2.one*cellSize/2f;
+            Vector2 startPos = new Vector2(prevCell.x * cellSize, prevCell.y * cellSize) + gridOffset + Vector2.one * cellSize / 2f;
             Vector2 endPos = new Vector2(currentCell.x * cellSize, currentCell.y * cellSize) + gridOffset + Vector2.one * cellSize / 2f;
 
             Handles.DrawLine(startPos, endPos);
@@ -474,13 +474,16 @@ public class LevelEditorWindow : EditorWindow {
         foreach (var block in levelData.Blocks) {
             if (block.gridCoord == coord) {
                 //safety is something fucked up creating a block
-                if(block.blockTypeFab==null) {
+                if (block.blockTypeFab == null) {
                     levelData.Blocks.Remove(block);
                     continue;
                 }
 
                 if (block.blockTypeFab.name.Contains("Key")) {
                     return "🔑";
+                }
+                else if (block.blockTypeFab.name.Contains("Wall")) {
+                    return "🚫";
                 }
                 else {
                     return "■";
@@ -496,7 +499,7 @@ public class LevelEditorWindow : EditorWindow {
 
         var existingBlock = levelData.Blocks.Find(b => b.gridCoord == position);
 
-        if(selectedBlockTypeToPlace.name.Contains("oal")) {
+        if (selectedBlockTypeToPlace.name.Contains("oal")) {
             levelData.GoalCoord = position;
             EditorUtility.SetDirty(levelData);
             return;
@@ -515,7 +518,7 @@ public class LevelEditorWindow : EditorWindow {
             if (selectedBlockTypeToPlace.name.Contains("Wall"))
                 newBlock.startFrozen = true;
             levelData.Blocks.Add(newBlock);
-            SelectedBlockOfLevel = levelData.Blocks[levelData.Blocks.Count-1];
+            SelectedBlockOfLevel = levelData.Blocks[levelData.Blocks.Count - 1];
         }
 
         EditorUtility.SetDirty(levelData);
