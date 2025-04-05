@@ -393,7 +393,6 @@ GameObject:
   m_Component:
   - component: {fileID: 257358134}
   - component: {fileID: 257358133}
-  - component: {fileID: 257358135}
   m_Layer: 0
   m_Name: Scene Loader
   m_TagString: Untagged
@@ -424,11 +423,7 @@ MonoBehaviour:
         asset: {fileID: 102900000, guid: 8c9cfa26abfee488c85f1582747f6a02, type: 3}
         guid: 8c9cfa26abfee488c85f1582747f6a02
       SceneType: 1
-<<<<<<< HEAD:Assets/Scenes/Setup UI/Bootstrapper.unity
-  - GroupName: Ryan Level 4
-=======
   - GroupName: Level Selector
->>>>>>> ryan:Assets/Scenes/Bootstrapper.unity
     Scenes:
     - Reference:
         asset: {fileID: 102900000, guid: 2af8acded51c8f54a976fee23398cf56, type: 3}
@@ -456,19 +451,6 @@ Transform:
   - {fileID: 1488176666}
   m_Father: {fileID: 991282749}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &257358135
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 257358132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b916cbfbfe95ce847b801be1fdb5ddb6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scanFolderPath: Assets/Scenes/Levels
 --- !u!1 &261590331
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,7 +1056,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!223 &1488176663
 Canvas:
   m_ObjectHideFlags: 0

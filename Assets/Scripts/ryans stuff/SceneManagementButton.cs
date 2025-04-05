@@ -1,3 +1,4 @@
+using Systems.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -18,5 +19,9 @@ public class SceneManagementButton : MonoBehaviour
 
         Time.timeScale = 1;
         SceneManager.LoadScene(i);
+    }
+
+    public void LoadAsyncSceneGroupByIdx(int idx) {
+        SceneLoader.Instance.LoadSceneGroup(index: idx, delayInSeconds: 0f);
     }
 }

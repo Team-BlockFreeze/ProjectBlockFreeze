@@ -6,32 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Setup UI/Bootstrapper.unity
+    path: Assets/Scenes/Bootstrapper.unity
     guid: be22d84ddadd9844e8061450fd9a679f
   - enabled: 1
-    path: Assets/Scenes/Setup UI/Menu.unity
+    path: Assets/Scenes/Menu.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/Setup UI/Level Select.unity
-    guid: 72a63bc0c57b65344805a49f8bf961f0
+    path: Assets/Scenes/Level Select Blocks.unity
+    guid: 2af8acded51c8f54a976fee23398cf56
   - enabled: 1
-    path: Assets/Scenes/Level 1.unity
-    guid: e9dc0d281bbf81643a711ae17b6936ff
-  - enabled: 1
-    path: Assets/Scenes/Levels/Ryan Level 1.unity
-    guid: 6df7b59c3fa995147a55955f71ce1f07
-  - enabled: 1
-    path: Assets/Scenes/Levels/Ryan Level 2.unity
-    guid: 265ecdaf56aa5f44db575ffbedaf0f00
-  - enabled: 1
-    path: Assets/Scenes/Levels/Ryan Level 3.unity
-    guid: dde5304d5494fa748a13e51c6a3c91b7
-  - enabled: 1
-    path: Assets/Scenes/Levels/Ryan Level 4.unity
-    guid: 4b3d677016c165e409376b2f30677a0b
-  - enabled: 1
-    path: Assets/Scenes/Levels/Ryan Level Unsorted1.unity
-    guid: fe5447dea4167e84099bb3aa0dc12ffd
+    path: Assets/Scenes/Empty Grid Level.unity
+    guid: 744b06f5956fdd1498a8c69f9fe5db3d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
