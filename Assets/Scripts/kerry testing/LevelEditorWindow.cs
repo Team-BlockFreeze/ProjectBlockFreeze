@@ -350,11 +350,22 @@ public class LevelEditorWindow : EditorWindow {
             if (hoveredX >= 0 && hoveredX < levelData.GridSize.x && hoveredY >= 0 && hoveredY < levelData.GridSize.y) {
                 Vector2Int hoveredCell = new Vector2Int(hoveredX, hoveredY);
 
+
+                //! If you press w while drawing, it adds a wait
+                if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.W) {
+                    pathCells.Add(hoveredCell);
+                    Debug.Log("Added Wait to moveList");
+                    Event.current.Use();
+                }
+
                 if (hoveredCell != lastHoveredCell || Mathf.Abs(hoveredCell.y - lastHoveredCell.y) > 1) {
                     pathCells.Add(hoveredCell);
                     lastHoveredCell = hoveredCell;
                 }
             }
+
+
+
         }
 
         if (Event.current.type == EventType.MouseUp) {
