@@ -68,7 +68,7 @@ public class PressedPlayButton : MonoBehaviour, IPointerDownHandler {
         AnimateButton();
         SpawnTransitionEffect();
 
-        SceneLoader.Instance.LoadSceneGroup(groupName: "Ryan Level 4", delayInSeconds: 4f);
+        SceneLoader.Instance.LoadSceneGroup(groupName: "Level Selector", delayInSeconds: 4f);
     }
 
     public void AnimateButton() {
