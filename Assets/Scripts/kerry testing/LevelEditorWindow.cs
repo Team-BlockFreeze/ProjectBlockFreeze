@@ -122,10 +122,13 @@ public class LevelEditorWindow : EditorWindow {
         EditorPrefs.SetString(PrefKey_DefaultLevelsFolder_Path, defaultLevelFolderPath);
     }
 
+
+    private Vector2 scrollPosition;
     private void OnGUI() {
+        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+
         PopulateMoveListOnMouseHover();
 
-        //GUI.changed = false;
         GUILayout.Label("Level Editor", EditorStyles.boldLabel);
 
         EditorGUILayout.BeginHorizontal();
@@ -133,13 +136,13 @@ public class LevelEditorWindow : EditorWindow {
         if (GUILayout.Button("Select", GUILayout.MaxWidth(60))) {
             string selected = EditorUtility.OpenFolderPanel("Select Folder", "Assets", "");
             if (!string.IsNullOrEmpty(selected)) {
-                // Convert absolute path to relative (Unity uses relative paths)
                 if (selected.StartsWith(Application.dataPath)) {
                     defaultLevelFolderPath = "Assets" + selected.Substring(Application.dataPath.Length);
                 }
             }
         }
         EditorGUILayout.EndHorizontal();
+
         EditorGUILayout.BeginHorizontal();
         levelData = (LevelDataSO)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelDataSO), false);
         if (GUILayout.Button(" + ", GUILayout.Width(60))) {
@@ -149,7 +152,6 @@ public class LevelEditorWindow : EditorWindow {
                 AssetDatabase.CreateAsset(newAsset, path);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-
                 levelData = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
             }
         }
@@ -157,6 +159,7 @@ public class LevelEditorWindow : EditorWindow {
 
         if (levelData == null) {
             EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
+            EditorGUILayout.EndScrollView(); // don't forget this
             return;
         }
 
@@ -169,38 +172,35 @@ public class LevelEditorWindow : EditorWindow {
 
         GUILayout.Space(10);
 
-        //check start hover
         if (Event.current.type == EventType.MouseDown && IsMouseInsidePathCreator()) {
             Debug.Log("tried to start drawing");
             isDrawingPath = true;
         }
-        TrackMouseHover();
 
+        TrackMouseHover();
         DrawPathGrid();
         DrawPathLines();
 
-
         GUILayout.Space(10);
-
         DrawClearButton();
 
         GUILayout.Space(10);
-
         DrawPresetButtons();
 
         GUILayout.Space(10);
-
         DrawGrid();
-
 
         DrawSelectedBlockPathMoveList();
 
-
-
-        //debug visualise grid offset
+        // Visualize grid offset
         GUI.backgroundColor = Color.red;
         GUI.Button(new Rect(gridOffset.x - 5, gridOffset.y - 5, 10, 10), "");
+
+        EditorGUILayout.EndScrollView();
     }
+
+
+
 
     ReorderableList proxySelectedBlockMoveList;
 
@@ -463,7 +463,7 @@ public class LevelEditorWindow : EditorWindow {
 
         Handles.color = Color.green;
 
-        int cellSize = 32;
+        int cellSize = 30;
 
         for (int i = 1; i < pathCells.Count; i++) {
             Vector2Int prevCell = pathCells[i - 1];

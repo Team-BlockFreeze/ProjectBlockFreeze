@@ -27,7 +27,7 @@ public class BlockData {
     public GameObject blockTypeFab;
 
     public BlockBehaviour.BlockMoveState pathMode;
-    public List<BlockBehaviour.Direction> movePath = new List<BlockBehaviour.Direction> { BlockBehaviour.Direction.wait};
+    public List<BlockBehaviour.Direction> movePath = new List<BlockBehaviour.Direction> { BlockBehaviour.Direction.wait };
 
     public bool startFrozen;
 

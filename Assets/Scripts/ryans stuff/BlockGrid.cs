@@ -3,8 +3,9 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System;
 using UnityEditor;
+using Unity.VisualScripting;
 
-public class BlockGrid : MonoBehaviour {
+public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
 
     [Title("Grid Settings")]
     [SerializeField, ReadOnly] private Vector2Int gridSize;
@@ -44,7 +45,7 @@ public class BlockGrid : MonoBehaviour {
         ResetActiveGrid();
 
         //load blocks from level data SO
-        foreach(var bData in levelData.Blocks) {
+        foreach (var bData in levelData.Blocks) {
             BlockBehaviour newBlock = GameObject.Instantiate(bData.blockTypeFab).GetComponent<BlockBehaviour>();
             newBlock.transform.position = GetWorldSpaceFromCoord(bData.gridCoord);
             newBlock.SetGridRef(this);
@@ -83,7 +84,7 @@ public class BlockGrid : MonoBehaviour {
 
         var goalWorldPos = GetWorldSpaceFromCoord(goalCoord) - Vector3.one * 0.5f;
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
         gridPlaneMeshR.sharedMaterial.SetVector("_HoleWorldPos", goalWorldPos);
         validGridSprite.sharedMaterial.SetVector("_HoleWorldPos", goalWorldPos);
 #else
