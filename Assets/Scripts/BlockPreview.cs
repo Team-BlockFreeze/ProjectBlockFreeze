@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using static BlockBehaviour;
 using static DebugLoggerExtensions;
@@ -55,9 +56,42 @@ public class BlockPreview : MonoBehaviour {
 
     private void OnEnable() {
         block.Event_NextMoveBegan.AddListener(UpdateLine);
+        SetTimeScale.OnTimeScaleChanged += HandleTimeScaleChange;
+
+
+        HandleTimeScaleChange(Time.timeScale); // Initial Case
     }
 
     private void OnDisable() {
         block.Event_NextMoveBegan.RemoveListener(UpdateLine);
+        SetTimeScale.OnTimeScaleChanged -= HandleTimeScaleChange;
+
+    }
+
+    private void HandleTimeScaleChange(float newTimeScale) {
+        Debug.Log("Time scale changed to " + newTimeScale);
+
+        float targetAlpha = newTimeScale == 1f ? 1f : 0f;
+
+        Gradient gradient = lineRenderer.colorGradient;
+        GradientAlphaKey[] alphaKeys = gradient.alphaKeys;
+
+        float currentAlpha = alphaKeys.Length > 0 ? alphaKeys[0].alpha : 1f;
+
+        DOTween.To(() => currentAlpha, a => UpdateLineAlpha(a), targetAlpha, 0.3f);
+    }
+
+    private void UpdateLineAlpha(float alpha) {
+        Gradient gradient = lineRenderer.colorGradient;
+        GradientColorKey[] colorKeys = gradient.colorKeys;
+        GradientAlphaKey[] alphaKeys = new GradientAlphaKey[]
+        {
+        new GradientAlphaKey(alpha, 0f),
+        new GradientAlphaKey(alpha, 1f)
+        };
+
+        Gradient newGradient = new Gradient();
+        newGradient.SetKeys(colorKeys, alphaKeys);
+        lineRenderer.colorGradient = newGradient;
     }
 }

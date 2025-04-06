@@ -1,8 +1,7 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-public class SnapToGrid : MonoBehaviour
-{
+public class SnapToGrid : LoggerMonoBehaviour {
     [SerializeField]
     private Vector3 offset;
     private BlockGrid blockGrid;
@@ -12,25 +11,22 @@ public class SnapToGrid : MonoBehaviour
     private Vector2Int internalCoord;
 
     [Button]
-    public void SnapToGridWorldPos()
-    {
+    public void SnapToGridWorldPos() {
         blockGrid = FindFirstObjectByType<BlockGrid>();
         transform.position = blockGrid.GetWorldPosSnappedToGrid(transform.position) + offset;
     }
 
     [Button]
-    public void SnapGoalToGrid()
-    {
+    public void SnapGoalToGrid() {
         blockGrid = FindFirstObjectByType<BlockGrid>();
         transform.position = blockGrid.GetWorldPosSnappedToGrid(transform.position) + offset;
         var tempCoord = blockGrid.GetGridCoordFromWorldPos(transform.position);
 
-        if (blockGrid.isValidGridCoord(tempCoord))
-        {
+        if (blockGrid.isValidGridCoord(tempCoord)) {
             internalCoord = tempCoord;
             blockGrid.SetGoalCoord(tempCoord);
-            Debug.Log($"Set goal coord to {tempCoord}");
+            Log($"Set goal coord to {tempCoord}");
         }
-        else Debug.LogWarning("failed to set goal coord");
+        else LogWarning("failed to set goal coord");
     }
 }

@@ -170,9 +170,9 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             AddDerivedForcesToForceGrid();
             timeout++;
             if (timeout >= 5)
-                Debug.LogError("force caluclation infinite loop");
+                LogError("force caluclation infinite loop");
         }
-        Debug.Log($"grid force iteration looped {timeout} times");
+        Log($"grid force iteration looped {timeout} times");
 
         timeout = 0;
         int longerGridDimension = Mathf.Max(forceGrid.GetLength(0), forceGrid.GetLength(1));
@@ -181,19 +181,21 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         while (CheckBlockedBlocks() && timeout <= longerGridDimension) {
             timeout++;
         }
-        Debug.Log($"grid blocked check iteration looped {timeout} times");
+        Log($"grid blocked check iteration looped {timeout} times");
 
         gridRef.ActiveGridState.ClearBlockStateGrid();
         foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
             b.Move();
             //add back onto gridblockstate
             gridRef.ActiveGridState.GridBlockStates[b.coord.x, b.coord.y] = b;
-            Debug.Log($"moving {b.gameObject.name}");
+            Log($"moving {b.gameObject.name}");
         }
 
         gridRef.ActiveGridState.UpdateCoordList();
-        Debug.Log("Full block grid iteration");
+        Log("Full block grid iteration");
     }
+
+
 
     [Button]
     private void InitilizeEmptyForceGrid() {
@@ -222,7 +224,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             if (!gridRef.isValidGridCoord(targetCell)) {
                 continue;
             }
-            Debug.Log($"{b.name} just set force to {b.lastForces.QueryForce()} at {targetCell} from moveIntent {b.GetMovementIntention()}");
+            Log($"{b.name} just set force to {b.lastForces.QueryForce()} at {targetCell} from moveIntent {b.GetMovementIntention()}");
 
             forceGrid[targetCell.x, targetCell.y].AddForceFromCell(b.lastForces);
         }
@@ -237,19 +239,19 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
             //block target cell isnt on grid (at edge)
             if (!gridRef.isValidGridCoord(targetCell) || targetCell == b.coord) {
-                Debug.Log($"{gameObject.name} can't add force to grid, target cell out of bounds");
+                Log($"{gameObject.name} can't add force to grid, target cell out of bounds");
                 continue;
             }
 
             forceGrid[targetCell.x, targetCell.y].AddForceFromCell(new CellForce(collapsedForce));
-            Debug.Log($"{gameObject.name} adding force {collapsedForce} to grid at {targetCell}");
+            Log($"{gameObject.name} adding force {collapsedForce} to grid at {targetCell}");
             //diagonal force
             if (collapsedForce.x != 0 && collapsedForce.y != 0) {
                 var xTarget = b.coord + new Vector2Int(collapsedForce.x, 0);
                 forceGrid[xTarget.x, xTarget.y].AddForceFromCell(new CellForce(new Vector2Int(collapsedForce.x, 0)));
                 var yTarget = b.coord + new Vector2Int(0, collapsedForce.y);
                 forceGrid[yTarget.x, yTarget.y].AddForceFromCell(new CellForce(new Vector2Int(0, collapsedForce.y)));
-                Debug.Log($"{gameObject} is moving diagonally, adding orthogonal forces at {xTarget} and {yTarget}");
+                Log($"{gameObject} is moving diagonally, adding orthogonal forces at {xTarget} and {yTarget}");
             }
         }
     }
@@ -268,7 +270,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             //add force from target cell
             //target cell is added first because otherwise other forces would change it before it could read them
             if (!gridRef.isValidGridCoord(targetCell)) {
-                //Debug.LogWarning($"tried to read forces from invalid cell {targetCell}");
+                //LogWarning($"tried to read forces from invalid cell {targetCell}");
             }
             else {
                 forces.AddForceFromCell(forceGrid[targetCell.x, targetCell.y]);
@@ -300,20 +302,20 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             //if target cell is on grid
             if (!gridRef.isValidGridCoord(targetCell)) {
                 b.blocked = true;
-                Debug.Log($"{b.name} is blocked, target cell {targetCell} is not valid");
+                Log($"{b.name} is blocked, target cell {targetCell} is not valid");
                 //b.lastForces = new CellForce();
             }
             //if recieving forces in all directions
             else if (b.lastForces.AllInputs()) {
                 b.blocked = true;
-                Debug.Log($"{b.name} is blocked, recieving all forces, deadlocked");
+                Log($"{b.name} is blocked, recieving all forces, deadlocked");
             }
             //if target cell is occupied and that block is blocked or cant be pushed
             else {
                 var otherB = gridRef.QueryGridCoordBlockState(targetCell);
 
-                if (otherB == null) { 
-                    
+                if (otherB == null) {
+
                 }
                 else if (otherB.blocked || otherB.lastForces.AllInputs()) {
                     b.blocked = true;
@@ -334,7 +336,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
                 //TODO
                 //if (!b.blocked && moveIntent.x != 0 && moveIntent.y != 0) {  //diagonal
                 var xBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(moveIntent.x, 0));
-                Debug.Log($"block {b.name} queried {b.coord + new Vector2Int(moveIntent.x, 0)} and found {xBlock?.gameObject.name}");
+                Log($"block {b.name} queried {b.coord + new Vector2Int(moveIntent.x, 0)} and found {xBlock?.gameObject.name}");
                 var yBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(0, moveIntent.y));
 
                 bool blockedOnX = false;
@@ -402,4 +404,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     }
 #endif
     #endregion
+
+
 }

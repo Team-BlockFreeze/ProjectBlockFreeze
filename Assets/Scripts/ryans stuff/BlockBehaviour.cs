@@ -7,7 +7,7 @@ using UnityEditor.Build.Pipeline;
 using System.Runtime.CompilerServices;
 
 [System.Serializable]
-public class BlockBehaviour : MonoBehaviour {
+public class BlockBehaviour : LoggerMonoBehaviour {
     [Title("Grid Reference")]
     [SerializeField, InlineEditor]
     private BlockGrid gridRef;
@@ -63,9 +63,9 @@ public class BlockBehaviour : MonoBehaviour {
     public bool blocked = false;
 
     // private void Awake() {
-    //     Debug.unityLogger.logEnabled = false;
+    //     Debug.unityLogEnabled = false;
 
-    //     DOVirtual.DelayedCall(5f, () => Debug.unityLogger.logEnabled = true);
+    //     DOVirtual.DelayedCall(5f, () => Debug.unityLogEnabled = true);
     // }
 
     private void AdvanceMoveIdx() {
@@ -110,7 +110,7 @@ public class BlockBehaviour : MonoBehaviour {
 
 
     private void QueueNextTween() {
-        //Debug.Log("Queueing tween");
+        //Log("Queueing tween");
         Tween nextTween = transform.DOMove(DirToVec3Int(movePath[moveIdx++]), BlockCoordinator.Instance.GameTickRepeatRate()).SetRelative().SetEase(Ease.Linear).Pause();
         activeTween.OnComplete(() => nextTween.Play());
         activeTween = nextTween;
@@ -176,7 +176,7 @@ public class BlockBehaviour : MonoBehaviour {
         if (frozen) {
             UpdateMovementVisualiser();
             blocked = true;
-            Debug.Log($"{gameObject.name} is frozen on {coord}");
+            Log($"{gameObject.name} is frozen on {coord}");
             return;
         }
 
@@ -184,7 +184,7 @@ public class BlockBehaviour : MonoBehaviour {
 
         Vector2Int currentForceVec2I = lastForces.QueryForce();
         if (!blocked && currentForceVec2I != Vector2Int.zero) {
-            Debug.Log("regular movement anim", gameObject);
+            Log("regular movement anim", gameObject);
             coord += currentForceVec2I;
 
             //transform.position += (Vector3)(Vector2)movement;
@@ -192,13 +192,13 @@ public class BlockBehaviour : MonoBehaviour {
             moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), BlockCoordinator.Instance.GameTickRepeatRate()).SetEase(Ease.Linear);
         }
         else if (!frozen && lastForces.YLocked() || lastForces.XLocked() && lastForces.XLocked() != lastForces.YLocked()) {
-            Debug.Log("triggering fall back animation", gameObject);
+            Log("triggering fall back animation", gameObject);
             Vector3 bumpTargetPos = (gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)lastForces.firstDir - transform.position) * .15f - Vector3.back * coord.y * .01f;
 
             //Vector3 ogScale = transform.localScale;
             //transform.localScale = ogScale * .99f;
             moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo);
-                //.OnComplete(() => { transform.localScale = ogScale; });
+            //.OnComplete(() => { transform.localScale = ogScale; });
 
             moveTween.Play();
         }
@@ -209,13 +209,13 @@ public class BlockBehaviour : MonoBehaviour {
             //    () => transform.position = gridRef.GetWorldSpaceFromCoord(coord)
             //);
 
-            Debug.Log($"{gameObject.name} blocked bump anim");
-            Vector3 bumpTargetPos = ((gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)currentForceVec2I) - transform.position) * .15f - Vector3.back*coord.y*.01f;
+            Log($"{gameObject.name} blocked bump anim");
+            Vector3 bumpTargetPos = ((gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)currentForceVec2I) - transform.position) * .15f - Vector3.back * coord.y * .01f;
 
             //Vector3 ogScale = transform.localScale;
             //transform.localScale = ogScale * .99f;
             moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo);
-                //.OnComplete(() => { transform.localScale = ogScale; });
+            //.OnComplete(() => { transform.localScale = ogScale; });
 
             moveTween.Play();
         }
@@ -228,7 +228,7 @@ public class BlockBehaviour : MonoBehaviour {
         UpdateMovementVisualiser();
         Event_NextMoveBegan?.Invoke();
         UpdateMovementVisualiser();
-        Debug.Log($"{gameObject.name} tried to move from {coord - currentForceVec2I} to {coord}");
+        Log($"{gameObject.name} tried to move from {coord - currentForceVec2I} to {coord}");
     }
 
 
@@ -237,12 +237,12 @@ public class BlockBehaviour : MonoBehaviour {
     public void UpdateMovementVisualiser() {
         var colRef = moveIntentionVisual.color;
         var moveIntent = GetMovementIntention();
-        //Debug.Log($"{gameObject.name} block updating movement visual for dir {moveIntent}, is this working?");
+        //Log($"{gameObject.name} block updating movement visual for dir {moveIntent}, is this working?");
 
 
         if (moveIntent == Vector2Int.zero) {
-                colRef.a = 0;
-                moveIntentionVisual.color = colRef;
+            colRef.a = 0;
+            moveIntentionVisual.color = colRef;
         }
         else {
             colRef.a = 1;
@@ -336,4 +336,5 @@ public class BlockBehaviour : MonoBehaviour {
     //    }
 
 #endif
+
 }

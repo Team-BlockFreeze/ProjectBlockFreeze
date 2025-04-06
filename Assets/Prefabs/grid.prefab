@@ -1135,9 +1135,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb281ff11d9c64ab90201c78615ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logging: 0
   gridSize: {x: 7, y: 1}
   goalCoord: {x: 4, y: 0}
   levelData: {fileID: 0}
+  loadFromLvlSelectOnStart: 0
   validGridSprite: {fileID: 6524471923862907378}
   gridPlaneParentT: {fileID: 1339202477508604938}
   gridPlaneMeshR: {fileID: 5805035223219789282}
@@ -1165,6 +1167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 089b3db50eea71b478761f0a5d15d3e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logging: 0
   gameTickRepeatRate: 1
   gridRef: {fileID: 4054432160713654793}
   bellSoundSFX:

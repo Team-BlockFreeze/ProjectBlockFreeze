@@ -412,6 +412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d266fe0d544b56b44c5f3a15445384, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logging: 0
   UnparentOnAwake: 1
   loadingBar: {fileID: 261590334}
   fillSpeed: 0.5
@@ -556,6 +557,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82750b95b23a4e7f91408fc0aceef5b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logging: 0
   UnparentOnAwake: 1
 --- !u!4 &271547736
 Transform:
@@ -1056,7 +1058,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!223 &1488176663
 Canvas:
   m_ObjectHideFlags: 0

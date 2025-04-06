@@ -1,22 +1,23 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SetTimeScale : MonoBehaviour
-{
+public class SetTimeScale : MonoBehaviour {
     [SerializeField]
     private bool startSelected = false;
 
-    private void Start()
-    {
-        if(startSelected)
+    public static event Action<float> OnTimeScaleChanged;
+
+    private void Start() {
+        if (startSelected)
             EventSystem.current.SetSelectedGameObject(gameObject);
     }
 
     [SerializeField]
     private float timeScaleToSet = 1f;
-    public void DoSetTimeScale()
-    {
+    public void DoSetTimeScale() {
         Time.timeScale = timeScaleToSet;
+        OnTimeScaleChanged?.Invoke(timeScaleToSet);
         EventSystem.current.SetSelectedGameObject(gameObject);
     }
 }

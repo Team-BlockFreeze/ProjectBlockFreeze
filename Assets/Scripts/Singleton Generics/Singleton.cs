@@ -4,7 +4,7 @@ namespace UnityUtils {
 
     //! SIngleton that doesn't persist between scenes
     //! Only exists in one scene
-    public class Singleton<T> : MonoBehaviour where T : Component {
+    public class Singleton<T> : LoggerMonoBehaviour where T : Component {
         protected static T instance;
 
         public static bool HasInstance => instance != null;
