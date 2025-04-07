@@ -41,7 +41,8 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     public void LoadStateFromSO() {
         //destroy current blocks
         foreach (var b in ActiveGridState.BlocksList)
-            GameObject.DestroyImmediate(b.gameObject);
+            if(b!=null)
+                GameObject.DestroyImmediate(b.gameObject);
 
         //clear active grid state
         ResetActiveGrid();
