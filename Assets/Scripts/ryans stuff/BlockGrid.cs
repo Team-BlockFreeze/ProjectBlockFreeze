@@ -32,6 +32,10 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     [FoldoutGroup("Grid Rendering"), SerializeField]
     private SnapToGrid goalBlockScript;
 
+    [SerializeField]
+    public GridState ActiveGridState;
+
+    [PropertyOrder(-10)]
     [FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
     public void LoadStateFromSO() {
         //destroy current blocks
@@ -72,6 +76,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     //[FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
     //public void SaveStateToSO() { }
 
+    [PropertyOrder(-10)]
     [FoldoutGroup("Actions"), Button(ButtonSizes.Large)]
     public void ResetActiveGrid() {
         Transform blocksList = transform.Find("BlocksList");
@@ -89,6 +94,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
         ReloadGridVisuals();
     }
 
+    [PropertyOrder(-10)]
     [FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
     public void ReloadGridVisuals() {
         validGridSprite.size = new Vector2(gridSize.x, gridSize.y);
@@ -113,8 +119,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     //[ReadOnly]
     //[SerializeReference]
     //[InlineEditor]
-    [SerializeField]
-    public GridState ActiveGridState;
+
 
 
     public void SetGoalCoord(Vector2Int coord) {
