@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using static BlockBehaviour;
@@ -13,10 +15,11 @@ public class BlockPreview : MonoBehaviour {
     private void Awake() {
         block = GetComponent<BlockBehaviour>();
         lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.positionCount = 0;
     }
 
     private void Start() {
+        lineRenderer.positionCount = 0; // Don't show line on start
+
         movePath = block.GetMovePath();
         UpdateLine();
     }
@@ -24,8 +27,6 @@ public class BlockPreview : MonoBehaviour {
     private void UpdateLine() {
         Vector3 worldPos = block.GridRef.GetWorldSpaceFromCoord(block.coord);
         worldSpaceCoord = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
-
-        DrawPath();
     }
 
     private void DrawPath() {
@@ -43,6 +44,10 @@ public class BlockPreview : MonoBehaviour {
         lineRenderer.SetPositions(positions);
     }
 
+    private void ClearPath() {
+        lineRenderer.positionCount = 0;
+    }
+
     private Vector3 GetDirectionVector(Direction dir) {
         switch (dir) {
             case Direction.left: return Vector3.left;
@@ -56,42 +61,43 @@ public class BlockPreview : MonoBehaviour {
 
     private void OnEnable() {
         block.Event_NextMoveBegan.AddListener(UpdateLine);
-        SetTimeScale.OnTimeScaleChanged += HandleTimeScaleChange;
-
-
-        HandleTimeScaleChange(Time.timeScale); // Initial Case
+        BlockCoordinator.Instance.OnPauseToggled += LevelPaused;
+        BlockBehaviour.OnAnimationCompleted += AnimationCompleted;
+        BlockBehaviour.OnAnimationStarted += AnimationStarted;
     }
+
+
 
     private void OnDisable() {
         block.Event_NextMoveBegan.RemoveListener(UpdateLine);
-        SetTimeScale.OnTimeScaleChanged -= HandleTimeScaleChange;
-
+        BlockCoordinator.Instance.OnPauseToggled -= LevelPaused;
+        BlockBehaviour.OnAnimationCompleted -= AnimationCompleted;
+        BlockBehaviour.OnAnimationStarted -= AnimationStarted;
     }
 
-    private void HandleTimeScaleChange(float newTimeScale) {
-        Debug.Log("Time scale changed to " + newTimeScale);
-
-        float targetAlpha = newTimeScale == 1f ? 1f : 0f;
-
-        Gradient gradient = lineRenderer.colorGradient;
-        GradientAlphaKey[] alphaKeys = gradient.alphaKeys;
-
-        float currentAlpha = alphaKeys.Length > 0 ? alphaKeys[0].alpha : 1f;
-
-        DOTween.To(() => currentAlpha, a => UpdateLineAlpha(a), targetAlpha, 0.3f);
+    private void AnimationStarted() {
+        ClearPath();
     }
 
-    private void UpdateLineAlpha(float alpha) {
-        Gradient gradient = lineRenderer.colorGradient;
-        GradientColorKey[] colorKeys = gradient.colorKeys;
-        GradientAlphaKey[] alphaKeys = new GradientAlphaKey[]
-        {
-        new GradientAlphaKey(alpha, 0f),
-        new GradientAlphaKey(alpha, 1f)
-        };
-
-        Gradient newGradient = new Gradient();
-        newGradient.SetKeys(colorKeys, alphaKeys);
-        lineRenderer.colorGradient = newGradient;
+    private void AnimationCompleted() {
+        if (paused) {
+            DrawPath();
+        }
     }
+
+    private bool paused = false;
+
+    private void LevelPaused(bool paused) {
+        if (paused) {
+            this.paused = true;
+        }
+        else {
+            this.paused = false;
+            ClearPath();
+        }
+    }
+
+
+
+
 }

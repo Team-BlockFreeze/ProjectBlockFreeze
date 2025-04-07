@@ -21,9 +21,9 @@ namespace Systems.SceneManagement {
             base.Awake();
 
             // TODO can remove
-            manager.OnSceneLoaded += sceneName => Debug.Log("Loaded: " + sceneName);
-            manager.OnSceneUnloaded += sceneName => Debug.Log("Unloaded: " + sceneName);
-            manager.OnSceneGroupLoaded += () => Debug.Log("Scene group loaded");
+            manager.OnSceneLoaded += sceneName => Log("Loaded: " + sceneName);
+            manager.OnSceneUnloaded += sceneName => Log("Unloaded: " + sceneName);
+            manager.OnSceneGroupLoaded += () => Log("Scene group loaded");
         }
 
 
@@ -56,7 +56,7 @@ namespace Systems.SceneManagement {
             int index = Array.FindIndex(sceneGroups, group => group.GroupName == groupName);
 
             if (index == -1) {
-                Debug.LogError("Scene group with name " + groupName + " not found.");
+                LogError("Scene group with name " + groupName + " not found.");
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace Systems.SceneManagement {
 
             if (index < 0 || index >= sceneGroups.Length) {
 
-                Debug.LogError("Invalid scene group index: " + index);
+                LogError("Invalid scene group index: " + index);
                 return;
             }
 

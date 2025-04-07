@@ -5,6 +5,7 @@ using Ami.BroAudio;
 using Unity.VisualScripting;
 using System.Collections;
 using DG.Tweening;
+using System;
 
 public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     public static BlockCoordinator Coordinator => coordinator;
@@ -109,6 +110,12 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
     public CellForce[,] forceGrid;
 
+
+    [Button]
+    private void StepForwardOnce() {
+        IterateBlockMovement();
+    }
+
     protected override void Awake() {
         base.Awake();
         if (coordinator == null)
@@ -130,6 +137,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
 
     private Coroutine gameTickCoroutine;
+    public event Action OnGameTickStarted;
     private void StartGameTickLoop() {
         if (gameTickCoroutine != null)
             StopCoroutine(gameTickCoroutine);
@@ -139,7 +147,13 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
     private IEnumerator GameTickLoop() {
         while (true) {
+            while (isPaused) {
+                yield return null;
+            }
+
+            OnGameTickStarted?.Invoke();
             IterateBlockMovement();
+
             yield return new WaitForSeconds(gameTickRepeatRate);
         }
     }
@@ -147,6 +161,17 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     public void UpdateGameTickRate(float newRate) {
         gameTickRepeatRate = newRate;
         StartGameTickLoop(); //! Restart loop with updated repeat rate
+    }
+
+
+    private bool isPaused;
+    public event Action<bool> OnPauseToggled;
+
+
+    [Button]
+    public void TogglePauseResume() {
+        isPaused = !isPaused;
+        OnPauseToggled?.Invoke(isPaused);
     }
 
 

@@ -5,6 +5,7 @@ using DG.Tweening;
 using UnityEngine.Events;
 using UnityEditor.Build.Pipeline;
 using System.Runtime.CompilerServices;
+using System;
 
 [System.Serializable]
 public class BlockBehaviour : LoggerMonoBehaviour {
@@ -109,13 +110,13 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
 
 
-    private void QueueNextTween() {
-        //Log("Queueing tween");
-        Tween nextTween = transform.DOMove(DirToVec3Int(movePath[moveIdx++]), BlockCoordinator.Instance.GameTickRepeatRate()).SetRelative().SetEase(Ease.Linear).Pause();
-        activeTween.OnComplete(() => nextTween.Play());
-        activeTween = nextTween;
-        AdvanceMoveIdx();
-    }
+    // private void QueueNextTween() {
+    //     //Log("Queueing tween");
+    //     Tween nextTween = transform.DOMove(DirToVec3Int(movePath[moveIdx++]), BlockCoordinator.Instance.GameTickRepeatRate()).SetRelative().SetEase(Ease.Linear).Pause();
+    //     activeTween.OnComplete(() => nextTween.Play());
+    //     activeTween = nextTween;
+    //     AdvanceMoveIdx();
+    // }
 
 
 
@@ -165,6 +166,13 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
     public UnityEvent Event_NextMoveBegan = new UnityEvent();
 
+    //! Animation events 
+    //! Note: Will get called multiple times because all animations play on their instance
+    public static event Action OnAnimationCompleted;
+    public static event Action OnAnimationStarted;
+
+
+
     public void Move() {
 
         moveTween?.Kill();
@@ -189,7 +197,13 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
             //transform.position += (Vector3)(Vector2)movement;
             //move towards next coord
-            moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), BlockCoordinator.Instance.GameTickRepeatRate()).SetEase(Ease.Linear);
+
+            OnAnimationStarted?.Invoke();
+            moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), BlockCoordinator.Instance.GameTickRepeatRate())
+                     .SetEase(Ease.Linear)
+                     .OnComplete(() => {
+                         OnAnimationCompleted?.Invoke();
+                     });
         }
         else if (!frozen && lastForces.YLocked() || lastForces.XLocked() && lastForces.XLocked() != lastForces.YLocked()) {
             Log("triggering fall back animation", gameObject);
