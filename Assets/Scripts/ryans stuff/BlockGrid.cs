@@ -13,6 +13,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
 
     [SerializeField] private Vector2Int goalCoord;
 
+    [OnValueChanged("LoadStateFromSO")]
     [SerializeField, InlineEditor]
     private LevelDataSO levelData;
     public LevelDataSO LevelData => levelData;
