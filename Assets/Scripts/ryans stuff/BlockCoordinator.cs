@@ -110,10 +110,16 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
     public CellForce[,] forceGrid;
 
+    private bool isStepping = false;
 
     [Button]
-    public void StepForwardOnce() {
+    public bool StepForwardOnce() {
+        if (isStepping) return false;
+
+        isStepping = true;
         IterateBlockMovement();
+        DOVirtual.DelayedCall(gameTickRepeatRate, () => isStepping = false);
+        return true;
     }
 
     protected override void Awake() {
@@ -126,9 +132,17 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             gridRef = GetComponent<BlockGrid>();
     }
 
+    private void Start() {
+        DOVirtual.DelayedCall(2.05f, () => { if (!isPaused) bellSoundSFX.Play(); });
+    }
+
     public void ManualStart() {
         forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
         InitilizeEmptyForceGrid();
+
+        isPaused = true;
+        Invoke(nameof(TogglePauseResume), 2f);
+        //DOVirtual.DelayedCall(2f, () => bellSoundSFX.Play());
 
         // Invoke(nameof(RingBell), 1.4f);
 
@@ -171,6 +185,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
 
     private bool isPaused = true;
+    public bool IsPaused => isPaused;
     public event Action<bool> OnPauseToggled;
 
 
@@ -179,6 +194,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     public void TogglePauseResume() {
         if (isPaused) {
             StartGameTickLoop();
+            //bellSoundSFX.Play();
         }
 
         Debug.Log(isPaused ? "Resuming Autoplay" : "Pause at next tick");
@@ -200,14 +216,16 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     public void IterateBlockMovement() {
         InitilizeEmptyForceGrid();
 
+        gridRef.ActiveGridState.UpdateCoordList();
+
         AddInitialForcesToForceGrid();
         //ReadForcesOnForceGrid();
 
         int timeout = 0;
-        while (ReadForcesOnForceGrid() && timeout <= 5) {
+        while (ReadForcesOnForceGrid() && timeout <= 10) {
             AddDerivedForcesToForceGrid();
             timeout++;
-            if (timeout >= 5)
+            if (timeout >= 10)
                 LogError("force caluclation infinite loop");
         }
         Log($"grid force iteration looped {timeout} times");
@@ -248,9 +266,9 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
     public void AddInitialForcesToForceGrid() {
         foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
+            gridRef.ActiveGridState.GridBlockStates[b.coord.x, b.coord.y] = b;
             if (b.frozen) continue;
 
-            gridRef.ActiveGridState.GridBlockStates[b.coord.x, b.coord.y] = b;
 
             Vector2Int moveIntent = b.GetMovementIntention();
             Vector2Int targetCell = b.coord + moveIntent;

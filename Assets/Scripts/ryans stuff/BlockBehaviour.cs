@@ -102,6 +102,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
     private void Start() {
         UpdateMovementVisualiser();
+        if (frozen) blocked = true;
         //activeTween = transform.DOMove(GetNextMoveVec, 1f).SetRelative().SetEase(Ease.Linear);
         //AdvanceMoveIdx();
 

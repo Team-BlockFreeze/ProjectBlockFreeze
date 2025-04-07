@@ -2,6 +2,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using System.Collections.Generic;
+using Systems.SceneManagement;
 
 public class LevelSelector : PersistentSingleton<LevelSelector>
 {
@@ -82,5 +83,19 @@ public class LevelSelector : PersistentSingleton<LevelSelector>
         }
 
         EditorUtility.SetDirty(this);
+    }
+
+    const int baseLevelIdx = 2;
+    const int levelSelectIdx = 1;
+
+
+    public void LoadNextLevel() {
+        int curIdx = levels.IndexOf(ChosenLevel);
+        if(curIdx>=0 && curIdx<levels.Count-1) {
+            ChosenLevel = levels[curIdx + 1];
+            SceneLoader.instance.LoadSceneGroup(baseLevelIdx, 0);
+            return;
+        }
+        SceneLoader.instance.LoadSceneGroup(levelSelectIdx, 0);
     }
 }

@@ -5217,7 +5217,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 01
+  m_text: D-02
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9519ff476146fd94dab15b655d8a6621, type: 2}
   m_sharedMaterial: {fileID: -4206780061354199766, guid: 9519ff476146fd94dab15b655d8a6621, type: 2}
@@ -5244,8 +5244,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 5
-  m_fontSizeBase: 5
+  m_fontSize: 3.5
+  m_fontSizeBase: 3.5
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -5254,7 +5254,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -4
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -5345,6 +5345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adc637054e8092041bdf66dfd173257e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logging: 1
   offset: {x: 0, y: 0, z: 0}
   internalCoord: {x: 0, y: 0}
 --- !u!212 &1462864102441680744
@@ -5494,7 +5495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8989a879440a59c4995f37178d20c797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: {fileID: 0}
+  level: {fileID: 0}
   levelNumberText: {fileID: 7531401734722841167}
 --- !u!1 &7742176443680619843
 GameObject:

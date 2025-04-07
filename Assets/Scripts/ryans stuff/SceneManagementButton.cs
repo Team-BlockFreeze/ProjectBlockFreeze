@@ -22,5 +22,8 @@ public class SceneManagementButton : MonoBehaviour {
         SceneLoader.Instance.LoadSceneGroup(index: idx, delayInSeconds: 0f);
     }
 
-
+    const int baseLevelIdx = 2;
+    public void LoadAsynceNextLevel() {
+        LevelSelector.Instance.LoadNextLevel();
+    }
 }

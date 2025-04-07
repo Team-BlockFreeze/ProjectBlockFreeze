@@ -9,9 +9,13 @@ public class LevelSelectButton : MonoBehaviour
     public LevelDataSO Level { 
         get { return level; } 
         set {
-            Match match = Regex.Match(value.name, @"\d+");
-            int levelNum = int.Parse(match.Value);
-            levelNumberText.text = levelNum.ToString("D2");
+            //Match match = Regex.Match(value.name, @"\d+");
+            //int levelNum = int.Parse(match.Value);
+            //levelNumberText.text = levelNum.ToString("D2");
+            string levelNum = value.name.Substring(5);
+            if (levelNum.Length == 2) levelNum = levelNum.Insert(1, "0");
+            levelNum = levelNum.Insert(1, "-");
+            levelNumberText.text = levelNum;
             level = value;
         } 
     }
