@@ -49,7 +49,9 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
 
         //load blocks from level data SO
         foreach (var bData in levelData.Blocks) {
-            BlockBehaviour newBlock = GameObject.Instantiate(bData.blockTypeFab, transform).GetComponent<BlockBehaviour>();
+            Transform blocksList = transform.Find("BlocksList");
+
+            BlockBehaviour newBlock = GameObject.Instantiate(bData.blockTypeFab, blocksList).GetComponent<BlockBehaviour>();
             newBlock.transform.position = GetWorldSpaceFromCoord(bData.gridCoord);
             //newBlock.transform.parent
             newBlock.SetGridRef(this);
@@ -72,6 +74,14 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
 
     [FoldoutGroup("Actions"), Button(ButtonSizes.Large)]
     public void ResetActiveGrid() {
+        Transform blocksList = transform.Find("BlocksList");
+
+        while (blocksList.childCount > 0) {
+            Transform child = blocksList.GetChild(0);
+            GameObject.DestroyImmediate(child.gameObject);
+        }
+
+
         gridSize = levelData.GridSize;
         ActiveGridState.GridBlockStates = new BlockBehaviour[levelData.GridSize.x, levelData.GridSize.y];
         ActiveGridState.BlocksList = new List<BlockBehaviour>();

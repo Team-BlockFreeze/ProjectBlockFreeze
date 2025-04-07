@@ -28,16 +28,22 @@ MonoBehaviour:
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
     task: step overs
-    isComplete: 0
+    isComplete: 1
   - owner:
       name: Kerry
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
     task: preview lines should only show when "paused"
-    isComplete: 0
+    isComplete: 1
   - owner:
       name: Kerry
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
     task: undo button
+    isComplete: 0
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: preview lines need to be offset when even numbered grid
     isComplete: 0

@@ -137,9 +137,9 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
 
 
-    private void OnEnable() {
-        TogglePauseResume(); //! Start game paused
-    }
+    // private void OnEnable() {
+    //     TogglePauseResume();
+    // }
 
 
     private Coroutine gameTickCoroutine;
@@ -170,26 +170,18 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     }
 
 
-    private bool isPaused;
+    private bool isPaused = true;
     public event Action<bool> OnPauseToggled;
 
 
 
-    private bool firstUnpauseTriggered = false;
     [Button]
     public void TogglePauseResume() {
         if (isPaused) {
             StartGameTickLoop();
         }
-        else {
-            if (!firstUnpauseTriggered) {
-                firstUnpauseTriggered = true;
-                RingBell();
-            }
 
-        }
-
-        Log(isPaused ? "Resuming game" : "Pausing game");
+        Debug.Log(isPaused ? "Resuming Autoplay" : "Pause at next tick");
 
         isPaused = !isPaused;
         OnPauseToggled?.Invoke(isPaused);
