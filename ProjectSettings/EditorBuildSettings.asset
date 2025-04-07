@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Empty Grid Level.unity
     guid: 744b06f5956fdd1498a8c69f9fe5db3d
+  - enabled: 1
+    path: Assets/Scenes/Kerry's Scene for level creating.unity
+    guid: 6e97cca776e263b42b0dd7d8d829bd3c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -112,7 +112,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
 
     [Button]
-    private void StepForwardOnce() {
+    public void StepForwardOnce() {
         IterateBlockMovement();
     }
 
@@ -130,9 +130,15 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
         InitilizeEmptyForceGrid();
 
-        Invoke(nameof(RingBell), 1.4f);
+        // Invoke(nameof(RingBell), 1.4f);
 
-        DOVirtual.DelayedCall(delay: 2, () => StartGameTickLoop());
+        // DOVirtual.DelayedCall(delay: 2, () => StartGameTickLoop());
+    }
+
+
+
+    private void OnEnable() {
+        TogglePauseResume(); //! Start game paused
     }
 
 
@@ -168,8 +174,23 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     public event Action<bool> OnPauseToggled;
 
 
+
+    private bool firstUnpauseTriggered = false;
     [Button]
     public void TogglePauseResume() {
+        if (isPaused) {
+            StartGameTickLoop();
+        }
+        else {
+            if (!firstUnpauseTriggered) {
+                firstUnpauseTriggered = true;
+                RingBell();
+            }
+
+        }
+
+        Log(isPaused ? "Resuming game" : "Pausing game");
+
         isPaused = !isPaused;
         OnPauseToggled?.Invoke(isPaused);
     }

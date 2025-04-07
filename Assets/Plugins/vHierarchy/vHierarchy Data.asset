@@ -17,6 +17,7 @@ MonoBehaviour:
     - 8c9cfa26abfee488c85f1582747f6a02
     - fc3567761a9ea0d4ba06ad5178c359fd
     - 72a63bc0c57b65344805a49f8bf961f0
+    - 6e97cca776e263b42b0dd7d8d829bd3c
     values:
     - goDatas_byGlobalId:
         keys:
@@ -126,3 +127,12 @@ MonoBehaviour:
           iconNameOrGuid: Settings Icon
         - colorIndex: 1
           iconNameOrGuid: 
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-2-6e97cca776e263b42b0dd7d8d829bd3c-8182765344510954997-1932875344
+        - globalObjectIdString: GlobalObjectId_V1-2-6e97cca776e263b42b0dd7d8d829bd3c-6298016687903376037-7526937179213349183
+        values:
+        - colorIndex: 2
+          iconNameOrGuid: MeshCollider Icon
+        - colorIndex: 3
+          iconNameOrGuid: Canvas Icon

@@ -18,10 +18,11 @@ public class BlockPreview : MonoBehaviour {
     }
 
     private void Start() {
-        lineRenderer.positionCount = 0; // Don't show line on start
 
         movePath = block.GetMovePath();
         UpdateLine();
+
+        DrawPath(); //! Remove if don't want to draw preview on start 
     }
 
     private void UpdateLine() {

@@ -77,6 +77,8 @@ namespace Systems.SceneManagement {
         public async void LoadSceneGroup(int index, float delayInSeconds) {
             await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
             await LoadSceneGroupAsync(index);
+
+            Debug.Log("test");
         }
 
         public async Task LoadSceneGroupAsync(int index) {

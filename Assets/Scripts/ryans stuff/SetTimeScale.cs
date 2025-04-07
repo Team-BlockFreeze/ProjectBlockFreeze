@@ -20,4 +20,12 @@ public class SetTimeScale : MonoBehaviour {
         OnTimeScaleChanged?.Invoke(timeScaleToSet);
         EventSystem.current.SetSelectedGameObject(gameObject);
     }
+
+    public void TogglePause() {
+        BlockCoordinator.Instance.TogglePauseResume();
+    }
+
+    public void StepForwardOnce() {
+        BlockCoordinator.Instance.StepForwardOnce();
+    }
 }
