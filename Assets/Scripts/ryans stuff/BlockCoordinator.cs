@@ -12,7 +12,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     private static BlockCoordinator coordinator;
 
 
-
+    [SerializeField] private bool startLevelPaused = true;
     [SerializeField] private float gameTickRepeatRate = 1f;
     public float GameTickRepeatRate() => gameTickRepeatRate;
 
@@ -136,12 +136,14 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         DOVirtual.DelayedCall(2.05f, () => { if (!isPaused) bellSoundSFX.Play(); });
     }
 
+
     public void ManualStart() {
         forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
         InitilizeEmptyForceGrid();
 
         isPaused = true;
-        Invoke(nameof(TogglePauseResume), 2f);
+
+        if (!startLevelPaused) Invoke(nameof(TogglePauseResume), 2f);
         //DOVirtual.DelayedCall(2f, () => bellSoundSFX.Play());
 
         // Invoke(nameof(RingBell), 1.4f);
