@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using static BlockBehaviour;
@@ -29,9 +30,7 @@ public class BlockPreview : MonoBehaviour {
         Vector3 worldPos = block.GridRef.GetWorldSpaceFromCoord(block.coord);
         worldSpaceCoord = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
     }
-
     private void DrawPath() {
-        // Debug.Log("Draw Path");
         int currentIndex = block.GetMoveIdx();
 
         Vector3 currentPos = new Vector3(worldSpaceCoord.x, worldSpaceCoord.y, 0);
@@ -115,3 +114,36 @@ public class BlockPreview : MonoBehaviour {
 
 
 }
+
+
+//! Extra smooth pathing
+// private void DrawPath() {
+//     int currentIndex = block.GetMoveIdx();
+//     Vector3 currentPos = new Vector3(worldSpaceCoord.x, worldSpaceCoord.y, 0);
+
+//     for (int i = currentIndex - 1; i >= 0; i--) {
+//         currentPos -= GetDirectionVector(movePath[i]);
+//     }
+
+//     List<Vector3> smoothPositions = new List<Vector3>();
+//     smoothPositions.Add(currentPos);
+
+//     int segmentsPerStep = 8;
+
+//     for (int i = 0; i < movePath.Length; i++) {
+//         Vector3 direction = GetDirectionVector(movePath[i]);
+//         Vector3 stepStart = currentPos;
+//         Vector3 stepEnd = stepStart + direction;
+
+//         for (int j = 1; j <= segmentsPerStep; j++) {
+//             float t = j / (float)segmentsPerStep;
+//             Vector3 interpolated = Vector3.Lerp(stepStart, stepEnd, t);
+//             smoothPositions.Add(interpolated);
+//         }
+
+//         currentPos = stepEnd;
+//     }
+
+//     lineRenderer.positionCount = smoothPositions.Count;
+//     lineRenderer.SetPositions(smoothPositions.ToArray());
+// }

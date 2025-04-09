@@ -13,11 +13,7 @@ public class LineDraw : MonoBehaviour {
         if (Input.GetMouseButtonDown(0)) {
             GameObject drawing = Instantiate(drawingPrefab);
             lineRenderer = drawing.GetComponent<LineRenderer>();
-            lineRenderer.startWidth = 0.15f;
-            lineRenderer.endWidth = 0.15f;
-            Randomize();
-            lineRenderer.startColor = randomColor;
-            lineRenderer.endColor = randomColor;
+
         }
 
         if (Input.GetMouseButton(0)) {
@@ -26,7 +22,27 @@ public class LineDraw : MonoBehaviour {
 
     }
 
+
+
+    void FreeDraw() {
+
+        Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
+        lineRenderer.positionCount++;
+        lineRenderer.SetPosition(lineRenderer.positionCount - 1, Camera.main.ScreenToWorldPoint(mousePos));
+
+    }
+
     void Randomize() {
+        //void Update(){
+        // lineRenderer.startWidth = 0.15f;
+        // lineRenderer.endWidth = 0.15f;
+        // Randomize();
+        // lineRenderer.startColor = randomColor;
+        // lineRenderer.endColor = randomColor;
+        //    }
+
+
+
         int randomInt = Random.Range(1, 5);
 
         switch (randomInt) {
@@ -53,12 +69,5 @@ public class LineDraw : MonoBehaviour {
         }
 
     }
-
-    void FreeDraw() {
-
-        Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
-        lineRenderer.positionCount++;
-        lineRenderer.SetPosition(lineRenderer.positionCount - 1, Camera.main.ScreenToWorldPoint(mousePos));
-
-    }
 }
+
