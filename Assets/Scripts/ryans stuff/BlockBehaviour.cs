@@ -30,6 +30,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
     [ShowInInspector, ReadOnly]
     private int moveIdx;
+    public int GetMoveIdx() => moveIdx;
 
 
     public enum Direction { up, down, left, right, wait }
@@ -212,7 +213,9 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
             //Vector3 ogScale = transform.localScale;
             //transform.localScale = ogScale * .99f;
-            moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo);
+            moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo).OnComplete(() => {
+                OnAnimationCompleted?.Invoke();
+            });
             //.OnComplete(() => { transform.localScale = ogScale; });
 
             moveTween.Play();
@@ -229,7 +232,9 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
             //Vector3 ogScale = transform.localScale;
             //transform.localScale = ogScale * .99f;
-            moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo);
+            moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo).OnComplete(() => {
+                OnAnimationCompleted?.Invoke();
+            });
             //.OnComplete(() => { transform.localScale = ogScale; });
 
             moveTween.Play();

@@ -31,19 +31,28 @@ public class BlockPreview : MonoBehaviour {
     }
 
     private void DrawPath() {
-        Vector3 startPosition = new Vector3(worldSpaceCoord.x, worldSpaceCoord.y, 0);
+        // Debug.Log("Draw Path");
+        int currentIndex = block.GetMoveIdx();
+
+        Vector3 currentPos = new Vector3(worldSpaceCoord.x, worldSpaceCoord.y, 0);
+
+        for (int i = currentIndex - 1; i >= 0; i--) {
+            currentPos -= GetDirectionVector(movePath[i]);
+        }
+
+        Vector3 startPosition = currentPos;
         Vector3[] positions = new Vector3[movePath.Length + 1];
         positions[0] = startPosition;
 
-        Vector3 currentPos = startPosition;
         for (int i = 0; i < movePath.Length; i++) {
-            currentPos += GetDirectionVector(movePath[i]);
-            positions[i + 1] = currentPos;
+            startPosition += GetDirectionVector(movePath[i]);
+            positions[i + 1] = startPosition;
         }
 
         lineRenderer.positionCount = positions.Length;
         lineRenderer.SetPositions(positions);
     }
+
 
     private void ClearPath() {
         lineRenderer.positionCount = 0;
@@ -81,6 +90,8 @@ public class BlockPreview : MonoBehaviour {
     }
 
     private void AnimationCompleted() {
+        // Debug.Log("Animation Completed");
+
         if (paused) {
             DrawPath();
         }
@@ -89,6 +100,8 @@ public class BlockPreview : MonoBehaviour {
     private bool paused = false;
 
     private void LevelPaused(bool paused) {
+        Debug.Log(paused);
+
         if (paused) {
             this.paused = true;
         }
