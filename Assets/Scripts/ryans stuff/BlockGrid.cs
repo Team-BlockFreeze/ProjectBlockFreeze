@@ -33,6 +33,9 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     [FoldoutGroup("Grid Rendering"), SerializeField]
     private SnapToGrid goalBlockScript;
 
+    [FoldoutGroup("Grid Rendering"), SerializeField]
+    private Material pingpongMAT;
+
     [SerializeField]
     public GridState ActiveGridState;
 
@@ -70,7 +73,22 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
                 newBlock.TrySetFreeze(true);
 
             newBlock.UpdateMovementVisualiser();
+
+
+
+            //! dirty solution for now -kerry
+            if (newBlock.moveMode == BlockBehaviour.BlockMoveState.pingpong) {
+                Renderer blockRenderer = newBlock.GetComponentInChildren<MeshRenderer>();
+                if (blockRenderer != null) {
+                    blockRenderer.sharedMaterial = pingpongMAT;
+                    Debug.Log(blockRenderer);
+                }
+            }
         }
+
+
+
+
 
         EditorUtility.SetDirty(this);
     }
