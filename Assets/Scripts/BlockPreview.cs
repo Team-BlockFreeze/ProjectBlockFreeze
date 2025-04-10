@@ -13,6 +13,10 @@ public class BlockPreview : MonoBehaviour {
     private Direction[] movePath;
     private LineRenderer lineRenderer;
 
+    // End Point
+    [SerializeField] private GameObject endDotPrefab;
+    private GameObject endDotInstance;
+
     private void Awake() {
         block = GetComponent<BlockBehaviour>();
         lineRenderer = GetComponent<LineRenderer>();
@@ -50,6 +54,32 @@ public class BlockPreview : MonoBehaviour {
 
         lineRenderer.positionCount = positions.Length;
         lineRenderer.SetPositions(positions);
+
+
+        //! Dot
+
+        Vector3 endPos = positions[positions.Length - 1];
+
+        if (endDotInstance == null) {
+            endDotInstance = Instantiate(endDotPrefab, endPos, Quaternion.identity, transform.parent);
+        }
+        else {
+            endDotInstance.transform.position = endPos;
+        }
+
+        SpriteRenderer sr = endDotInstance.GetComponent<SpriteRenderer>();
+
+        Vector2Int endGridCoord = block.GridRef.GetGridCoordFromWorldPos(endPos);
+        bool isValid = block.GridRef.isValidGridCoord(endGridCoord);
+        Debug.Log(endPos);
+        Debug.Log(endGridCoord);
+        Debug.Log(isValid);
+
+        sr.color = isValid
+            ? new Color(1f, 1f, 1f, 1f)           // Liquid hwhite
+            : new Color(0.666f, 0.766f, 1, 1f);    // Sky blue
+
+        endDotInstance.transform.localScale = Vector3.one * 0.3f;
     }
 
 
@@ -91,6 +121,7 @@ public class BlockPreview : MonoBehaviour {
     private void AnimationCompleted() {
         // Debug.Log("Animation Completed");
 
+
         if (paused) {
             UpdateLine();
             DrawPath();
@@ -100,15 +131,20 @@ public class BlockPreview : MonoBehaviour {
     private bool paused = false;
 
     private void LevelPaused(bool paused) {
-        Debug.Log(paused);
+        Log(paused);
 
         if (paused) {
             this.paused = true;
         }
         else {
             this.paused = false;
+            RemoveEndDot();
             ClearPath();
         }
+    }
+
+    private void RemoveEndDot() {
+        endDotInstance.transform.localScale = Vector3.zero;
     }
 
 

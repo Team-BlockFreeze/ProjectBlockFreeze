@@ -41,7 +41,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     public void LoadStateFromSO() {
         //destroy current blocks
         foreach (var b in ActiveGridState.BlocksList)
-            if(b!=null)
+            if (b != null)
                 GameObject.DestroyImmediate(b.gameObject);
 
         //clear active grid state
@@ -176,7 +176,9 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
 
     public Vector2Int GetGridCoordFromWorldPos(Vector3 pos) {
         var floatGridPos = pos - GetBotLeftOriginPos();
+        floatGridPos -= new Vector3(0.5f, 0.5f, 0);
         Vector2Int gridPos = new Vector2Int((int)floatGridPos.x, (int)floatGridPos.y);
+
         return gridPos;
     }
 

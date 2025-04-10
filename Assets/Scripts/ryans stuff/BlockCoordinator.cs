@@ -199,7 +199,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             //bellSoundSFX.Play();
         }
 
-        Debug.Log(isPaused ? "Resuming Autoplay" : "Pause at next tick");
+        Log(isPaused ? "Resuming Autoplay" : "Pause at next tick");
 
         isPaused = !isPaused;
         OnPauseToggled?.Invoke(isPaused);
