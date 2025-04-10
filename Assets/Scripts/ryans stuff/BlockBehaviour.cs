@@ -201,7 +201,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
             //move towards next coord
 
             OnAnimationStarted?.Invoke();
-            moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), BlockCoordinator.Instance.GameTickRepeatRate())
+            moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), GameSettings.Instance.gameTickInSeconds)
                      .SetEase(Ease.Linear)
                      .OnComplete(() => {
                          OnAnimationCompleted?.Invoke();
@@ -305,16 +305,17 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
     public static UnityEvent OnFreezeBlock;
 
-    private void OnMouseDown() {
-        if (!canBeFrozen) return;
+    // private void OnMouseUp() {
+    //     if (!canBeFrozen) return;
 
-        frozen = !frozen;
-        blocked = frozen;
+    //     frozen = !frozen;
+    //     blocked = frozen;
 
-        cubeRenderer.material = frozen ? frozenMat : normalMat;
+    //     cubeRenderer.material = frozen ? frozenMat : normalMat;
 
-        OnFreezeBlock?.Invoke();
-    }
+    //     OnFreezeBlock?.Invoke();
+    // }
+
 
     public void TrySetFreeze(bool? freezeState = null) {
         if (!canBeFrozen) return;

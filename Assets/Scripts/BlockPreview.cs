@@ -8,7 +8,7 @@ using static BlockBehaviour;
 using static DebugLoggerExtensions;
 
 [RequireComponent(typeof(LineRenderer))]
-public class BlockPreview : MonoBehaviour {
+public class BlockPreview : LoggerMonoBehaviour {
     private BlockBehaviour block;
     private Vector2 worldSpaceCoord;
     private Direction[] movePath;
@@ -18,20 +18,62 @@ public class BlockPreview : MonoBehaviour {
     [SerializeField] private GameObject endDotPrefab;
     private GameObject endDotInstance;
 
+
+    private LongPressDetector longPressDetector;
+    private const float fadeDuration = 0.1f;
+
+
+
+    private void OnShortPressTriggered() {
+        block.TrySetFreeze();
+    }
+
+    private void OnLongPressTriggered() {
+        if (GameSettings.Instance.togglePreviewLine) {
+            ToggleFadePreview(fadeDuration);
+        }
+        else {
+            FadeInPreview(fadeDuration);
+        }
+    }
+
+    private void OnStopTouching() {
+        if (!GameSettings.Instance.togglePreviewLine) {
+            FadeOutPreview(fadeDuration);
+        }
+    }
+
+    private void OnStartPress() {
+
+    }
+
     private void Awake() {
+        longPressDetector = GetComponent<LongPressDetector>();
         block = GetComponent<BlockBehaviour>();
         lineRenderer = GetComponent<LineRenderer>();
     }
 
     private void Start() {
-
         movePath = block.GetMovePath();
         UpdateLine();
 
         DrawPath(); //! Remove if don't want to draw preview on start 
     }
 
-    private void FadeOutPreview(float duration) {
+    public void ToggleFadePreview(float duration) {
+        SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
+        Color currentColor = endDotSpriteRenderer.color;
+
+        if (currentColor.a == 0f) {
+            FadeInPreview(duration);
+        }
+        else {
+            FadeOutPreview(duration);
+        }
+    }
+
+
+    public void FadeOutPreview(float duration) {
         Ease easeType = Ease.Linear;
 
         Color startColor = new Color(1f, 1f, 1f, 1f);
@@ -51,11 +93,10 @@ public class BlockPreview : MonoBehaviour {
 
         SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
 
-        endDotSpriteRenderer.color = startColor;
         endDotSpriteRenderer.DOColor(endColor, duration).SetEase(easeType);
     }
 
-    private void FadeInPreview(float duration) {
+    public void FadeInPreview(float duration) {
         Ease easeType = Ease.Linear;
 
         Color startColor = new Color(1f, 1f, 1f, 0f);
@@ -72,19 +113,16 @@ public class BlockPreview : MonoBehaviour {
         ).SetEase(easeType);
 
         SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
-        endDotSpriteRenderer.color = startColor;
 
         endDotSpriteRenderer.DOColor(endColor, duration).SetEase(easeType);
     }
-
-
-
 
 
     private void UpdateLine() {
         Vector3 worldPos = block.GridRef.GetWorldSpaceFromCoord(block.coord);
         worldSpaceCoord = new Vector2(worldPos.x, worldPos.y);
     }
+
     private void DrawPath() {
         int currentIndex = block.GetMoveIdx();
 
@@ -135,11 +173,6 @@ public class BlockPreview : MonoBehaviour {
         endDotInstance.transform.localScale = Vector3.one * 0.3f;
     }
 
-
-    private void ClearPath() {
-        lineRenderer.positionCount = 0;
-    }
-
     private Vector3 GetDirectionVector(Direction dir) {
         switch (dir) {
             case Direction.left: return Vector3.left;
@@ -156,6 +189,14 @@ public class BlockPreview : MonoBehaviour {
         BlockCoordinator.Instance.OnPauseToggled += LevelPaused;
         BlockBehaviour.OnAnimationCompleted += AnimationCompleted;
         BlockBehaviour.OnAnimationStarted += AnimationStarted;
+
+
+        if (longPressDetector != null) {
+            longPressDetector.OnStartPress += OnStartPress;
+            longPressDetector.OnStopTouching += OnStopTouching;
+            longPressDetector.OnLongPressTriggered += OnLongPressTriggered;
+            longPressDetector.OnShortPressTriggered += OnShortPressTriggered;
+        }
     }
 
 
@@ -165,7 +206,16 @@ public class BlockPreview : MonoBehaviour {
         BlockCoordinator.Instance.OnPauseToggled -= LevelPaused;
         BlockBehaviour.OnAnimationCompleted -= AnimationCompleted;
         BlockBehaviour.OnAnimationStarted -= AnimationStarted;
+
+
+        if (longPressDetector != null) {
+            longPressDetector.OnStartPress -= OnStartPress;
+            longPressDetector.OnStopTouching -= OnStopTouching;
+            longPressDetector.OnLongPressTriggered -= OnLongPressTriggered;
+            longPressDetector.OnShortPressTriggered -= OnShortPressTriggered;
+        }
     }
+
 
     private void AnimationStarted() {
 
@@ -173,7 +223,11 @@ public class BlockPreview : MonoBehaviour {
 
     private void AnimationCompleted() {
         if (paused) {
-            ShowPreview();
+
+            if (GameSettings.Instance.showAllPreviewLinesOnPause) {
+                ShowPreview();
+            }
+
         }
     }
 
@@ -182,33 +236,31 @@ public class BlockPreview : MonoBehaviour {
     private void LevelPaused(bool paused) {
         Log(paused);
 
-        if (paused) {
-            this.paused = true;
-        }
-        else {
+        if (!paused) {
             this.paused = false;
             HidePreview();
         }
+        else {
+            this.paused = true;
+        }
     }
 
-    private void RemoveEndDot() {
-        endDotInstance.transform.localScale = Vector3.zero;
-    }
 
-    private void ShowPreview() {
-        FadeInPreview(0.15f);
+    [Button]
+    public void ShowPreview() {
+        FadeInPreview(fadeDuration);
         UpdateLine();
         DrawPath();
     }
 
-    private void HidePreview() {
-        FadeOutPreview(0.15f);
+    [Button]
+    public void HidePreview() {
+        FadeOutPreview(fadeDuration);
     }
 
-
-
-
 }
+
+
 
 
 //! Extra smooth pathing

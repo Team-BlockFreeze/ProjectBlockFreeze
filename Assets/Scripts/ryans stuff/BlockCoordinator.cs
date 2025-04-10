@@ -13,8 +13,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
 
     [SerializeField] private bool startLevelPaused = true;
-    [SerializeField] private float gameTickRepeatRate = 1f;
-    public float GameTickRepeatRate() => gameTickRepeatRate;
 
 
     [Header("References")]
@@ -118,7 +116,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
         isStepping = true;
         IterateBlockMovement();
-        DOVirtual.DelayedCall(gameTickRepeatRate, () => isStepping = false);
+        DOVirtual.DelayedCall(GameSettings.Instance.gameTickInSeconds, () => isStepping = false);
         return true;
     }
 
@@ -176,13 +174,8 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             OnGameTickStarted?.Invoke();
             IterateBlockMovement();
 
-            yield return new WaitForSeconds(gameTickRepeatRate);
+            yield return new WaitForSeconds(GameSettings.Instance.gameTickInSeconds);
         }
-    }
-
-    public void UpdateGameTickRate(float newRate) {
-        gameTickRepeatRate = newRate;
-        StartGameTickLoop(); //! Restart loop with updated repeat rate
     }
 
 
