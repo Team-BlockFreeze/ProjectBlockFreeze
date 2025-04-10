@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using static BlockBehaviour;
 using static DebugLoggerExtensions;
@@ -29,6 +30,56 @@ public class BlockPreview : MonoBehaviour {
 
         DrawPath(); //! Remove if don't want to draw preview on start 
     }
+
+    private void FadeOutPreview(float duration) {
+        Ease easeType = Ease.Linear;
+
+        Color startColor = new Color(1f, 1f, 1f, 1f);
+        Color endColor = new Color(1f, 1f, 1f, 0f);
+
+        DOTween.To(
+            () => lineRenderer.startColor,
+            color => {
+                lineRenderer.startColor = color;
+                lineRenderer.endColor = color;
+            },
+            endColor,
+            duration
+        ).SetEase(easeType);
+
+
+
+        SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
+
+        endDotSpriteRenderer.color = startColor;
+        endDotSpriteRenderer.DOColor(endColor, duration).SetEase(easeType);
+    }
+
+    private void FadeInPreview(float duration) {
+        Ease easeType = Ease.Linear;
+
+        Color startColor = new Color(1f, 1f, 1f, 0f);
+        Color endColor = new Color(1f, 1f, 1f, 1f);
+
+        DOTween.To(
+            () => lineRenderer.startColor,
+            color => {
+                lineRenderer.startColor = color;
+                lineRenderer.endColor = color;
+            },
+            endColor,
+            duration
+        ).SetEase(easeType);
+
+        SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
+        endDotSpriteRenderer.color = startColor;
+
+        endDotSpriteRenderer.DOColor(endColor, duration).SetEase(easeType);
+    }
+
+
+
+
 
     private void UpdateLine() {
         Vector3 worldPos = block.GridRef.GetWorldSpaceFromCoord(block.coord);
@@ -67,17 +118,19 @@ public class BlockPreview : MonoBehaviour {
             endDotInstance.transform.position = endPos;
         }
 
-        SpriteRenderer sr = endDotInstance.GetComponent<SpriteRenderer>();
 
-        Vector2Int endGridCoord = block.GridRef.GetGridCoordFromWorldPos(endPos);
-        bool isValid = block.GridRef.isValidGridCoord(endGridCoord);
-        Debug.Log(endPos);
-        Debug.Log(endGridCoord);
-        Debug.Log(isValid);
+        //! Overriden by fade in/out
+        // SpriteRenderer sr = endDotInstance.GetComponent<SpriteRenderer>();
 
-        sr.color = isValid
-            ? new Color(1f, 1f, 1f, 1f)           // Liquid hwhite
-            : new Color(0.666f, 0.766f, 1, 1f);    // Sky blue
+        // Vector2Int endGridCoord = block.GridRef.GetGridCoordFromWorldPos(endPos);
+        // bool isValid = block.GridRef.isValidGridCoord(endGridCoord);
+        // Log(endPos);
+        // Log(endGridCoord);
+        // Log(isValid);
+
+        // sr.color = isValid
+        //     ? new Color(1f, 1f, 1f, 1f)           // Liquid hwhite
+        //     : new Color(0.666f, 0.766f, 1, 1f);    // Sky blue
 
         endDotInstance.transform.localScale = Vector3.one * 0.3f;
     }
@@ -115,16 +168,12 @@ public class BlockPreview : MonoBehaviour {
     }
 
     private void AnimationStarted() {
-        ClearPath();
+
     }
 
     private void AnimationCompleted() {
-        // Debug.Log("Animation Completed");
-
-
         if (paused) {
-            UpdateLine();
-            DrawPath();
+            ShowPreview();
         }
     }
 
@@ -138,13 +187,22 @@ public class BlockPreview : MonoBehaviour {
         }
         else {
             this.paused = false;
-            RemoveEndDot();
-            ClearPath();
+            HidePreview();
         }
     }
 
     private void RemoveEndDot() {
         endDotInstance.transform.localScale = Vector3.zero;
+    }
+
+    private void ShowPreview() {
+        FadeInPreview(0.15f);
+        UpdateLine();
+        DrawPath();
+    }
+
+    private void HidePreview() {
+        FadeOutPreview(0.15f);
     }
 
 
