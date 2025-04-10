@@ -9,7 +9,7 @@ using static DebugLoggerExtensions;
 [RequireComponent(typeof(LineRenderer))]
 public class BlockPreview : MonoBehaviour {
     private BlockBehaviour block;
-    private Vector2Int worldSpaceCoord;
+    private Vector2 worldSpaceCoord;
     private Direction[] movePath;
     private LineRenderer lineRenderer;
 
@@ -28,7 +28,7 @@ public class BlockPreview : MonoBehaviour {
 
     private void UpdateLine() {
         Vector3 worldPos = block.GridRef.GetWorldSpaceFromCoord(block.coord);
-        worldSpaceCoord = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
+        worldSpaceCoord = new Vector2(worldPos.x, worldPos.y);
     }
     private void DrawPath() {
         int currentIndex = block.GetMoveIdx();
@@ -92,6 +92,7 @@ public class BlockPreview : MonoBehaviour {
         // Debug.Log("Animation Completed");
 
         if (paused) {
+            UpdateLine();
             DrawPath();
         }
     }

@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Smart
-{
+namespace Smart {
     using GL = GUILayout;
     using Object = UnityEngine.Object;
 
@@ -15,71 +14,56 @@ namespace Smart
     using static EditorGUIUtility;
     using static UnityEditorInternal.InternalEditorUtility;
 
-    public partial class Inspector
-    {
-        public class InspectorGridView : /*List<Row>*/List<Editor>
-        {
+    public partial class Inspector {
+        public class InspectorGridView : /*List<Row>*/List<Editor> {
             static Rect lastRow;
 
             int margin = 2;
 
-            public GUILayoutOption slotButtonWidth
-            {
+            public GUILayoutOption slotButtonWidth {
                 get => GL.Width((currentViewWidth - (maxSlots.Value * margin + (maxSlots.Value + 1) / 2)) / maxSlots.Value);
             }
-            public GUILayoutOption slotButtonHeight
-            {
+            public GUILayoutOption slotButtonHeight {
                 get => GL.Height(slotHeight.Value);
             }
 
-            public class Row
-            {
+            public class Row {
                 public int slot = 0;
                 public bool open;
-                
-                public bool end
-                { get => maxSlots.Value == slot + 1; }
 
-                public bool start
-                { get => slot == 0; }
+                public bool end { get => maxSlots.Value == slot + 1; }
 
-                public void Start()
-                {
-                    if(start)
-                    {
+                public bool start { get => slot == 0; }
+
+                public void Start() {
+                    if (start) {
                         open = true;
                         lastRow = BeginHorizontal();
                     }
                 }
 
-                public void End()
-                {
-                    if (end)
-                    {
+                public void End() {
+                    if (end) {
                         open = false;
 
                         EndHorizontal();
 
                         slot = 0;
                     }
-                    else
-                    {
+                    else {
 
                         slot++;
                     }
                 }
 
-                public void GridEnded()
-                {
-                    if(open)
-                    {
+                public void GridEnded() {
+                    if (open) {
                         gridView.DrawAddComponent();
 
                         EndHorizontal();
                     }
-                    else
-                    {
-                        Debug.Log("Drawing outside row");
+                    else {
+                        // Debug.Log("Drawing outside row");
                         BeginHorizontal();
                         gridView.DrawAddComponent();
                         EndHorizontal();
@@ -89,10 +73,8 @@ namespace Smart
 
             public Row row = new Row();
 
-            public void Draw()
-            {
-                if (!showButtons.Value)
-                {
+            public void Draw() {
+                if (!showButtons.Value) {
                     return;
                 }
 
@@ -101,12 +83,10 @@ namespace Smart
                 row.slot = 0;
                 row.open = false;
 
-                for (int i = 0; i < Count; i++)
-                {
+                for (int i = 0; i < Count; i++) {
                     editor = this[i];
 
-                    if (Filter(editor))
-                    {
+                    if (Filter(editor)) {
                         continue;
                     }
 
@@ -114,15 +94,12 @@ namespace Smart
 
                     bool selected = componentView.Contains(editor);
 
-                    if (Button(editor.target, selected))
-                    {
-                        if (selected)
-                        {
+                    if (Button(editor.target, selected)) {
+                        if (selected) {
                             SetIsInspectorExpanded(editor.target, false);
                             componentView.Remove(editor);
                         }
-                        else
-                        {
+                        else {
                             SetIsInspectorExpanded(editor.target, true);
                             componentView.Add(editor);
                         }
@@ -133,8 +110,7 @@ namespace Smart
                 row.GridEnded();
             }
 
-            GUIContent GetContent(Editor editor)
-            {
+            GUIContent GetContent(Editor editor) {
                 Object value = editor.target;
                 GUIContent content = ObjectContent(value, value.GetType());
                 content.tooltip = value.GetType().Name;
@@ -143,8 +119,7 @@ namespace Smart
                 return content;
             }
 
-            bool Button(Object value, bool selected)
-            {
+            bool Button(Object value, bool selected) {
                 if (null == value) { return false; }
 
                 GUIContent content = ObjectContent(value, value.GetType());
@@ -158,21 +133,17 @@ namespace Smart
                 return GL.Button(content, style, slotButtonWidth, slotButtonHeight);
             }
 
-            public void DrawAddComponent()
-            {
-                if (0 == gameObjects.Length)
-                {
+            public void DrawAddComponent() {
+                if (0 == gameObjects.Length) {
                     return;
                 }
 
-                if (GL.Button(TrIconContent("d_Toolbar Plus@2x"), slotButtonWidth, slotButtonHeight))
-                {
+                if (GL.Button(TrIconContent("d_Toolbar Plus@2x"), slotButtonWidth, slotButtonHeight)) {
                     OpenComponentWindow();
                 }
             }
 
-            void OpenComponentWindow()
-            {
+            void OpenComponentWindow() {
                 Type type = Type.GetType("UnityEditor.AddComponent.AddComponentWindow, UnityEditor");
                 MethodInfo method = type.GetMethod("Show", BindingFlags.Static | BindingFlags.NonPublic);
 
@@ -187,10 +158,8 @@ namespace Smart
                 method.Invoke(null, args);
             }
 
-            public void FREE()
-            {
-                for (int i = 0; i < Count; i++)
-                {
+            public void FREE() {
+                for (int i = 0; i < Count; i++) {
                     this[i] = null;
                 }
 
