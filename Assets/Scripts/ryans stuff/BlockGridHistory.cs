@@ -24,12 +24,14 @@ public class BlockSnapshot {
     public BlockBehaviour block;
     public Vector2Int previousCoord;
     public int previousMoveIdx;
+    public bool pingpongIsForward;
 
     public bool wasFrozen;
     public bool wasBlocked;
 
     public BlockSnapshot(BlockBehaviour b) {
         this.block = b;
+        pingpongIsForward = b.GetPingpongIsForward();
         previousCoord = b.coord;
         previousMoveIdx = b.GetMoveIdx();
         wasFrozen = b.frozen;
@@ -39,10 +41,11 @@ public class BlockSnapshot {
 
     public void ApplyUndo() {
         block.UpdateMovementVisualiser();
-
+        block.SetPingpongIsForward(pingpongIsForward);
         block.coord = previousCoord;
         block.SetMoveIdx(previousMoveIdx);
         block.frozen = wasFrozen;
+        block.TrySetFreeze(wasFrozen);
         block.blocked = wasBlocked;
         block.transform.DOMove(block.GridRef.GetWorldSpaceFromCoord(previousCoord), GameSettings.Instance.gameTickInSeconds / 2f)
             .SetEase(Ease.OutQuad);

@@ -23,6 +23,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
     private bool pingpongIsForward = true;
     public bool GetPingpongIsForward() => pingpongIsForward;
+    public void SetPingpongIsForward(bool value) => pingpongIsForward = value;
 
     public bool canBeFrozen = true;
     private Vector3Int GetNextMoveVec => DirToVec3Int(movePath[moveIdx++]);
