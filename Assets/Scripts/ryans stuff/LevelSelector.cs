@@ -3,9 +3,9 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using System.Collections.Generic;
 using Systems.SceneManagement;
+using Ami.BroAudio;
 
-public class LevelSelector : PersistentSingleton<LevelSelector>
-{
+public class LevelSelector : PersistentSingleton<LevelSelector> {
     [SerializeField]
     [Sirenix.OdinInspector.FolderPath]
     private string levelsPath;
@@ -21,6 +21,9 @@ public class LevelSelector : PersistentSingleton<LevelSelector>
 
     public LevelDataSO ChosenLevel { get; set; }
 
+    public ParticleSystem clickParticlePrefab;
+    public SoundID LevelSelectedSFX;
+
     [ReadOnly]
     [SerializeField]
     private List<GameObject> LevelButtons = new List<GameObject>();
@@ -32,7 +35,7 @@ public class LevelSelector : PersistentSingleton<LevelSelector>
     [BoxGroup("Buttons")]
     [Button]
     private void LoadLevelsFromPath() {
-        if(levelsPath == null || levelsPath.Length == 0) {
+        if (levelsPath == null || levelsPath.Length == 0) {
             Debug.LogWarning("No levels path");
             return;
         }
@@ -62,7 +65,7 @@ public class LevelSelector : PersistentSingleton<LevelSelector>
             GameObject.DestroyImmediate(b);
         LevelButtons.Clear();
 
-        Vector2 topLeft = new Vector2(-layoutXY.x+1, layoutXY.y-1); 
+        Vector2 topLeft = new Vector2(-layoutXY.x + 1, layoutXY.y - 1);
 
         int y = 0;
         int x = 0;
@@ -91,7 +94,7 @@ public class LevelSelector : PersistentSingleton<LevelSelector>
 
     public void LoadNextLevel() {
         int curIdx = levels.IndexOf(ChosenLevel);
-        if(curIdx>=0 && curIdx<levels.Count-1) {
+        if (curIdx >= 0 && curIdx < levels.Count - 1) {
             ChosenLevel = levels[curIdx + 1];
             SceneLoader.instance.LoadSceneGroup(baseLevelIdx, 0);
             return;
