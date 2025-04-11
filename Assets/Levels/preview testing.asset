@@ -20,3 +20,8 @@ MonoBehaviour:
     pathMode: 1
     movePath: 03000000030000000100000001000000
     startFrozen: 0
+  - gridCoord: {x: 3, y: 1}
+    blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
+    pathMode: 0
+    movePath: 04000000
+    startFrozen: 1

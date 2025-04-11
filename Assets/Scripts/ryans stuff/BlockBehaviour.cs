@@ -22,6 +22,8 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     public BlockMoveState moveMode = BlockMoveState.loop;
 
     private bool pingpongIsForward = true;
+    public bool GetPingpongIsForward() => pingpongIsForward;
+
     public bool canBeFrozen = true;
     private Vector3Int GetNextMoveVec => DirToVec3Int(movePath[moveIdx++]);
 
@@ -151,7 +153,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
 
     public void Move() {
-        Debug.Log(GetMoveIdx());
 
         moveTween?.Kill();
         if (frozen) {

@@ -47,6 +47,42 @@ public class BlockPreview : LoggerMonoBehaviour {
 
     }
 
+
+
+    private void OnEnable() {
+        block.Event_NextMoveBegan.AddListener(UpdateLine);
+        BlockCoordinator.Instance.OnPauseToggled += LevelPaused;
+        BlockCoordinator.Instance.OnStepForward += OnStepForward;
+        BlockBehaviour.OnAnimationCompleted += AnimationCompleted;
+        BlockBehaviour.OnAnimationStarted += AnimationStarted;
+
+
+        if (longPressDetector != null) {
+            longPressDetector.OnStartPress += OnStartPress;
+            longPressDetector.OnStopTouching += OnStopTouching;
+            longPressDetector.OnLongPressTriggered += OnLongPressTriggered;
+            longPressDetector.OnShortPressTriggered += OnShortPressTriggered;
+        }
+    }
+
+
+
+    private void OnDisable() {
+        block.Event_NextMoveBegan.RemoveListener(UpdateLine);
+        BlockCoordinator.Instance.OnPauseToggled -= LevelPaused;
+        BlockCoordinator.Instance.OnStepForward -= OnStepForward;
+        BlockBehaviour.OnAnimationCompleted -= AnimationCompleted;
+        BlockBehaviour.OnAnimationStarted -= AnimationStarted;
+
+
+        if (longPressDetector != null) {
+            longPressDetector.OnStartPress -= OnStartPress;
+            longPressDetector.OnStopTouching -= OnStopTouching;
+            longPressDetector.OnLongPressTriggered -= OnLongPressTriggered;
+            longPressDetector.OnShortPressTriggered -= OnShortPressTriggered;
+        }
+    }
+
     private void Awake() {
         longPressDetector = GetComponent<LongPressDetector>();
         block = GetComponent<BlockBehaviour>();
@@ -125,29 +161,66 @@ public class BlockPreview : LoggerMonoBehaviour {
 
     private void DrawPath() {
         int currentIndex = block.GetMoveIdx();
-
         Vector3 currentPos = new Vector3(worldSpaceCoord.x, worldSpaceCoord.y, 0);
 
-        for (int i = currentIndex - 1; i >= 0; i--) {
-            currentPos -= GetDirectionVector(movePath[i]);
+        List<Vector3> positions = new List<Vector3>();
+        positions.Add(currentPos);
+
+        if (block.moveMode == BlockMoveState.pingpong) {
+            bool goingForward = block.GetPingpongIsForward();
+
+            positions.Clear();
+            positions.Add(currentPos);
+
+            Vector3 backPos = currentPos;
+            if (goingForward) {
+                for (int i = currentIndex - 1; i >= 0; i--) {
+                    backPos -= GetDirectionVector(movePath[i]);
+                    positions.Insert(0, backPos);
+                }
+            }
+            else {
+                for (int i = currentIndex + 1; i < movePath.Length; i++) {
+                    backPos -= GetDirectionVector(GetOppositeDir(movePath[i]));
+                    positions.Insert(0, backPos);
+                }
+            }
+
+            Vector3 forwardPos = currentPos;
+            if (goingForward) {
+                for (int i = currentIndex; i < movePath.Length; i++) {
+                    forwardPos += GetDirectionVector(movePath[i]);
+                    positions.Add(forwardPos);
+                }
+            }
+            else {
+                for (int i = currentIndex; i >= 0; i--) {
+                    forwardPos += GetDirectionVector(GetOppositeDir(movePath[i]));
+                    positions.Add(forwardPos);
+                }
+            }
         }
 
-        Vector3 startPosition = currentPos;
-        Vector3[] positions = new Vector3[movePath.Length + 1];
-        positions[0] = startPosition;
+        else if (block.moveMode == BlockMoveState.loop) {
+            Vector3 backPos = currentPos;
+            for (int i = currentIndex - 1; i >= 0; i--) {
+                backPos -= GetDirectionVector(movePath[i]);
+            }
 
-        for (int i = 0; i < movePath.Length; i++) {
-            startPosition += GetDirectionVector(movePath[i]);
-            positions[i + 1] = startPosition;
+            Vector3 startPosition = backPos;
+            positions.Clear();
+            positions.Add(startPosition);
+
+            for (int i = 0; i < movePath.Length; i++) {
+                startPosition += GetDirectionVector(movePath[i]);
+                positions.Add(startPosition);
+            }
         }
 
-        lineRenderer.positionCount = positions.Length;
-        lineRenderer.SetPositions(positions);
+        lineRenderer.positionCount = positions.Count;
+        lineRenderer.SetPositions(positions.ToArray());
 
-
-        //! Dot
-
-        Vector3 endPos = positions[positions.Length - 1];
+        Vector3 endPos = positions[positions.Count - 1];
 
         if (endDotInstance == null) {
             endDotInstance = Instantiate(endDotPrefab, endPos, Quaternion.identity, transform.parent);
@@ -156,22 +229,21 @@ public class BlockPreview : LoggerMonoBehaviour {
             endDotInstance.transform.position = endPos;
         }
 
-
-        //! Overriden by fade in/out
-        // SpriteRenderer sr = endDotInstance.GetComponent<SpriteRenderer>();
-
-        // Vector2Int endGridCoord = block.GridRef.GetGridCoordFromWorldPos(endPos);
-        // bool isValid = block.GridRef.isValidGridCoord(endGridCoord);
-        // Log(endPos);
-        // Log(endGridCoord);
-        // Log(isValid);
-
-        // sr.color = isValid
-        //     ? new Color(1f, 1f, 1f, 1f)           // Liquid hwhite
-        //     : new Color(0.666f, 0.766f, 1, 1f);    // Sky blue
-
         endDotInstance.transform.localScale = Vector3.one * 0.3f;
     }
+
+
+    private Direction GetOppositeDir(Direction dir) {
+        switch (dir) {
+            case Direction.left: return Direction.right;
+            case Direction.right: return Direction.left;
+            case Direction.up: return Direction.down;
+            case Direction.down: return Direction.up;
+            default: return dir;
+        }
+    }
+
+
 
     private Vector3 GetDirectionVector(Direction dir) {
         switch (dir) {
@@ -183,40 +255,6 @@ public class BlockPreview : LoggerMonoBehaviour {
         }
     }
 
-
-    private void OnEnable() {
-        block.Event_NextMoveBegan.AddListener(UpdateLine);
-        BlockCoordinator.Instance.OnPauseToggled += LevelPaused;
-        BlockCoordinator.Instance.OnStepForward += OnStepForward;
-        BlockBehaviour.OnAnimationCompleted += AnimationCompleted;
-        BlockBehaviour.OnAnimationStarted += AnimationStarted;
-
-
-        if (longPressDetector != null) {
-            longPressDetector.OnStartPress += OnStartPress;
-            longPressDetector.OnStopTouching += OnStopTouching;
-            longPressDetector.OnLongPressTriggered += OnLongPressTriggered;
-            longPressDetector.OnShortPressTriggered += OnShortPressTriggered;
-        }
-    }
-
-
-
-    private void OnDisable() {
-        block.Event_NextMoveBegan.RemoveListener(UpdateLine);
-        BlockCoordinator.Instance.OnPauseToggled -= LevelPaused;
-        BlockCoordinator.Instance.OnStepForward -= OnStepForward;
-        BlockBehaviour.OnAnimationCompleted -= AnimationCompleted;
-        BlockBehaviour.OnAnimationStarted -= AnimationStarted;
-
-
-        if (longPressDetector != null) {
-            longPressDetector.OnStartPress -= OnStartPress;
-            longPressDetector.OnStopTouching -= OnStopTouching;
-            longPressDetector.OnLongPressTriggered -= OnLongPressTriggered;
-            longPressDetector.OnShortPressTriggered -= OnShortPressTriggered;
-        }
-    }
 
     private void OnStepForward() {
         UpdateLine();
