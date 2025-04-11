@@ -81,6 +81,25 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         }
     }
 
+
+    //! Kerry: For undoing
+    public void ReverseMoveIdx() {
+        switch (moveMode) {
+            case BlockMoveState.pingpong:
+                int prevIdx = moveIdx + (pingpongIsForward ? -1 : 1);
+                if (prevIdx < 0 || prevIdx >= movePath.Length)
+                    pingpongIsForward = !pingpongIsForward;
+                else
+                    moveIdx = pingpongIsForward ? --moveIdx : ++moveIdx;
+                break;
+
+            default:
+                moveIdx = (moveIdx - 1 + movePath.Length) % movePath.Length;
+                break;
+        }
+    }
+
+
     [Button]
     public void TryAddToGrid() {
         gridRef.TryPlaceOnGrid(this);

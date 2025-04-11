@@ -60,7 +60,7 @@ public class SetTimeScale : MonoBehaviour {
             selected = forceState.Value;
 
         var colors = button.colors;
-        colors.normalColor = selected? selectedCol : defaultCol;
+        colors.normalColor = selected ? selectedCol : defaultCol;
         button.colors = colors;
     }
 
@@ -81,7 +81,7 @@ public class SetTimeScale : MonoBehaviour {
         selected = !selected;
         SetColor();
 
-        if(!selected) soundFX.Play();
+        if (!selected) soundFX.Play();
 
         EventSystem.current.SetSelectedGameObject(null);
     }
@@ -90,8 +90,18 @@ public class SetTimeScale : MonoBehaviour {
         if (!BlockCoordinator.Instance.IsPaused)
             return;
 
-        if(BlockCoordinator.Instance.StepForwardOnce())
+        // if(BlockCoordinator.Instance.StepForwardOnce())
+        //     soundFX.Play();
+
+        if (BlockCoordinator.Instance.StepForwardWithUndo()) {
             soundFX.Play();
+        }
+
+        EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    public void UndoOnce() {
+        BlockCoordinator.Instance.UndoLastStep();
 
         EventSystem.current.SetSelectedGameObject(null);
     }

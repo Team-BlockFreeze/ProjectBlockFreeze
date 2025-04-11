@@ -118,13 +118,21 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
 
 
-
-
+    private void PushGridStateToStack() {
+        undoStack.Push(new BlockGridHistory(gridRef.ActiveGridState.BlocksList));
+    }
 
     [Button]
-    public void StepForwardWithUndo() {
-        undoStack.Push(new BlockGridHistory(gridRef.ActiveGridState.BlocksList));
-        StepForwardOnce();
+    public bool StepForwardWithUndo() {
+
+        if (isStepping) return false;
+
+
+        isStepping = true;
+        IterateBlockMovement();
+        DOVirtual.DelayedCall(GameSettings.Instance.gameTickInSeconds, () => isStepping = false);
+        OnStepForward?.Invoke();
+        return true;
     }
 
     [Button]
@@ -268,6 +276,8 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     /// the main loop of the force system, steps one iteration forward and then begins the animations.
     /// </summary>
     public void IterateBlockMovement() {
+        PushGridStateToStack();
+
         InitilizeEmptyForceGrid();
 
         gridRef.ActiveGridState.UpdateCoordList();

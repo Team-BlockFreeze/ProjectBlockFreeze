@@ -30,13 +30,16 @@ public class BlockSnapshot {
 
 
     public void ApplyUndo() {
-        // block.DecrementMoveIdx();
+        block.ReverseMoveIdx();
+        block.UpdateMovementVisualiser();
+
         block.coord = previousCoord;
         block.frozen = wasFrozen;
         block.blocked = wasBlocked;
         block.transform.DOMove(block.GridRef.GetWorldSpaceFromCoord(previousCoord), GameSettings.Instance.gameTickInSeconds / 2f)
             .SetEase(Ease.OutQuad);
+        block.GetComponent<BlockPreview>().UpdateLine();
+        block.GetComponent<BlockPreview>().DrawPath();
 
-        Debug.Log(block.GetMoveIdx());
     }
 }

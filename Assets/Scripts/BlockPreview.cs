@@ -154,12 +154,12 @@ public class BlockPreview : LoggerMonoBehaviour {
     }
 
 
-    private void UpdateLine() {
+    public void UpdateLine() {
         Vector3 worldPos = block.GridRef.GetWorldSpaceFromCoord(block.coord);
         worldSpaceCoord = new Vector2(worldPos.x, worldPos.y);
     }
 
-    private void DrawPath() {
+    public void DrawPath() {
         int currentIndex = block.GetMoveIdx();
         Vector3 currentPos = new Vector3(worldSpaceCoord.x, worldSpaceCoord.y, 0);
 
