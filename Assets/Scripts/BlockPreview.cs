@@ -31,10 +31,10 @@ public class BlockPreview : LoggerMonoBehaviour {
     private void OnLongPressTriggered() {
         if (GameSettings.Instance.togglePreviewLine) {
             ToggleFadePreview(fadeDuration);
+            return;
         }
-        else {
-            FadeInPreview(fadeDuration);
-        }
+
+        FadeInPreview(fadeDuration);
     }
 
     private void OnStopTouching() {
@@ -93,10 +93,17 @@ public class BlockPreview : LoggerMonoBehaviour {
         movePath = block.GetMovePath();
         UpdateLine();
 
-        DrawPath(); //! Remove if don't want to draw preview on start 
+        if (GameSettings.Instance.drawPreviewLinesOnStart) DrawPath();
     }
 
     public void ToggleFadePreview(float duration) {
+        if (previewShown) {
+            previewShown = false;
+        }
+        else {
+            previewShown = true;
+        }
+
         SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
         Color currentColor = endDotSpriteRenderer.color;
 
@@ -110,6 +117,8 @@ public class BlockPreview : LoggerMonoBehaviour {
 
 
     public void FadeOutPreview(float duration) {
+        previewShown = false;
+
         Ease easeType = Ease.Linear;
 
         Color startColor = new Color(1f, 1f, 1f, 1f);
@@ -132,7 +141,11 @@ public class BlockPreview : LoggerMonoBehaviour {
         endDotSpriteRenderer.DOColor(endColor, duration).SetEase(easeType);
     }
 
+    private bool previewShown = false;
+
     public void FadeInPreview(float duration) {
+        previewShown = true;
+
         Ease easeType = Ease.Linear;
 
         Color startColor = new Color(1f, 1f, 1f, 0f);
@@ -258,17 +271,15 @@ public class BlockPreview : LoggerMonoBehaviour {
 
     private void OnStepForward() {
         UpdateLine();
-        DrawPath();
     }
 
 
     private void AnimationStarted() {
-
     }
 
     private void AnimationCompleted() {
+        DrawPath();
         if (paused) {
-
             if (GameSettings.Instance.showAllPreviewLinesOnPause) {
                 ShowPreview();
             }
@@ -279,14 +290,15 @@ public class BlockPreview : LoggerMonoBehaviour {
     private bool paused = false;
 
     private void LevelPaused(bool paused) {
-        Log(paused);
-
         if (!paused) {
             this.paused = false;
             HidePreview();
         }
         else {
             this.paused = true;
+            if (previewShown) {
+                HidePreview();
+            }
         }
     }
 
@@ -296,7 +308,6 @@ public class BlockPreview : LoggerMonoBehaviour {
     public void ShowPreview() {
         FadeInPreview(fadeDuration);
         UpdateLine();
-        DrawPath();
     }
 
     //! Hide preview FROM shown

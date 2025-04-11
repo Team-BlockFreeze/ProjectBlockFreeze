@@ -33,8 +33,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [ShowInInspector, ReadOnly]
     private int moveIdx;
     public int GetMoveIdx() => moveIdx;
-    public void IncrementMoveIdx() => moveIdx++;
-    public void DecrementMoveIdx() => moveIdx--;
+    public void SetMoveIdx(int idx) => moveIdx = idx;
 
 
 

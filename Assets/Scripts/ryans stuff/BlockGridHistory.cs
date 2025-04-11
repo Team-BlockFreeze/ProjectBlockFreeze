@@ -23,22 +23,25 @@ public class BlockGridHistory {
 public class BlockSnapshot {
     public BlockBehaviour block;
     public Vector2Int previousCoord;
+    public int previousMoveIdx;
+
     public bool wasFrozen;
     public bool wasBlocked;
 
     public BlockSnapshot(BlockBehaviour b) {
         this.block = b;
         previousCoord = b.coord;
+        previousMoveIdx = b.GetMoveIdx();
         wasFrozen = b.frozen;
         wasBlocked = b.blocked;
     }
 
 
     public void ApplyUndo() {
-        block.ReverseMoveIdx();
         block.UpdateMovementVisualiser();
 
         block.coord = previousCoord;
+        block.SetMoveIdx(previousMoveIdx);
         block.frozen = wasFrozen;
         block.blocked = wasBlocked;
         block.transform.DOMove(block.GridRef.GetWorldSpaceFromCoord(previousCoord), GameSettings.Instance.gameTickInSeconds / 2f)

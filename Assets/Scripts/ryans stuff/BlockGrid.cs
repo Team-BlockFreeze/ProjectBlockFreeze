@@ -81,7 +81,6 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
                 Renderer blockRenderer = newBlock.GetComponentInChildren<MeshRenderer>();
                 if (blockRenderer != null) {
                     blockRenderer.sharedMaterial = pingpongMAT;
-                    Debug.Log(blockRenderer);
                 }
             }
         }
