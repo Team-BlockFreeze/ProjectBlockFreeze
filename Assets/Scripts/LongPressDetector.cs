@@ -38,17 +38,24 @@ public class LongPressDetector : MonoBehaviour {
         blockPreview = GetComponent<BlockPreview>();
     }
 
+
+    private bool pressStartedOnThisObject = false;
+
     void Update() {
 #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_ANDROID || UNITY_IOS
         bool isCurrentlyTouching = IsTouchingThisObject();
 
-        if (isCurrentlyTouching) {
+        if (IsInputJustBegan()) {
+            pressStartedOnThisObject = isCurrentlyTouching;
+        }
+
+        if (IsInputHeld() && pressStartedOnThisObject && isCurrentlyTouching) {
             if (!isHolding) {
                 isHolding = true;
                 holdTimer = 0f;
                 longPressTriggered = false;
 
-                OnStartPress.Invoke();
+                OnStartPress?.Invoke();
             }
 
             holdTimer += Time.deltaTime;
@@ -58,21 +65,43 @@ public class LongPressDetector : MonoBehaviour {
                 LongPressTriggered();
             }
         }
-        else {
-            if (wasTouching) {
-                if (isHolding && !longPressTriggered) {
-                    ShortPressTriggered();
-                }
+        else if (!IsInputHeld() && isHolding) {
+            if (!longPressTriggered && wasTouching && pressStartedOnThisObject) {
+                ShortPressTriggered();
+            }
 
-                OnStopTouching.Invoke();
+            if (pressStartedOnThisObject) {
+                OnStopTouching?.Invoke();
             }
 
             isHolding = false;
             holdTimer = 0f;
             longPressTriggered = false;
+            pressStartedOnThisObject = false;
         }
 
         wasTouching = isCurrentlyTouching;
+#endif
+    }
+
+
+    private bool IsInputJustBegan() {
+#if UNITY_EDITOR || UNITY_STANDALONE
+        return Input.GetMouseButtonDown(0);
+#else
+    if (Input.touchCount > 0)
+        return Input.GetTouch(0).phase == TouchPhase.Began;
+    return false;
+#endif
+    }
+
+    private bool IsInputHeld() {
+#if UNITY_EDITOR || UNITY_STANDALONE
+        return Input.GetMouseButton(0);
+#else
+    return Input.touchCount > 0 && 
+           Input.GetTouch(0).phase != TouchPhase.Ended &&
+           Input.GetTouch(0).phase != TouchPhase.Canceled;
 #endif
     }
 
@@ -100,4 +129,5 @@ public class LongPressDetector : MonoBehaviour {
 
         return false;
     }
+
 }
