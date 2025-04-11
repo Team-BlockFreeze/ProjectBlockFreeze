@@ -157,22 +157,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         gridRef.ActiveGridState.UpdateCoordList();
     }
 
-
-
-
-
     #endregion
-
-
-
-
-
-
-
-
-
-
-
 
     private bool isStepping = false;
     public event Action OnStepForward;
