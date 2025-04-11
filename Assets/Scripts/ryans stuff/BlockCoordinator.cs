@@ -7,6 +7,7 @@ using System.Collections;
 using DG.Tweening;
 using System;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     public static BlockCoordinator Coordinator => coordinator;
@@ -108,6 +109,62 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     }
 
     public CellForce[,] forceGrid;
+
+    #region History Stack
+
+
+    [ShowInInspector, ReadOnly]
+    private Stack<BlockGridHistory> undoStack = new Stack<BlockGridHistory>();
+
+
+
+
+
+
+    [Button]
+    public void StepForwardWithUndo() {
+        undoStack.Push(new BlockGridHistory(gridRef.ActiveGridState.BlocksList));
+        StepForwardOnce();
+    }
+
+    [Button]
+    public void UndoLastStep() {
+        if (undoStack.Count == 0) {
+            LogWarning("Undo stack is empty!");
+            return;
+        }
+
+        var snapshot = undoStack.Pop();
+        foreach (var snap in snapshot.blockSnapshots) {
+            if (snap.block != null) {
+                snap.ApplyUndo();
+            }
+            else {
+                LogError("Snapshot block reference missing!");
+            }
+        }
+
+        // Rebuild state grid
+        gridRef.ActiveGridState.ClearBlockStateGrid();
+        gridRef.ActiveGridState.UpdateCoordList();
+    }
+
+
+
+
+
+    #endregion
+
+
+
+
+
+
+
+
+
+
+
 
     private bool isStepping = false;
     public event Action OnStepForward;

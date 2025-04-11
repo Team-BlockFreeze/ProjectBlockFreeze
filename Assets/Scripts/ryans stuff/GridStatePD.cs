@@ -8,7 +8,7 @@ public class GridStatePD : PropertyDrawer {
     private const float PADDING = 2f;
     private float gridElementHeight;
 
-    [SerializeField] private bool showGrid = true;
+    [SerializeField] private bool showGrid = false;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
         // Get properties

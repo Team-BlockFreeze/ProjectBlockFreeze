@@ -31,6 +31,9 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [ShowInInspector, ReadOnly]
     private int moveIdx;
     public int GetMoveIdx() => moveIdx;
+    public void IncrementMoveIdx() => moveIdx++;
+    public void DecrementMoveIdx() => moveIdx--;
+
 
 
     public enum Direction { up, down, left, right, wait }
@@ -57,18 +60,11 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     private SpriteRenderer littleDirTriangle;
 
     [FoldoutGroup("Debug")]
-    //[ReadOnly]
     public bool frozen = false;
 
     [FoldoutGroup("Debug")]
-    //[ReadOnly]
     public bool blocked = false;
 
-    // private void Awake() {
-    //     Debug.unityLogEnabled = false;
-
-    //     DOVirtual.DelayedCall(5f, () => Debug.unityLogEnabled = true);
-    // }
 
     private void AdvanceMoveIdx() {
         switch (moveMode) {
@@ -82,11 +78,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
                 break;
         }
     }
-
-    //private void OnValidate()
-    //{
-    //    gridRef.TryPlaceOnGrid(this);
-    //}
 
     [Button]
     public void TryAddToGrid() {
@@ -104,22 +95,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     private void Start() {
         UpdateMovementVisualiser();
         if (frozen) blocked = true;
-        //activeTween = transform.DOMove(GetNextMoveVec, 1f).SetRelative().SetEase(Ease.Linear);
-        //AdvanceMoveIdx();
-
-        //InvokeRepeating(nameof(QueueNextTween), .1f, 1f);
     }
-
-
-
-    // private void QueueNextTween() {
-    //     //Log("Queueing tween");
-    //     Tween nextTween = transform.DOMove(DirToVec3Int(movePath[moveIdx++]), BlockCoordinator.Instance.GameTickRepeatRate()).SetRelative().SetEase(Ease.Linear).Pause();
-    //     activeTween.OnComplete(() => nextTween.Play());
-    //     activeTween = nextTween;
-    //     AdvanceMoveIdx();
-    // }
-
 
 
     private Direction GetOppositeDir(Direction dir) {
@@ -164,7 +140,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     Tween moveTween;
 
 
-    public float animationDuration = 5f;
 
     public UnityEvent Event_NextMoveBegan = new UnityEvent();
 
@@ -176,13 +151,9 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
 
     public void Move() {
+        Debug.Log(GetMoveIdx());
 
         moveTween?.Kill();
-        //make sure starting at right point
-        //transform.position = gridRef.GetWorldSpaceFromCoord(coord);
-
-        //is cube frozen by player logic
-        //cubeRenderer.material = frozen ? frozenMat : normalMat;
         if (frozen) {
             UpdateMovementVisualiser();
             blocked = true;
@@ -197,9 +168,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
             Log("regular movement anim", gameObject);
             coord += currentForceVec2I;
 
-            //transform.position += (Vector3)(Vector2)movement;
-            //move towards next coord
-
             OnAnimationStarted?.Invoke();
             moveTween = transform.DOMove(gridRef.GetWorldSpaceFromCoord(coord), GameSettings.Instance.gameTickInSeconds)
                      .SetEase(Ease.Linear)
@@ -211,31 +179,21 @@ public class BlockBehaviour : LoggerMonoBehaviour {
             Log("triggering fall back animation", gameObject);
             Vector3 bumpTargetPos = (gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)lastForces.firstDir - transform.position) * .15f - Vector3.back * coord.y * .01f;
 
-            //Vector3 ogScale = transform.localScale;
-            //transform.localScale = ogScale * .99f;
             moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo).OnComplete(() => {
                 OnAnimationCompleted?.Invoke();
             });
-            //.OnComplete(() => { transform.localScale = ogScale; });
 
             moveTween.Play();
         }
         //block animation
-        else { //(!frozen && blocked && !lastForces.NoInputs() && currentForce != Vector2Int.zero) { 
-            //shake on spot
-            //moveTween = transform.DOShakePosition(.3f, .1f).OnComplete(
-            //    () => transform.position = gridRef.GetWorldSpaceFromCoord(coord)
-            //);
+        else {
 
             Log($"{gameObject.name} blocked bump anim");
             Vector3 bumpTargetPos = ((gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)currentForceVec2I) - transform.position) * .15f - Vector3.back * coord.y * .01f;
 
-            //Vector3 ogScale = transform.localScale;
-            //transform.localScale = ogScale * .99f;
             moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo).OnComplete(() => {
                 OnAnimationCompleted?.Invoke();
             });
-            //.OnComplete(() => { transform.localScale = ogScale; });
 
             moveTween.Play();
         }
@@ -243,7 +201,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
         AdvanceMoveIdx();
         blocked = false;
-        //lastForces = new BlockCoordinator.CellForce();
 
         UpdateMovementVisualiser();
         Event_NextMoveBegan?.Invoke();
@@ -257,7 +214,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     public void UpdateMovementVisualiser() {
         var colRef = moveIntentionVisual.color;
         var moveIntent = GetMovementIntention();
-        //Log($"{gameObject.name} block updating movement visual for dir {moveIntent}, is this working?");
 
 
         if (moveIntent == Vector2Int.zero) {
@@ -305,17 +261,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
     public static UnityEvent OnFreezeBlock;
 
-    // private void OnMouseUp() {
-    //     if (!canBeFrozen) return;
-
-    //     frozen = !frozen;
-    //     blocked = frozen;
-
-    //     cubeRenderer.material = frozen ? frozenMat : normalMat;
-
-    //     OnFreezeBlock?.Invoke();
-    // }
-
 
     public void TrySetFreeze(bool? freezeState = null) {
         if (!canBeFrozen) return;
@@ -349,12 +294,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         if (lastForces.AllInputs()) Gizmos.DrawWireCube(transform.position, Vector3.one * .2f);
         else Gizmos.DrawLine(transform.position, transform.position + (Vector3)(Vector3Int)lastForces.QueryForce() * .35f);
     }
-
-    //    private void OnDrawGizmosSelected()
-    //    {
-    //        Handles.PositionHandle()
-    //        Handles.DrawAAPolyLine
-    //    }
 
 #endif
 
