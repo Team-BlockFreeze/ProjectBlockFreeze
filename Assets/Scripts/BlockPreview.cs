@@ -187,6 +187,7 @@ public class BlockPreview : LoggerMonoBehaviour {
     private void OnEnable() {
         block.Event_NextMoveBegan.AddListener(UpdateLine);
         BlockCoordinator.Instance.OnPauseToggled += LevelPaused;
+        BlockCoordinator.Instance.OnStepForward += OnStepForward;
         BlockBehaviour.OnAnimationCompleted += AnimationCompleted;
         BlockBehaviour.OnAnimationStarted += AnimationStarted;
 
@@ -204,6 +205,7 @@ public class BlockPreview : LoggerMonoBehaviour {
     private void OnDisable() {
         block.Event_NextMoveBegan.RemoveListener(UpdateLine);
         BlockCoordinator.Instance.OnPauseToggled -= LevelPaused;
+        BlockCoordinator.Instance.OnStepForward -= OnStepForward;
         BlockBehaviour.OnAnimationCompleted -= AnimationCompleted;
         BlockBehaviour.OnAnimationStarted -= AnimationStarted;
 
@@ -214,6 +216,11 @@ public class BlockPreview : LoggerMonoBehaviour {
             longPressDetector.OnLongPressTriggered -= OnLongPressTriggered;
             longPressDetector.OnShortPressTriggered -= OnShortPressTriggered;
         }
+    }
+
+    private void OnStepForward() {
+        UpdateLine();
+        DrawPath();
     }
 
 
@@ -246,6 +253,7 @@ public class BlockPreview : LoggerMonoBehaviour {
     }
 
 
+    //! Show preview FROM not shown
     [Button]
     public void ShowPreview() {
         FadeInPreview(fadeDuration);
@@ -253,6 +261,7 @@ public class BlockPreview : LoggerMonoBehaviour {
         DrawPath();
     }
 
+    //! Hide preview FROM shown
     [Button]
     public void HidePreview() {
         FadeOutPreview(fadeDuration);

@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using System.Collections;
 using DG.Tweening;
 using System;
+using System.Runtime.CompilerServices;
 
 public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     public static BlockCoordinator Coordinator => coordinator;
@@ -109,14 +110,15 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     public CellForce[,] forceGrid;
 
     private bool isStepping = false;
+    public event Action OnStepForward;
 
-    [Button]
     public bool StepForwardOnce() {
         if (isStepping) return false;
 
         isStepping = true;
         IterateBlockMovement();
         DOVirtual.DelayedCall(GameSettings.Instance.gameTickInSeconds, () => isStepping = false);
+        OnStepForward?.Invoke();
         return true;
     }
 
