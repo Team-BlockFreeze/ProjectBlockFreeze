@@ -119,6 +119,7 @@ MonoBehaviour:
   cubeRenderer: {fileID: 7441460586598380325}
   normalMat: {fileID: 2100000, guid: a7c5947e5cb9058428c2256076061cf4, type: 2}
   frozenMat: {fileID: 2100000, guid: 6553f9e4d30cb1b469189d915c02d5de, type: 2}
+  pingpongMAT: {fileID: 2100000, guid: e8d379a722d03a24b9be9ddb6e0ef962, type: 2}
   moveIntentionVisual: {fileID: 7816804011719650362}
   littleDirTriangle: {fileID: 5501142072554771676}
   frozen: 0
@@ -129,7 +130,6 @@ MonoBehaviour:
     left: 0
     right: 0
     firstDir: {x: 0, y: 0}
-  animationDuration: 5
   Event_NextMoveBegan:
     m_PersistentCalls:
       m_Calls: []
@@ -257,7 +257,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}

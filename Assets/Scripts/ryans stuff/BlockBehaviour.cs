@@ -53,7 +53,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     private MeshRenderer cubeRenderer;
 
     [SerializeField, FoldoutGroup("Materials")]
-    private Material normalMat, frozenMat;
+    private Material normalMat, frozenMat, pingpongMAT;
 
     [SerializeField, FoldoutGroup("Renderers")]
     private SpriteRenderer moveIntentionVisual;
@@ -290,7 +290,13 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         frozen = freezeState.Value;
         blocked = frozen;
 
-        cubeRenderer.material = frozen ? frozenMat : normalMat;
+
+        if (moveMode == BlockMoveState.pingpong) {
+            cubeRenderer.material = frozen ? frozenMat : pingpongMAT;
+        }
+        else {
+            cubeRenderer.material = frozen ? frozenMat : normalMat;
+        }
 
         OnFreezeBlock?.Invoke();
     }

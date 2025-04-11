@@ -122,7 +122,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         undoStack.Push(new BlockGridHistory(gridRef.ActiveGridState.BlocksList));
     }
 
-    [Button]
     public bool StepForwardWithUndo() {
 
         if (isStepping) return false;
@@ -135,7 +134,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         return true;
     }
 
-    [Button]
     public void UndoLastStep() {
         if (undoStack.Count == 0) {
             LogWarning("Undo stack is empty!");
@@ -237,7 +235,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
 
 
-    [Button]
     public void TogglePauseResume() {
         if (isPaused) {
             StartGameTickLoop();
