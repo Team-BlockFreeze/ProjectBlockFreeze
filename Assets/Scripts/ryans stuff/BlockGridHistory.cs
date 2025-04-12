@@ -40,7 +40,6 @@ public class BlockSnapshot {
 
 
     public void ApplyUndo() {
-        block.UpdateMovementVisualiser();
         block.SetPingpongIsForward(pingpongIsForward);
         block.coord = previousCoord;
         block.SetMoveIdx(previousMoveIdx);
@@ -51,6 +50,8 @@ public class BlockSnapshot {
             .SetEase(Ease.OutQuad);
         block.GetComponent<BlockPreview>().UpdateLine();
         block.GetComponent<BlockPreview>().DrawPath();
+        block.UpdateMovementVisualiser();
+
 
     }
 }
