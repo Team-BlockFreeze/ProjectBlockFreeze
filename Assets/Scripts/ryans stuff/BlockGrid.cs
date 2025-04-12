@@ -69,6 +69,18 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
             newBlock.moveMode = bData.pathMode;
             newBlock.SetMovePath(bData.movePath?.ToArray());
 
+
+
+            //! dirty solution for now -kerry
+            if (newBlock.moveMode == BlockBehaviour.BlockMoveState.pingpong && newBlock.gameObject.GetComponent<BlockKey>() == null) {
+
+                Renderer blockRenderer = newBlock.GetComponentInChildren<MeshRenderer>();
+                if (blockRenderer != null) {
+                    blockRenderer.sharedMaterial = pingpongMAT;
+                }
+            }
+            //! dirty solution for now -kerry
+
             if (bData.startFrozen)
                 newBlock.TrySetFreeze(true);
 
@@ -76,13 +88,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
 
 
 
-            //! dirty solution for now -kerry
-            if (newBlock.moveMode == BlockBehaviour.BlockMoveState.pingpong) {
-                Renderer blockRenderer = newBlock.GetComponentInChildren<MeshRenderer>();
-                if (blockRenderer != null) {
-                    blockRenderer.sharedMaterial = pingpongMAT;
-                }
-            }
+
         }
 
 
