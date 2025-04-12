@@ -145,7 +145,9 @@ public class LevelEditorWindow : EditorWindow {
 
         EditorGUILayout.BeginHorizontal();
         levelData = (LevelDataSO)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelDataSO), false);
-        if (GUILayout.Button(" + ", GUILayout.Width(60))) {
+
+        // Create new
+        if (GUILayout.Button(" + ", GUILayout.Width(30))) {
             string path = EditorUtility.SaveFilePanelInProject("Create New Level File", "NewLevel", "asset", "Enter name", defaultLevelFolderPath);
             if (!string.IsNullOrEmpty(path)) {
                 var newAsset = ScriptableObject.CreateInstance<LevelDataSO>();
@@ -155,7 +157,35 @@ public class LevelEditorWindow : EditorWindow {
                 levelData = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
             }
         }
+
+        // Duplicate current
+        GUI.enabled = levelData != null;
+        if (GUILayout.Button("⎘", GUILayout.Width(30))) {
+            string originalPath = AssetDatabase.GetAssetPath(levelData);
+            string folder = System.IO.Path.GetDirectoryName(originalPath);
+            string filename = System.IO.Path.GetFileNameWithoutExtension(originalPath);
+
+            // Open save file dialog with default name
+            string path = EditorUtility.SaveFilePanelInProject(
+                "Duplicate Level File",
+                $"{filename}_Copy",
+                "asset",
+                "Enter name for duplicated level",
+                folder
+            );
+
+            if (!string.IsNullOrEmpty(path)) {
+                var duplicated = UnityEngine.Object.Instantiate(levelData);
+                AssetDatabase.CreateAsset(duplicated, path);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+                levelData = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
+            }
+        }
+
+        GUI.enabled = true;
         EditorGUILayout.EndHorizontal();
+
 
         if (levelData == null) {
             EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
