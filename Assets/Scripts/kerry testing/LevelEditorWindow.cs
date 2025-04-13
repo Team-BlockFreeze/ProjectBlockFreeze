@@ -125,20 +125,23 @@ public class LevelEditorWindow : EditorWindow {
 
     private Vector2 scrollPosition;
     private void OnGUI() {
+        EditorGUILayout.BeginHorizontal(); // Top-level horizontal: LEFT = editor layout, RIGHT = control panel
+
+        // ---------------------- LEFT SIDE ----------------------
+        EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
 
         PopulateMoveListOnMouseHover();
 
         GUILayout.Label("Level Editor", EditorStyles.boldLabel);
 
+        // --- File path and level data section ---
         EditorGUILayout.BeginHorizontal();
         defaultLevelFolderPath = EditorGUILayout.TextField("Levels Folder Path", defaultLevelFolderPath);
         if (GUILayout.Button("Select", GUILayout.MaxWidth(60))) {
             string selected = EditorUtility.OpenFolderPanel("Select Folder", "Assets", "");
-            if (!string.IsNullOrEmpty(selected)) {
-                if (selected.StartsWith(Application.dataPath)) {
-                    defaultLevelFolderPath = "Assets" + selected.Substring(Application.dataPath.Length);
-                }
+            if (!string.IsNullOrEmpty(selected) && selected.StartsWith(Application.dataPath)) {
+                defaultLevelFolderPath = "Assets" + selected.Substring(Application.dataPath.Length);
             }
         }
         EditorGUILayout.EndHorizontal();
@@ -146,7 +149,6 @@ public class LevelEditorWindow : EditorWindow {
         EditorGUILayout.BeginHorizontal();
         levelData = (LevelDataSO)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelDataSO), false);
 
-        // Create new
         if (GUILayout.Button(" + ", GUILayout.Width(30))) {
             string path = EditorUtility.SaveFilePanelInProject("Create New Level File", "NewLevel", "asset", "Enter name", defaultLevelFolderPath);
             if (!string.IsNullOrEmpty(path)) {
@@ -158,22 +160,13 @@ public class LevelEditorWindow : EditorWindow {
             }
         }
 
-        // Duplicate current
         GUI.enabled = levelData != null;
         if (GUILayout.Button("⎘", GUILayout.Width(30))) {
             string originalPath = AssetDatabase.GetAssetPath(levelData);
             string folder = System.IO.Path.GetDirectoryName(originalPath);
             string filename = System.IO.Path.GetFileNameWithoutExtension(originalPath);
 
-            // Open save file dialog with default name
-            string path = EditorUtility.SaveFilePanelInProject(
-                "Duplicate Level File",
-                $"{filename}_Copy",
-                "asset",
-                "Enter name for duplicated level",
-                folder
-            );
-
+            string path = EditorUtility.SaveFilePanelInProject("Duplicate Level File", $"{filename}_Copy", "asset", "Enter name", folder);
             if (!string.IsNullOrEmpty(path)) {
                 var duplicated = UnityEngine.Object.Instantiate(levelData);
                 AssetDatabase.CreateAsset(duplicated, path);
@@ -182,14 +175,14 @@ public class LevelEditorWindow : EditorWindow {
                 levelData = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
             }
         }
-
         GUI.enabled = true;
         EditorGUILayout.EndHorizontal();
 
-
         if (levelData == null) {
             EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
-            EditorGUILayout.EndScrollView(); // don't forget this
+            EditorGUILayout.EndScrollView();
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
             return;
         }
 
@@ -202,6 +195,7 @@ public class LevelEditorWindow : EditorWindow {
 
         GUILayout.Space(10);
 
+        // --- Path Creator Area ---
         if (Event.current.type == EventType.MouseDown && IsMouseInsidePathCreator()) {
             Debug.Log("tried to start drawing");
             isDrawingPath = true;
@@ -211,23 +205,29 @@ public class LevelEditorWindow : EditorWindow {
         DrawPathGrid();
         DrawPathLines();
 
-        GUILayout.Space(10);
+        GUI.Button(new Rect(gridOffset.x - 5, gridOffset.y - 5, 10, 10), "");
+
         DrawClearButton();
+
+        EditorGUILayout.EndScrollView();
+        EditorGUILayout.EndVertical();
+
+        // ---------------------- RIGHT SIDE ----------------------
+        EditorGUILayout.BeginVertical(GUILayout.Width(300));
 
         GUILayout.Space(10);
         DrawPresetButtons();
-
         GUILayout.Space(10);
         DrawGrid();
-
+        GUILayout.Space(10);
         DrawSelectedBlockPathMoveList();
 
-        // Visualize grid offset
-        GUI.backgroundColor = Color.red;
-        GUI.Button(new Rect(gridOffset.x - 5, gridOffset.y - 5, 10, 10), "");
+        EditorGUILayout.EndVertical();
 
-        EditorGUILayout.EndScrollView();
+        EditorGUILayout.EndHorizontal();
     }
+
+
 
 
 
@@ -302,7 +302,7 @@ public class LevelEditorWindow : EditorWindow {
     }
 
     private void DrawClearButton() {
-        if (GUILayout.Button("Clear Level")) {
+        if (GUILayout.Button("Clear", GUILayout.Width(80))) {
             levelData.Blocks.Clear();
             selectedBlockOfLevel = null;
             proxySelectedBlockMoveList.list = selectedBlockOfLevel?.movePath;
