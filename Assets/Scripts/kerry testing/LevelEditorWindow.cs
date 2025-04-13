@@ -47,10 +47,10 @@ public class LevelEditorWindow : EditorWindow {
         defaultLevelFolderPath = EditorPrefs.GetString(PrefKey_DefaultLevelsFolder_Path, "");
 
         //wtf
-        setupReordableProxyMoveList();
+        SetupReordableProxyMoveList();
     }
 
-    private void setupReordableProxyMoveList() {
+    private void SetupReordableProxyMoveList() {
         proxySelectedBlockMoveList = new ReorderableList(SelectedBlockOfLevel?.movePath, typeof(MoveDirection), true, true, true, true);
 
         proxySelectedBlockMoveList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
@@ -124,18 +124,19 @@ public class LevelEditorWindow : EditorWindow {
 
 
     private Vector2 scrollPosition;
+
     private void OnGUI() {
-        EditorGUILayout.BeginHorizontal(); // Top-level horizontal: LEFT = editor layout, RIGHT = control panel
+        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+
+        EditorGUILayout.BeginHorizontal();
 
         // ---------------------- LEFT SIDE ----------------------
         EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
 
         PopulateMoveListOnMouseHover();
-
         GUILayout.Label("Level Editor", EditorStyles.boldLabel);
 
-        // --- File path and level data section ---
+        // File path and level data
         EditorGUILayout.BeginHorizontal();
         defaultLevelFolderPath = EditorGUILayout.TextField("Levels Folder Path", defaultLevelFolderPath);
         if (GUILayout.Button("Select", GUILayout.MaxWidth(60))) {
@@ -180,9 +181,9 @@ public class LevelEditorWindow : EditorWindow {
 
         if (levelData == null) {
             EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
-            EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndScrollView();
             return;
         }
 
@@ -195,7 +196,7 @@ public class LevelEditorWindow : EditorWindow {
 
         GUILayout.Space(10);
 
-        // --- Path Creator Area ---
+        // Path Creator Area
         if (Event.current.type == EventType.MouseDown && IsMouseInsidePathCreator()) {
             Debug.Log("tried to start drawing");
             isDrawingPath = true;
@@ -206,26 +207,24 @@ public class LevelEditorWindow : EditorWindow {
         DrawPathLines();
 
         GUI.Button(new Rect(gridOffset.x - 5, gridOffset.y - 5, 10, 10), "");
-
         DrawClearButton();
 
-        EditorGUILayout.EndScrollView();
         EditorGUILayout.EndVertical();
 
         // ---------------------- RIGHT SIDE ----------------------
         EditorGUILayout.BeginVertical(GUILayout.Width(300));
-
         GUILayout.Space(10);
         DrawPresetButtons();
         GUILayout.Space(10);
         DrawGrid();
         GUILayout.Space(10);
         DrawSelectedBlockPathMoveList();
-
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndScrollView();
     }
+
 
 
 
@@ -536,6 +535,21 @@ public class LevelEditorWindow : EditorWindow {
 
 
     private void PlaceBlock(Vector2Int position) {
+
+        //! Kerry: If right click, delete block
+        if (Event.current.button == 1) {
+            var blockToRemove = levelData.Blocks.Find(b => b.gridCoord == position);
+            if (blockToRemove != null) {
+                if (blockToRemove == selectedBlockOfLevel) {
+                    selectedBlockOfLevel = null;
+                    proxySelectedBlockMoveList.list = null;
+                }
+                levelData.Blocks.Remove(blockToRemove);
+                EditorUtility.SetDirty(levelData);
+            }
+            return;
+        }
+
         if (selectedBlockTypeToPlace == null) return;
 
         var existingBlock = levelData.Blocks.Find(b => b.gridCoord == position);
