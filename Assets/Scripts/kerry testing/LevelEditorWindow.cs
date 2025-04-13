@@ -136,103 +136,111 @@ public class LevelEditorWindow : EditorWindow {
         GUILayout.Label("Level Editor", EditorStyles.boldLabel);
 
         // --- File path and level data section ---
+        // --- File path and level data section ---
         EditorGUILayout.BeginHorizontal();
         defaultLevelFolderPath = EditorGUILayout.TextField("Levels Folder Path", defaultLevelFolderPath);
         if (GUILayout.Button("Select", GUILayout.MaxWidth(60))) {
             string selected = EditorUtility.OpenFolderPanel("Select Folder", "Assets", "");
             if (!string.IsNullOrEmpty(selected) && selected.StartsWith(Application.dataPath)) {
                 defaultLevelFolderPath = "Assets" + selected.Substring(Application.dataPath.Length);
+                if (!string.IsNullOrEmpty(selected) && selected.StartsWith(Application.dataPath)) {
+                    defaultLevelFolderPath = "Assets" + selected.Substring(Application.dataPath.Length);
+                }
             }
-        }
-        EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndHorizontal();
 
-        EditorGUILayout.BeginHorizontal();
-        levelData = (LevelDataSO)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelDataSO), false);
+            EditorGUILayout.BeginHorizontal();
+            levelData = (LevelDataSO)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelDataSO), false);
 
-        if (GUILayout.Button(" + ", GUILayout.Width(30))) {
-            string path = EditorUtility.SaveFilePanelInProject("Create New Level File", "NewLevel", "asset", "Enter name", defaultLevelFolderPath);
-            if (!string.IsNullOrEmpty(path)) {
-                var newAsset = ScriptableObject.CreateInstance<LevelDataSO>();
-                AssetDatabase.CreateAsset(newAsset, path);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-                levelData = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
+            if (GUILayout.Button(" + ", GUILayout.Width(30))) {
+                string path = EditorUtility.SaveFilePanelInProject("Create New Level File", "NewLevel", "asset", "Enter name", defaultLevelFolderPath);
+                if (!string.IsNullOrEmpty(path)) {
+                    var newAsset = ScriptableObject.CreateInstance<LevelDataSO>();
+                    AssetDatabase.CreateAsset(newAsset, path);
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                    levelData = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
+                }
             }
-        }
 
-        GUI.enabled = levelData != null;
-        if (GUILayout.Button("⎘", GUILayout.Width(30))) {
-            string originalPath = AssetDatabase.GetAssetPath(levelData);
-            string folder = System.IO.Path.GetDirectoryName(originalPath);
-            string filename = System.IO.Path.GetFileNameWithoutExtension(originalPath);
+            GUI.enabled = levelData != null;
+            if (GUILayout.Button("⎘", GUILayout.Width(30))) {
+                string originalPath = AssetDatabase.GetAssetPath(levelData);
+                string folder = System.IO.Path.GetDirectoryName(originalPath);
+                string filename = System.IO.Path.GetFileNameWithoutExtension(originalPath);
 
-            string path = EditorUtility.SaveFilePanelInProject("Duplicate Level File", $"{filename}_Copy", "asset", "Enter name", folder);
-            if (!string.IsNullOrEmpty(path)) {
-                var duplicated = UnityEngine.Object.Instantiate(levelData);
-                AssetDatabase.CreateAsset(duplicated, path);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-                levelData = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
+                string path = EditorUtility.SaveFilePanelInProject("Duplicate Level File", $"{filename}_Copy", "asset", "Enter name", folder);
+                string path = EditorUtility.SaveFilePanelInProject("Duplicate Level File", $"{filename}_Copy", "asset", "Enter name", folder);
+                if (!string.IsNullOrEmpty(path)) {
+                    var duplicated = UnityEngine.Object.Instantiate(levelData);
+                    AssetDatabase.CreateAsset(duplicated, path);
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                    levelData = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
+                }
             }
-        }
-        GUI.enabled = true;
-        EditorGUILayout.EndHorizontal();
+            GUI.enabled = true;
+            EditorGUILayout.EndHorizontal();
 
-        if (levelData == null) {
-            EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
+            if (levelData == null) {
+                EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
+                EditorGUILayout.EndScrollView();
+                EditorGUILayout.EndVertical();
+                EditorGUILayout.EndHorizontal();
+                return;
+            }
+
+            GUILayout.BeginHorizontal();
+            levelData.GridSize = EditorGUILayout.Vector2IntField("Grid Size", levelData.GridSize);
+            GUILayout.Space(20);
+            levelData.GoalCoord = EditorGUILayout.Vector2IntField("Goal Coord", levelData.GoalCoord);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(10);
+
+            // --- Path Creator Area ---
+            if (Event.current.type == EventType.MouseDown && IsMouseInsidePathCreator()) {
+                Debug.Log("tried to start drawing");
+                isDrawingPath = true;
+            }
+
+            TrackMouseHover();
+            DrawPathGrid();
+            DrawPathLines();
+
+            GUI.Button(new Rect(gridOffset.x - 5, gridOffset.y - 5, 10, 10), "");
+
+            DrawClearButton();
+
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
+
+            // ---------------------- RIGHT SIDE ----------------------
+            EditorGUILayout.BeginVertical(GUILayout.Width(300));
+
+            GUILayout.Space(10);
+            DrawPresetButtons();
+            GUILayout.Space(10);
+            DrawGrid();
+            GUILayout.Space(10);
+            GUILayout.Space(10);
+            DrawSelectedBlockPathMoveList();
+
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndVertical();
+
             EditorGUILayout.EndHorizontal();
-            return;
         }
 
-        GUILayout.BeginHorizontal();
-        levelData.GridSize = EditorGUILayout.Vector2IntField("Grid Size", levelData.GridSize);
-        GUILayout.Space(20);
-        levelData.GoalCoord = EditorGUILayout.Vector2IntField("Goal Coord", levelData.GoalCoord);
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
-        GUILayout.Space(10);
-
-        // --- Path Creator Area ---
-        if (Event.current.type == EventType.MouseDown && IsMouseInsidePathCreator()) {
-            Debug.Log("tried to start drawing");
-            isDrawingPath = true;
-        }
-
-        TrackMouseHover();
-        DrawPathGrid();
-        DrawPathLines();
-
-        GUI.Button(new Rect(gridOffset.x - 5, gridOffset.y - 5, 10, 10), "");
-
-        DrawClearButton();
-
-        EditorGUILayout.EndScrollView();
-        EditorGUILayout.EndVertical();
-
-        // ---------------------- RIGHT SIDE ----------------------
-        EditorGUILayout.BeginVertical(GUILayout.Width(300));
-
-        GUILayout.Space(10);
-        DrawPresetButtons();
-        GUILayout.Space(10);
-        DrawGrid();
-        GUILayout.Space(10);
-        DrawSelectedBlockPathMoveList();
-
-        EditorGUILayout.EndVertical();
-
-        EditorGUILayout.EndHorizontal();
-    }
 
 
 
 
 
 
-    ReorderableList proxySelectedBlockMoveList;
+
+        ReorderableList proxySelectedBlockMoveList;
 
     /// <summary>
     /// i cant believe i need a whole proxy list of type ReorderableList to show a list of enums
