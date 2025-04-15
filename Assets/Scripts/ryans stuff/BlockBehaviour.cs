@@ -291,7 +291,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         blocked = frozen;
 
 
-        if (moveMode == BlockMoveState.pingpong) {
+        if (moveMode == BlockMoveState.pingpong && GetComponent<BlockKey>() == null) {
             cubeRenderer.material = frozen ? frozenMat : pingpongMAT;
         }
         else {

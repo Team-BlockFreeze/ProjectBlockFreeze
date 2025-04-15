@@ -29,4 +29,6 @@ public class SnapToGrid : LoggerMonoBehaviour {
         }
         else LogWarning("failed to set goal coord");
     }
+
+    //TODO: Spawn particles here
 }
