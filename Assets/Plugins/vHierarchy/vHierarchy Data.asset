@@ -133,12 +133,21 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-6e97cca776e263b42b0dd7d8d829bd3c-8182765344510954997-1932875344
         - globalObjectIdString: GlobalObjectId_V1-2-6e97cca776e263b42b0dd7d8d829bd3c-6298016687903376037-7526937179213349183
         - globalObjectIdString: GlobalObjectId_V1-2-6e97cca776e263b42b0dd7d8d829bd3c-1409008833-0
+        - globalObjectIdString: GlobalObjectId_V1-2-6e97cca776e263b42b0dd7d8d829bd3c-1881811443-0
+        - globalObjectIdString: GlobalObjectId_V1-2-6e97cca776e263b42b0dd7d8d829bd3c-265522426-0
+        - globalObjectIdString: GlobalObjectId_V1-2-6e97cca776e263b42b0dd7d8d829bd3c-1463274694-0
         values:
         - colorIndex: 2
           iconNameOrGuid: MeshCollider Icon
         - colorIndex: 3
           iconNameOrGuid: Canvas Icon
         - colorIndex: 1
+          iconNameOrGuid: 
+        - colorIndex: 4
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 7
           iconNameOrGuid: 
     - goDatas_byGlobalId:
         keys:

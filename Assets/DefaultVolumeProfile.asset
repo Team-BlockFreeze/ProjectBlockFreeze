@@ -506,6 +506,7 @@ MonoBehaviour:
   - {fileID: -8186968272690591729}
   - {fileID: -3978695733392391637}
   - {fileID: -1083910812058648046}
+  - {fileID: 4434600349828406391}
 --- !u!114 &156332030701414761
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -651,6 +652,34 @@ MonoBehaviour:
   intensity:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &4434600349828406391
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c56be6a1c0185c4cb4396a13538408f, type: 3}
+  m_Name: HeightFogVolume
+  m_EditorClassIdentifier: 
+  active: 1
+  fogColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  startY:
+    m_OverrideState: 1
+    m_Value: 0
+  endY:
+    m_OverrideState: 1
+    m_Value: 50
+  fogDensity:
+    m_OverrideState: 1
+    m_Value: 1
+  fogFalloff:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &5762530381802164056
 MonoBehaviour:
   m_ObjectHideFlags: 3

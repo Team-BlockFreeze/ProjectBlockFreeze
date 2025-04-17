@@ -72,6 +72,44 @@ MonoBehaviour:
   - {fileID: -193873143521312575}
   - {fileID: -7392852317412513002}
   - {fileID: 7188533801216482521}
+--- !u!114 &6690273796117214676
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c56be6a1c0185c4cb4396a13538408f, type: 3}
+  m_Name: HeightFogVolume
+  m_EditorClassIdentifier: 
+  active: 1
+  <displayName>k__BackingField: 
+  fogColor:
+    <debugId>k__BackingField: fogColor
+    m_OverrideState: 1
+    m_Value:
+      r: 18.81549
+      g: 0
+      b: 0
+      a: 1
+  startY:
+    <debugId>k__BackingField: startY
+    m_OverrideState: 1
+    m_Value: 291.8
+  endY:
+    <debugId>k__BackingField: endY
+    m_OverrideState: 1
+    m_Value: 464.4
+  fogDensity:
+    <debugId>k__BackingField: fogDensity
+    m_OverrideState: 1
+    m_Value: 1
+  fogFalloff:
+    <debugId>k__BackingField: fogFalloff
+    m_OverrideState: 1
+    m_Value: 0.01
 --- !u!114 &7188533801216482521
 MonoBehaviour:
   m_ObjectHideFlags: 3
