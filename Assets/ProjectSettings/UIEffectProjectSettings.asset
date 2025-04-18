@@ -106,6 +106,10 @@ ShaderVariantCollection:
         passType: 0
       - keywords: TONE_GRAYSCALE
         passType: 0
+      - keywords: TONE_NEGATIVE
+        passType: 0
+      - keywords: TONE_RETRO
+        passType: 0
       - keywords: TONE_SEPIA
         passType: 0
       - keywords: TONE_SEPIA TRANSITION_SHINY

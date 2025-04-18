@@ -12,6 +12,7 @@ public class PressedPlayButton : MonoBehaviour, IPointerDownHandler {
     public Image playButton;
     public Image titlePanel;
     public Image optionsPanel;
+    public Image buttonsPanel;
     public float moveDistance = 100f;
     public float scaleFactor = 1.2f;
     public float animationDuration = 1f;
@@ -73,9 +74,10 @@ public class PressedPlayButton : MonoBehaviour, IPointerDownHandler {
 
     public void AnimateButton() {
         titlePanel.transform.DOMoveY(titlePanel.transform.position.y - moveDistance, animationDuration).SetEase(Ease.InOutSine);
-        optionsPanel.transform.DOMoveY(optionsPanel.transform.position.y - moveDistance, animationDuration).SetEase(Ease.InOutSine);
+
         titlePanel.GetComponent<CanvasGroup>().DOFade(0, animationDuration).SetEase(Ease.InOutSine);
-        optionsPanel.GetComponent<CanvasGroup>().DOFade(0, animationDuration).SetEase(Ease.InOutSine);
+        buttonsPanel.transform.DOMoveY(optionsPanel.transform.position.y - moveDistance, animationDuration).SetEase(Ease.InOutSine);
+        buttonsPanel.GetComponent<CanvasGroup>().DOFade(0, animationDuration).SetEase(Ease.InOutSine);
 
         Sequence playButtonSequence = DOTween.Sequence();
 
