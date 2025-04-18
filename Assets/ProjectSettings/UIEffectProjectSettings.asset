@@ -34,7 +34,19 @@ ShaderVariantCollection:
   - first: {fileID: 4800000, guid: 96246b1ead49a4c5a996fd477bc5a117, type: 3}
     second:
       variants:
+      - keywords: 
+        passType: 0
       - keywords: COLOR_FILTER
+        passType: 0
+      - keywords: COLOR_FILTER EDGE_SHINY SAMPLING_BLUR_MEDIUM TONE_GRAYSCALE TRANSITION_PATTERN
+        passType: 0
+      - keywords: COLOR_FILTER EDGE_SHINY SAMPLING_BLUR_MEDIUM TONE_POSTERIZE TRANSITION_PATTERN
+        passType: 0
+      - keywords: COLOR_FILTER EDGE_SHINY SAMPLING_BLUR_MEDIUM TONE_RETRO TRANSITION_PATTERN
+        passType: 0
+      - keywords: COLOR_FILTER EDGE_SHINY SAMPLING_BLUR_MEDIUM TONE_SEPIA TRANSITION_PATTERN
+        passType: 0
+      - keywords: COLOR_FILTER EDGE_SHINY SAMPLING_BLUR_MEDIUM TRANSITION_PATTERN
         passType: 0
       - keywords: COLOR_FILTER TONE_GRAYSCALE
         passType: 0
@@ -62,13 +74,43 @@ ShaderVariantCollection:
         passType: 0
       - keywords: EDGE_SHINY GRADATION_COLOR2 TONE_SEPIA
         passType: 0
+      - keywords: EDGE_SHINY SAMPLING_BLUR_FAST
+        passType: 0
+      - keywords: EDGE_SHINY SAMPLING_BLUR_MEDIUM
+        passType: 0
+      - keywords: EDGE_SHINY SAMPLING_BLUR_MEDIUM TONE_SEPIA TRANSITION_PATTERN
+        passType: 0
+      - keywords: EDGE_SHINY SAMPLING_BLUR_MEDIUM TRANSITION_PATTERN
+        passType: 0
       - keywords: EDGE_SHINY TONE_SEPIA
         passType: 0
       - keywords: EDGE_SHINY TONE_SEPIA TRANSITION_FADE
         passType: 0
       - keywords: EDGE_SHINY TONE_SEPIA TRANSITION_PATTERN
         passType: 0
+      - keywords: GRADATION_COLOR2
+        passType: 0
+      - keywords: SAMPLING_BLUR_DETAIL
+        passType: 0
+      - keywords: SAMPLING_BLUR_FAST
+        passType: 0
+      - keywords: SAMPLING_BLUR_MEDIUM
+        passType: 0
+      - keywords: SAMPLING_EDGE_ALPHA
+        passType: 0
+      - keywords: SAMPLING_EDGE_LUMINANCE
+        passType: 0
+      - keywords: SAMPLING_PIXELATION
+        passType: 0
+      - keywords: SAMPLING_RGB_SHIFT
+        passType: 0
+      - keywords: TONE_GRAYSCALE
+        passType: 0
       - keywords: TONE_SEPIA
         passType: 0
       - keywords: TONE_SEPIA TRANSITION_SHINY
+        passType: 0
+      - keywords: TRANSITION_DISSOLVE
+        passType: 0
+      - keywords: TRANSITION_FADE
         passType: 0

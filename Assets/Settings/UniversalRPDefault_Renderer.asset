@@ -52,26 +52,6 @@ MonoBehaviour:
     renderPassEvent: 550
     heightFogShader: {fileID: 4800000, guid: 6b3e088f22433fd409dc00747beffad7, type: 3}
   _heightFogMaterial: {fileID: 0}
---- !u!114 &-5061077045690794922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
-  m_Name: FullScreenPassRendererFeature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  injectionPoint: 600
-  fetchColorBuffer: 1
-  requirements: 0
-  passMaterial: {fileID: 2100000, guid: 99b77c88b66b40746aeef978b53270e2, type: 2}
-  passIndex: 0
-  bindDepthStencilAttachment: 0
-  m_Version: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,8 +78,7 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 0}
   m_RendererFeatures:
   - {fileID: -7977634880565504114}
-  - {fileID: -5061077045690794922}
-  m_RendererFeatureMap: 8e9720ec57bf4991567cb7de3d71c3b9
+  m_RendererFeatureMap: 8e9720ec57bf4991
   m_UseNativeRenderPass: 0
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}

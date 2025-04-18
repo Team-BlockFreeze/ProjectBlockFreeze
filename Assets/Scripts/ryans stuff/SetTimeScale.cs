@@ -83,6 +83,12 @@ public class SetTimeScale : MonoBehaviour {
 
         if (!selected) soundFX.Play();
 
+        Transform pauseSprite = transform.Find("PauseButton");
+        Transform playSprite = transform.Find("PlayButton");
+
+        if (pauseSprite != null) pauseSprite.gameObject.SetActive(selected); // Show when unpaused
+        if (playSprite != null) playSprite.gameObject.SetActive(!selected);    // Show when paused
+
         EventSystem.current.SetSelectedGameObject(null);
     }
 
