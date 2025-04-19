@@ -2,8 +2,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.SceneManagement;
 
-public class CameraScaler : MonoBehaviour
-{
+public class CameraScaler : MonoBehaviour {
     [ReadOnly]
     [SerializeField]
     private BlockGrid gridRef;
@@ -13,8 +12,7 @@ public class CameraScaler : MonoBehaviour
 
     private Camera cam;
 
-    private void Start()
-    {
+    private void Start() {
         cam = GetComponent<Camera>();
         //AdjustCameraSize(10);
     }
@@ -23,8 +21,7 @@ public class CameraScaler : MonoBehaviour
     private Vector2 currentScreenSize = Vector2.zero;
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         //if (gridRef != null && !gridRef.enabled) {
         //    AdjustCameraSize(10);
         //    return;
@@ -36,20 +33,17 @@ public class CameraScaler : MonoBehaviour
     }
 
     [Button]
-    void GetCamWidth()
-    {
+    void GetCamWidth() {
         if (gridRef == null)
             gridRef = FindFirstObjectByType<BlockGrid>();
 
 
 
-        if (gridRef == null)
-        {
+        if (gridRef == null) {
 
             if (SceneManager.GetActiveScene().name == "Menu" ||
-                SceneManager.GetActiveScene().name == "LevelSelect" ||
-                SceneManager.GetActiveScene().name == "Bootstrapper")
-            {
+                SceneManager.GetActiveScene().name == "Level Select Blocks" ||
+                SceneManager.GetActiveScene().name == "Bootstrapper") {
 
                 return;
             }
@@ -64,13 +58,11 @@ public class CameraScaler : MonoBehaviour
         AdjustCameraSize(width);
     }
 
-    void AdjustCameraSize(float targetWidth)
-    {
+    void AdjustCameraSize(float targetWidth) {
         if (cam == null)
             cam = GetComponent<Camera>();
 
-        if (cam.orthographic)
-        {
+        if (cam.orthographic) {
             float screenAspect = (float)Screen.width / Screen.height;
 
             float heightSize = (gridRef.GridSize.y + camBlockMargin * 2f) * .5f;

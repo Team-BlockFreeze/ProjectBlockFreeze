@@ -1,22 +1,18 @@
 using UnityEngine;
 
-public class UIElementAppear : MonoBehaviour
-{
+public class UIElementAppear : MonoBehaviour {
     [SerializeField]
     private GameObject target;
 
-    private void OnEnable()
-    {
+    private void OnEnable() {
         BlockKey.Event_LevelComplete.AddListener(EnableTarget);
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() {
         BlockKey.Event_LevelComplete.RemoveListener(EnableTarget);
     }
 
-    public void EnableTarget()
-    {
+    public void EnableTarget(LevelDataSO levelData) {
         target.SetActive(true);
     }
 }

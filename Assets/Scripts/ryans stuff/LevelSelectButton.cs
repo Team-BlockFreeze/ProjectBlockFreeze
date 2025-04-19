@@ -4,8 +4,11 @@ using System.Text.RegularExpressions;
 using DG.Tweening;
 using Ami.BroAudio;
 using System;
+using System.ComponentModel;
+using Ami.BroAudio.Runtime;
 
-public class LevelSelectButton : MonoBehaviour {
+[SelectionBase] //! When selecting things in the scene view, it will select the parent object and not the stuff inside
+public class LevelSelectButton : LoggerMonoBehaviour {
     [SerializeField]
     private LevelDataSO level;
     public LevelDataSO Level {
@@ -16,12 +19,25 @@ public class LevelSelectButton : MonoBehaviour {
             //Match match = Regex.Match(value.name, @"\d+");
             //int levelNum = int.Parse(match.Value);
             //levelNumberText.text = levelNum.ToString("D2");
-            // string levelNum = value.name.Substring(5);
-            // if (levelNum.Length == 2) levelNum = levelNum.Insert(1, "0");
-            // levelNum = levelNum.Insert(1, "-");
-            // levelNumberText.text = levelNum;
-            // level = value;
+            string levelNum = value.name.Substring(5);
+            if (levelNum.Length == 2) levelNum = levelNum.Insert(1, "0");
+            levelNum = levelNum.Insert(1, "-");
+            levelNumberText.text = levelNum;
+            level = value;
         }
+    }
+
+    [Sirenix.OdinInspector.ReadOnly, SerializeField]
+    private Vector2Int gridPosition;
+    public Vector2Int GridPosition {
+        get { return gridPosition; }
+        set { gridPosition = value; }
+    }
+
+    [SerializeField] private bool isUnlocked;
+    public bool IsUnlocked {
+        get { return isUnlocked; }
+        set { isUnlocked = value; }
     }
 
     [SerializeField]
@@ -45,14 +61,22 @@ public class LevelSelectButton : MonoBehaviour {
         float animationDuration = 0.3f;
         transform.DOPunchScale(Vector3.one * 0.2f, animationDuration, vibrato: 6, elasticity: 0.8f)
             .OnComplete(() => {
+
+                if (!isUnlocked) {
+                    Log(gridPosition + " is locked.");
+                    return;
+                }
+                else {
+                    // Log(gridPosition + " is unlocked.");
+                }
+
+                LevelSelector.Instance.HideAllButtons();
+
                 LevelSelector.Instance.ChosenLevel = level;
-                SceneLoader.Instance.LoadSceneGroup(index: 2, delayInSeconds: 0f);
+                SceneLoader.Instance.LoadSceneGroup(groupName: "Empty Level Base", delayInSeconds: 1f);
             });
 
         LevelSelector.Instance.LevelSelectedSFX.Play();
     }
 
-    internal void SetLocked(object value) {
-        throw new NotImplementedException();
-    }
 }
