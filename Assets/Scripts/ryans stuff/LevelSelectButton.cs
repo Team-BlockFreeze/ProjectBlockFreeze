@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 using DG.Tweening;
 using Ami.BroAudio;
+using System;
 
 public class LevelSelectButton : MonoBehaviour {
     [SerializeField]
@@ -10,14 +11,16 @@ public class LevelSelectButton : MonoBehaviour {
     public LevelDataSO Level {
         get { return level; }
         set {
+            // TODO: fix string part later
+
             //Match match = Regex.Match(value.name, @"\d+");
             //int levelNum = int.Parse(match.Value);
             //levelNumberText.text = levelNum.ToString("D2");
-            string levelNum = value.name.Substring(5);
-            if (levelNum.Length == 2) levelNum = levelNum.Insert(1, "0");
-            levelNum = levelNum.Insert(1, "-");
-            levelNumberText.text = levelNum;
-            level = value;
+            // string levelNum = value.name.Substring(5);
+            // if (levelNum.Length == 2) levelNum = levelNum.Insert(1, "0");
+            // levelNum = levelNum.Insert(1, "-");
+            // levelNumberText.text = levelNum;
+            // level = value;
         }
     }
 
@@ -49,4 +52,7 @@ public class LevelSelectButton : MonoBehaviour {
         LevelSelector.Instance.LevelSelectedSFX.Play();
     }
 
+    internal void SetLocked(object value) {
+        throw new NotImplementedException();
+    }
 }
