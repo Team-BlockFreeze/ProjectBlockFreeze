@@ -19,7 +19,7 @@ public class LevelSelectButton : LoggerMonoBehaviour {
             //Match match = Regex.Match(value.name, @"\d+");
             //int levelNum = int.Parse(match.Value);
             //levelNumberText.text = levelNum.ToString("D2");
-            string levelNum = value.name.Substring(0);
+            string levelNum = value.name.Substring(0); //! Kerry: Previously substring(5) since "level" was in front
             if (levelNum.Length == 2) levelNum = levelNum.Insert(1, "0");
             levelNum = levelNum.Insert(1, "-");
             levelNumberText.text = levelNum;

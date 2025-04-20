@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using Systems.SceneManagement;
 using UnityEngine;
@@ -107,14 +108,8 @@ public class LevelSelectorBranches : PersistentSingleton<LevelSelectorBranches> 
 
     public LevelSelector GetSelectorForLevel(LevelDataSO level) {
         string name = level.name;
-
-        // Check for branch in name: e.g. A3a_C2
         string[] parts = name.Split('_');
         string group = new string(parts[0].TakeWhile(char.IsLetter).ToArray());
-
-        if (parts.Length > 1) {
-            CurrentBranch = parts[1]; // Set current branch
-        }
 
         return GetSelectorForGroup(group);
     }
@@ -140,6 +135,9 @@ public class LevelSelectorBranches : PersistentSingleton<LevelSelectorBranches> 
 
         // Skip if branch detected
         if (!string.IsNullOrEmpty(branchTarget)) {
+            transform.DOMoveX(transform.position.x - 20, 5f);
+
+
             Debug.Log($"Branch transition detected: {baseName} → {branchTarget}");
             return null;
         }
@@ -157,14 +155,14 @@ public class LevelSelectorBranches : PersistentSingleton<LevelSelectorBranches> 
 
         var levels = currentSelector.Levels;
 
-        // Try next bonus level (e.g., A2a → A2b)
+        // Try next bonus level (eg., A2a -> A2b)
         if (!string.IsNullOrEmpty(bonusPart)) {
             char nextBonus = (char)(bonusPart[0] + 1);
             string nextBonusName = $"{groupPart}{levelNum}{nextBonus}";
             var nextBonusLevel = levels.FirstOrDefault(l => l.name.Equals(nextBonusName, StringComparison.OrdinalIgnoreCase));
             if (nextBonusLevel != null) return nextBonusLevel;
 
-            // Fallback to next base level (e.g., A3)
+            // Fallback to next base level (eg., A3)
             string nextBaseName = $"{groupPart}{levelNum + 1}";
             var nextBase = levels.FirstOrDefault(l => l.name.Equals(nextBaseName, StringComparison.OrdinalIgnoreCase));
             if (nextBase != null) return nextBase;

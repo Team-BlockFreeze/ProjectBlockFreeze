@@ -146,66 +146,6 @@ public class LevelSelector : MonoBehaviour {
     const int baseLevelIdx = 2;
     const int levelSelectIdx = 1;
 
-    // private LevelDataSO GetNextLevel(LevelDataSO currentLevel) {
-    //     string currentName = currentLevel.name;
-
-    //     // If asset name ends with "_X", go to branch X
-    //     string[] parts = currentName.Split('_');
-    //     string baseName = parts[0]; // e.g., "A2b"
-    //     string branchTarget = parts.Length > 1 ? parts[1] : null; // e.g., "C"
-
-    //     // Parse: Group (letters), Number (digits), Bonus (optional letter)
-    //     string groupPart = new string(baseName.TakeWhile(char.IsLetter).ToArray());
-    //     string remainder = baseName.Substring(groupPart.Length);
-    //     string numberPart = new string(remainder.TakeWhile(char.IsDigit).ToArray());
-    //     string bonusPart = new string(remainder.SkipWhile(char.IsDigit).ToArray());
-
-    //     // Debug.Log($"Group: {groupPart}, Number: {numberPart}, Bonus: {bonusPart}");
-
-    //     if (!int.TryParse(numberPart, out int levelNum))
-    //         return null;
-
-    //     // 🪄 Handle branch transition if _Group exists
-    //     if (!string.IsNullOrEmpty(branchTarget)) {
-    //         string targetLevelName = $"{branchTarget}1"; // e.g., C1
-    //         var targetLevel = levels.FirstOrDefault(l => l.name.Equals(targetLevelName, StringComparison.OrdinalIgnoreCase));
-    //         if (targetLevel != null)
-    //             return targetLevel;
-    //     }
-
-    //     // 🔁 If it's a bonus level like A2a, try A2b
-    //     if (!string.IsNullOrEmpty(bonusPart)) {
-    //         char nextBonus = (char)(bonusPart[0] + 1);
-    //         string nextBonusName = $"{groupPart}{levelNum}{nextBonus}";
-    //         var nextBonusLevel = levels.FirstOrDefault(l => l.name.Equals(nextBonusName, StringComparison.OrdinalIgnoreCase));
-    //         if (nextBonusLevel != null) return nextBonusLevel;
-
-    //         // Fallback to next base: A3
-    //         string nextBaseName = $"{groupPart}{levelNum + 1}";
-    //         var nextBase = levels.FirstOrDefault(l => l.name.Equals(nextBaseName, StringComparison.OrdinalIgnoreCase));
-    //         if (nextBase != null) return nextBase;
-
-    //         // Fallback to next group: B1
-    //         return FindFirstLevelInNextGroup(groupPart);
-    //     }
-
-    //     // 📦 If it's a base level like A2, check for A2a, A2b...
-    //     for (char c = 'a'; c <= 'z'; c++) {
-    //         string bonusName = $"{groupPart}{levelNum}{c}";
-    //         var bonus = levels.FirstOrDefault(l => l.name.Equals(bonusName, StringComparison.OrdinalIgnoreCase));
-    //         if (bonus != null) return bonus;
-    //     }
-
-    //     // Then try next base: A3
-    //     string nextBaseLevelName = $"{groupPart}{levelNum + 1}";
-    //     var nextBaseLevel = levels.FirstOrDefault(l => l.name.Equals(nextBaseLevelName, StringComparison.OrdinalIgnoreCase));
-    //     if (nextBaseLevel != null) return nextBaseLevel;
-
-    //     // Finally fallback to next group: B1
-    //     return FindFirstLevelInNextGroup(groupPart);
-    // }
-
-
 
     //! Eg: If you're on A2b, and there's no A2c, try A3
     private LevelDataSO FindFirstLevelInNextGroup(string currentGroup) {
@@ -224,19 +164,6 @@ public class LevelSelector : MonoBehaviour {
         return null;
     }
 
-
-
-    // public void LoadNextLevel() {
-    //     LevelDataSO next = GetNextLevel(ChosenLevel);
-    //     // Debug.Log("next level is " + next);
-    //     if (next != null) {
-    //         ChosenLevel = next;
-    //         SceneLoader.Instance.LoadSceneGroup(baseLevelIdx, 0);
-    //     }
-    //     else {
-    //         SceneLoader.Instance.LoadSceneGroup(levelSelectIdx, 0); // Fallback
-    //     }
-    // }
 
 
 
