@@ -664,7 +664,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 7, y: 1}
+  m_Size: {x: 5, y: 8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1022,7 +1022,7 @@ Transform:
   m_GameObject: {fileID: 7043511621139937964}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.5, y: -0.5, z: 0}
+  m_LocalPosition: {x: -2.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1080,25 +1080,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logging: 0
-  gridSize: {x: 7, y: 1}
-  goalCoord: {x: 4, y: 0}
+  gridSize: {x: 5, y: 8}
+  goalCoord: {x: 2, y: 3}
   levelData: {fileID: 0}
-  loadFromLvlSelectOnStart: 0
+  loadFromLvlSelectOnStart: 1
   validGridSprite: {fileID: 6524471923862907378}
   gridPlaneParentT: {fileID: 1339202477508604938}
   gridPlaneMeshR: {fileID: 5805035223219789282}
   goalBlockScript: {fileID: 3431867088735520115}
+  pingpongMAT: {fileID: 0}
   ActiveGridState:
-    blocksList:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    BlockCoordList:
-    - {x: 2, y: 0}
-    - {x: 6, y: 0}
-    - {x: 0, y: 0}
-    GridWidth: 7
-    GridHeight: 1
+    blocksList: []
+    BlockCoordList: []
+    GridWidth: 5
+    GridHeight: 8
+  blocksList: {fileID: 4196401715938637291}
 --- !u!114 &8540571337747136039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1112,7 +1108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logging: 0
-  gameTickRepeatRate: 1
+  startLevelPaused: 1
   gridRef: {fileID: 4054432160713654793}
   bellSoundSFX:
     ID: 1073741839
@@ -1245,11 +1241,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
       propertyPath: m_LocalPosition.z
