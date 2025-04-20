@@ -1,3 +1,21 @@
+/// <summary>
+/// Manages the level selection system and branching progression in the game.
+/// This singleton class handles:
+/// - Level group organization (A1, A2, B1, etc.)
+/// - Level progression and unlocking
+/// - Branch transitions between level groups
+/// - Level selection UI management
+/// 
+/// Level Naming Convention:
+/// - Basic Format: [Group][Number][Bonus]_[BranchTarget]
+/// - Example: "A3a_C2" means:
+///   * Group A, Level 3, Bonus 'a', with branch to Group C Level 2
+/// - Progression:
+///   * Within group: A1 -> A2 -> A3 etc.
+///   * Bonus levels: A2 -> A2a -> A2b etc.
+///   * Cross-group: A3 -> B1 (when no more A levels)
+///   * Branch points: A3a_C2 (branches to group C)
+/// </summary>
 using System;
 using System.Collections.Generic;
 using System.Linq;
