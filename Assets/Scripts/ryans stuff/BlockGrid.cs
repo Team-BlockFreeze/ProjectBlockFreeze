@@ -156,7 +156,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     private void Start() {
         //gridSize = startGridStateSO.GridSize;
         if (loadFromLvlSelectOnStart) {
-            levelData = LevelSelector.Instance.ChosenLevel;
+            levelData = LevelSelectorBranches.Instance.ChosenLevel;
             LoadStateFromSO();
         }
 

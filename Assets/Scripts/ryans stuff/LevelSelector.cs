@@ -8,7 +8,12 @@ using System;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
-public class LevelSelector : PersistentSingleton<LevelSelector> {
+public class LevelSelector : MonoBehaviour {
+
+    public string GroupName;
+
+
+
     [SerializeField]
     [Sirenix.OdinInspector.FolderPath]
     private string levelsPath;
@@ -21,6 +26,7 @@ public class LevelSelector : PersistentSingleton<LevelSelector> {
 
     [SerializeField]
     private List<LevelDataSO> levels = new List<LevelDataSO>();
+    public List<LevelDataSO> Levels => levels;
 
     public LevelDataSO ChosenLevel { get; set; }
 
@@ -35,56 +41,34 @@ public class LevelSelector : PersistentSingleton<LevelSelector> {
         foreach (var button in LevelButtons) {
             button.SetActive(false);
         }
+
+        //! Dirty sol: hides the plane
+        var plane = transform.Find("Plane");
+        if (plane != null) {
+            plane.gameObject.SetActive(false);
+        }
     }
 
     public void ShowAllButtons() {
         foreach (var button in LevelButtons) {
             button.SetActive(true);
         }
+
+
+        //! Dirty sol: hides the plane
+        var plane = transform.Find("Plane");
+        if (plane != null) {
+            plane.gameObject.SetActive(true);
+        }
+
     }
 
-    protected override void Awake() {
-        base.Awake();
-    }
 
     private void Start() {
 #if UNITY_EDITOR
         if (!Application.isPlaying) return;
 #endif
         RebuildMatrixFromScene(); // Rebuild matrix and buttons at runtime
-    }
-
-    private void OnEnable() {
-        BlockKey.Event_LevelComplete.AddListener(OnLevelComplete);
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable() {
-        BlockKey.Event_LevelComplete.RemoveListener(OnLevelComplete);
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        if (scene.name == "Level Select Blocks") {
-            ShowAllButtons();
-        }
-        else {
-            Debug.Log("Current Level: " + ChosenLevel.name);
-        }
-    }
-
-    private void OnLevelComplete(LevelDataSO levelData) {
-        foreach (var buttonObj in LevelButtons) {
-            if (buttonObj == null) continue;
-
-            var button = buttonObj.GetComponent<LevelSelectButton>();
-            if (button == null) continue;
-
-            if (button.Level == levelData) {
-                UnlockAdjacentCells(button.GridPosition);
-                break;
-            }
-        }
     }
 
     [BoxGroup("Buttons")]
@@ -162,51 +146,65 @@ public class LevelSelector : PersistentSingleton<LevelSelector> {
     const int baseLevelIdx = 2;
     const int levelSelectIdx = 1;
 
-    private LevelDataSO GetNextLevel(LevelDataSO currentLevel) {
-        string currentName = currentLevel.name;
+    // private LevelDataSO GetNextLevel(LevelDataSO currentLevel) {
+    //     string currentName = currentLevel.name;
 
-        // Parse: Group (letters), Number (digits), Bonus (optional letter)
-        string groupPart = new string(currentName.TakeWhile(char.IsLetter).ToArray());
-        string remainder = currentName.Substring(groupPart.Length);
-        string numberPart = new string(remainder.TakeWhile(char.IsDigit).ToArray());
-        string bonusPart = new string(remainder.SkipWhile(char.IsDigit).ToArray());
+    //     // If asset name ends with "_X", go to branch X
+    //     string[] parts = currentName.Split('_');
+    //     string baseName = parts[0]; // e.g., "A2b"
+    //     string branchTarget = parts.Length > 1 ? parts[1] : null; // e.g., "C"
 
-        // Debug.Log($"Group: {groupPart}, Number: {numberPart}, Bonus: {bonusPart}");
+    //     // Parse: Group (letters), Number (digits), Bonus (optional letter)
+    //     string groupPart = new string(baseName.TakeWhile(char.IsLetter).ToArray());
+    //     string remainder = baseName.Substring(groupPart.Length);
+    //     string numberPart = new string(remainder.TakeWhile(char.IsDigit).ToArray());
+    //     string bonusPart = new string(remainder.SkipWhile(char.IsDigit).ToArray());
 
-        if (!int.TryParse(numberPart, out int levelNum))
-            return null;
+    //     // Debug.Log($"Group: {groupPart}, Number: {numberPart}, Bonus: {bonusPart}");
 
-        // If it's a bonus level like A2a, try A2b
-        if (!string.IsNullOrEmpty(bonusPart)) {
-            char nextBonus = (char)(bonusPart[0] + 1);
-            string nextBonusName = $"{groupPart}{levelNum}{nextBonus}";
-            var nextBonusLevel = levels.FirstOrDefault(l => l.name.Equals(nextBonusName, StringComparison.OrdinalIgnoreCase));
-            if (nextBonusLevel != null) return nextBonusLevel;
+    //     if (!int.TryParse(numberPart, out int levelNum))
+    //         return null;
 
-            // Fallback to next base: A3
-            string nextBaseName = $"{groupPart}{levelNum + 1}";
-            var nextBase = levels.FirstOrDefault(l => l.name.Equals(nextBaseName, StringComparison.OrdinalIgnoreCase));
-            if (nextBase != null) return nextBase;
+    //     // 🪄 Handle branch transition if _Group exists
+    //     if (!string.IsNullOrEmpty(branchTarget)) {
+    //         string targetLevelName = $"{branchTarget}1"; // e.g., C1
+    //         var targetLevel = levels.FirstOrDefault(l => l.name.Equals(targetLevelName, StringComparison.OrdinalIgnoreCase));
+    //         if (targetLevel != null)
+    //             return targetLevel;
+    //     }
 
-            // Fallback to next group: B1
-            return FindFirstLevelInNextGroup(groupPart);
-        }
+    //     // 🔁 If it's a bonus level like A2a, try A2b
+    //     if (!string.IsNullOrEmpty(bonusPart)) {
+    //         char nextBonus = (char)(bonusPart[0] + 1);
+    //         string nextBonusName = $"{groupPart}{levelNum}{nextBonus}";
+    //         var nextBonusLevel = levels.FirstOrDefault(l => l.name.Equals(nextBonusName, StringComparison.OrdinalIgnoreCase));
+    //         if (nextBonusLevel != null) return nextBonusLevel;
 
-        // If it's a base level like A2, check for A2a, A2b...
-        for (char c = 'a'; c <= 'z'; c++) {
-            string bonusName = $"{groupPart}{levelNum}{c}";
-            var bonus = levels.FirstOrDefault(l => l.name.Equals(bonusName, StringComparison.OrdinalIgnoreCase));
-            if (bonus != null) return bonus;
-        }
+    //         // Fallback to next base: A3
+    //         string nextBaseName = $"{groupPart}{levelNum + 1}";
+    //         var nextBase = levels.FirstOrDefault(l => l.name.Equals(nextBaseName, StringComparison.OrdinalIgnoreCase));
+    //         if (nextBase != null) return nextBase;
 
-        // Then try A3
-        string nextBaseLevelName = $"{groupPart}{levelNum + 1}";
-        var nextBaseLevel = levels.FirstOrDefault(l => l.name.Equals(nextBaseLevelName, StringComparison.OrdinalIgnoreCase));
-        if (nextBaseLevel != null) return nextBaseLevel;
+    //         // Fallback to next group: B1
+    //         return FindFirstLevelInNextGroup(groupPart);
+    //     }
 
-        // Fallback to next group
-        return FindFirstLevelInNextGroup(groupPart);
-    }
+    //     // 📦 If it's a base level like A2, check for A2a, A2b...
+    //     for (char c = 'a'; c <= 'z'; c++) {
+    //         string bonusName = $"{groupPart}{levelNum}{c}";
+    //         var bonus = levels.FirstOrDefault(l => l.name.Equals(bonusName, StringComparison.OrdinalIgnoreCase));
+    //         if (bonus != null) return bonus;
+    //     }
+
+    //     // Then try next base: A3
+    //     string nextBaseLevelName = $"{groupPart}{levelNum + 1}";
+    //     var nextBaseLevel = levels.FirstOrDefault(l => l.name.Equals(nextBaseLevelName, StringComparison.OrdinalIgnoreCase));
+    //     if (nextBaseLevel != null) return nextBaseLevel;
+
+    //     // Finally fallback to next group: B1
+    //     return FindFirstLevelInNextGroup(groupPart);
+    // }
+
 
 
     //! Eg: If you're on A2b, and there's no A2c, try A3
@@ -228,17 +226,17 @@ public class LevelSelector : PersistentSingleton<LevelSelector> {
 
 
 
-    public void LoadNextLevel() {
-        LevelDataSO next = GetNextLevel(ChosenLevel);
-        // Debug.Log("next level is " + next);
-        if (next != null) {
-            ChosenLevel = next;
-            SceneLoader.instance.LoadSceneGroup(baseLevelIdx, 0);
-        }
-        else {
-            SceneLoader.instance.LoadSceneGroup(levelSelectIdx, 0); // Fallback
-        }
-    }
+    // public void LoadNextLevel() {
+    //     LevelDataSO next = GetNextLevel(ChosenLevel);
+    //     // Debug.Log("next level is " + next);
+    //     if (next != null) {
+    //         ChosenLevel = next;
+    //         SceneLoader.Instance.LoadSceneGroup(baseLevelIdx, 0);
+    //     }
+    //     else {
+    //         SceneLoader.Instance.LoadSceneGroup(levelSelectIdx, 0); // Fallback
+    //     }
+    // }
 
 
 
@@ -272,11 +270,21 @@ public class LevelSelector : PersistentSingleton<LevelSelector> {
         // Debug.Log("UnlockAdjacentCells: " + cell);
     }
 
+    public Vector2Int? GetGridPosition(LevelDataSO level) {
+        foreach (var button in LevelButtons) {
+            LevelSelectButton buttonComponent = button.GetComponent<LevelSelectButton>();
 
+            if (buttonComponent.Level == level) {
+                return buttonComponent.GridPosition;
+            }
+        }
+
+        return null; // Not found
+    }
 
     [BoxGroup("Buttons")]
     [Button("Snap Buttons to Grid")]
-    private void SnapButtonsToWorldGrid() {
+    public void SnapButtonsToWorldGrid() {
         foreach (var buttonObj in LevelButtons) {
             if (buttonObj != null) {
                 Vector3 pos = buttonObj.transform.position;
@@ -295,8 +303,7 @@ public class LevelSelector : PersistentSingleton<LevelSelector> {
     }
 
     [Button("Rebuild Matrix From Scene")]
-    private void RebuildMatrixFromScene() {
-        // Transform buttonParent = GameObject.Find("ButtonBlocks")?.transform;
+    public void RebuildMatrixFromScene() {
         Transform buttonParent = transform;
         if (buttonParent == null) {
             Debug.LogWarning("ButtonBlocks object not found.");
@@ -304,28 +311,45 @@ public class LevelSelector : PersistentSingleton<LevelSelector> {
         }
 
         LevelSelectButton[] foundButtons = buttonParent.GetComponentsInChildren<LevelSelectButton>();
-        buttonMatrix = new LevelSelectButton[layoutXY.x, layoutXY.y];
+        Debug.Log("Found " + foundButtons.Length + " buttons.");
         LevelButtons.Clear();
+
+        Dictionary<Vector2Int, LevelSelectButton> buttonDict = new();
+        Vector2Int maxSize = Vector2Int.zero;
 
         Vector2 topLeft = new Vector2(-layoutXY.x + 1, layoutXY.y - 1);
         float cellSize = 2f;
 
-        foreach (var btn in foundButtons) {
+        Vector3 firstButtonOrigin = foundButtons[0].transform.position;
+
+        for (int i = 0; i < foundButtons.Length; i++) {
+            var btn = foundButtons[i];
             Vector3 pos = btn.transform.position;
-            Vector2 localOffset = new Vector2(pos.x, pos.y) - topLeft;
+            Vector2 localOffset = new Vector2(pos.x - firstButtonOrigin.x, pos.y - firstButtonOrigin.y);
 
             int x = Mathf.RoundToInt(localOffset.x / cellSize);
-            int y = Mathf.RoundToInt(-localOffset.y / cellSize);
+            int y = Mathf.RoundToInt(-localOffset.y / cellSize); // Downward Y
 
-            if (x >= 0 && x < layoutXY.x && y >= 0 && y < layoutXY.y) {
-                btn.GridPosition = new Vector2Int(x, y);
-                buttonMatrix[x, y] = btn;
-                LevelButtons.Add(btn.gameObject);
+            Vector2Int gridPos = new(x, y);
+            btn.GridPosition = gridPos;
+            buttonDict[gridPos] = btn;
+            LevelButtons.Add(btn.gameObject);
+
+            if (i == 0) {
+                btn.IsUnlocked = true; //! Akways unlock first button
             }
-            else {
-                Debug.LogWarning($"Button at {pos} is outside bounds ({x}, {y})");
-            }
+
+            maxSize.x = Mathf.Max(maxSize.x, x + 1);
+            maxSize.y = Mathf.Max(maxSize.y, y + 1);
         }
+
+        buttonMatrix = new LevelSelectButton[maxSize.x, maxSize.y];
+
+        foreach (var kvp in buttonDict) {
+            buttonMatrix[kvp.Key.x, kvp.Key.y] = kvp.Value;
+        }
+
+        layoutXY = maxSize; // Optional: store new size
 
 #if UNITY_EDITOR
         EditorUtility.SetDirty(this);
@@ -335,14 +359,11 @@ public class LevelSelector : PersistentSingleton<LevelSelector> {
 
 
 
+
+
     private void OnDrawGizmos() {
         if (LevelButtons == null || LevelButtons.Count == 0)
             return;
-
-
-
-        Vector2 topLeft = new Vector2(-layoutXY.x + 1, layoutXY.y - 1);
-        float cellSize = 2f;
 
         foreach (var buttonObj in LevelButtons) {
             if (buttonObj == null) continue;
@@ -350,13 +371,13 @@ public class LevelSelector : PersistentSingleton<LevelSelector> {
             var button = buttonObj.GetComponent<LevelSelectButton>();
             if (button == null) continue;
 
-            Vector2Int gridPos = button.GridPosition;
-            Vector3 pos = topLeft + (Vector2.right * gridPos.x + Vector2.down * gridPos.y) * cellSize;
+            Vector3 pos = button.transform.position;
 
             Gizmos.color = button.IsUnlocked ? Color.green : Color.red;
             Gizmos.DrawWireCube(pos, Vector3.one * 1.8f);
         }
     }
+
 
 
 }

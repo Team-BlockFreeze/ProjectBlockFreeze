@@ -24,6 +24,6 @@ public class SceneManagementButton : MonoBehaviour {
 
     const int baseLevelIdx = 2;
     public void LoadAsynceNextLevel() {
-        LevelSelector.Instance.LoadNextLevel();
+        LevelSelectorBranches.Instance.LoadNextLevel();
     }
 }

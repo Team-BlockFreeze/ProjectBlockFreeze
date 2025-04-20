@@ -19,7 +19,7 @@ public class LevelSelectButton : LoggerMonoBehaviour {
             //Match match = Regex.Match(value.name, @"\d+");
             //int levelNum = int.Parse(match.Value);
             //levelNumberText.text = levelNum.ToString("D2");
-            string levelNum = value.name.Substring(5);
+            string levelNum = value.name.Substring(0);
             if (levelNum.Length == 2) levelNum = levelNum.Insert(1, "0");
             levelNum = levelNum.Insert(1, "-");
             levelNumberText.text = levelNum;
@@ -54,9 +54,11 @@ public class LevelSelectButton : LoggerMonoBehaviour {
             Debug.LogError("level button missing level SO", gameObject);
         }
 
-        if (LevelSelector.Instance.clickParticlePrefab != null) {
-            Instantiate(LevelSelector.Instance.clickParticlePrefab, transform.position, Quaternion.identity, transform.parent);
-        }
+
+        // TODO: Spawn particles
+        // if (LevelSelector.Instance.clickParticlePrefab != null) {
+        //     Instantiate(LevelSelector.Instance.clickParticlePrefab, transform.position, Quaternion.identity, transform.parent);
+        // }
 
         float animationDuration = 0.3f;
         transform.DOPunchScale(Vector3.one * 0.2f, animationDuration, vibrato: 6, elasticity: 0.8f)
@@ -70,13 +72,14 @@ public class LevelSelectButton : LoggerMonoBehaviour {
                     // Log(gridPosition + " is unlocked.");
                 }
 
-                LevelSelector.Instance.HideAllButtons();
+                LevelSelectorBranches.Instance.HideAllButtons();
 
-                LevelSelector.Instance.ChosenLevel = level;
+                LevelSelectorBranches.Instance.ChosenLevel = level;
                 SceneLoader.Instance.LoadSceneGroup(groupName: "Empty Level Base", delayInSeconds: 1f);
             });
 
-        LevelSelector.Instance.LevelSelectedSFX.Play();
+        // TODO: Play SFX
+        // LevelSelector.Instance.LevelSelectedSFX.Play();
     }
 
 }
