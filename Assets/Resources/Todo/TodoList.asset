@@ -24,30 +24,6 @@ MonoBehaviour:
     index: 2
   items:
   - owner:
-      name: Kerry
-      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
-      index: 0
-    task: step overs
-    isComplete: 1
-  - owner:
-      name: Kerry
-      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
-      index: 0
-    task: preview lines should only show when "paused"
-    isComplete: 1
-  - owner:
-      name: Ryan
-      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
-      index: 1
-    task: undo button
-    isComplete: 0
-  - owner:
-      name: Kerry
-      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
-      index: 0
-    task: preview lines need to be offset when even numbered grid
-    isComplete: 1
-  - owner:
       name: Other
       color: {r: 0.4198113, g: 1, b: 1, a: 1}
       index: 2
@@ -82,4 +58,10 @@ MonoBehaviour:
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
     task: Camera needs to be rescaled when going from level to level select
+    isComplete: 0
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: border needs to be dynamic with level size
     isComplete: 0

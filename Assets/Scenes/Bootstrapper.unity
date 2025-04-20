@@ -472,8 +472,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuAmbience:
-    ID: 0
-    _sourceAsset: {fileID: 0}
+    ID: 805306371
+    _sourceAsset: {fileID: 11400000, guid: 365499101defd914e8ce80e24a980c29, type: 2}
     <DebugObject>k__BackingField: {fileID: 212536870}
   fadeDuration: 1
 --- !u!4 &212536872
