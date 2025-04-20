@@ -7,6 +7,7 @@ public class IngameCanvasButtons : MonoBehaviour {
     [SerializeField] private GameObject gameSettingsCanvas;
     [SerializeField] private GameObject soundSettingsCanvas;
     [SerializeField] private GameObject buttonsCanvas;
+    [SerializeField] private GameObject blurOverlay;
 
     [Header("Fade Settings")]
     [SerializeField] private float fadeDuration = 0.25f;
@@ -57,6 +58,27 @@ public class IngameCanvasButtons : MonoBehaviour {
         }
 
         fadeSequence.AppendCallback(() => {
+            bool showBlur = targetCanvas != buttonsCanvas;
+            CanvasGroup blurGroup = blurOverlay.GetComponent<CanvasGroup>();
+
+            if (blurGroup != null) {
+                blurGroup.DOKill();
+
+                if (showBlur) {
+                    blurOverlay.SetActive(true);
+                    blurGroup.alpha = 0f;
+                    blurGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutQuad);
+                }
+                else {
+                    blurGroup.DOFade(0f, fadeDuration).SetEase(Ease.InQuad).OnComplete(() => {
+                        blurOverlay.SetActive(false);
+                    });
+                }
+            }
+            else {
+                blurOverlay.SetActive(showBlur);
+            }
+
             CanvasGroup targetGroup = targetCanvas.GetComponent<CanvasGroup>();
             if (targetGroup != null) {
                 targetCanvas.SetActive(true);
@@ -69,4 +91,5 @@ public class IngameCanvasButtons : MonoBehaviour {
             }
         });
     }
+
 }

@@ -77,3 +77,9 @@ MonoBehaviour:
       index: 0
     task: restart doesn't do a reload scene and just resets the grid
     isComplete: 0
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: Camera needs to be rescaled when going from level to level select
+    isComplete: 0
