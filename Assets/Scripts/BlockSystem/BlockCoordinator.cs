@@ -1,44 +1,370 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Ami.BroAudio;
+using DG.Tweening;
+using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using Sirenix.OdinInspector;
-using Ami.BroAudio;
-using Unity.VisualScripting;
-using System.Collections;
-using DG.Tweening;
-using System;
-using System.Runtime.CompilerServices;
-using System.Collections.Generic;
 
-public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
-    public static BlockCoordinator Coordinator => coordinator;
-    private static BlockCoordinator coordinator;
-
-
+public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator>
+{
     [SerializeField] private bool startLevelPaused = true;
+    
+    
 
-
-    [Header("References")]
-    [SerializeField]
+    [Header("References")] [SerializeField]
     private BlockGrid gridRef;
-    public BlockGrid GridRef => gridRef;
 
-    [Header("Audio")]
-    [SerializeField]
-    private SoundID bellSoundSFX;
+    [Header("Audio")] [SerializeField] private SoundID bellSoundSFX;
+
+
+    private bool finishGameLoop;
+
+    public CellForce[,] forceGrid;
+
+    private Coroutine gameTickCoroutine;
+
+    
+    private bool isStepping;
+    public static BlockCoordinator Coordinator { get; private set; }
+
+    public BlockGrid GridRef => gridRef;
+    public bool IsPaused { get; private set; } = true;
+
+    protected override void Awake() {
+        base.Awake();
+        if (Coordinator == null)
+            Coordinator = this;
+        else Destroy(this);
+
+        if (gridRef == null)
+            gridRef = GetComponent<BlockGrid>();
+    }
+
+    private void Start() {
+        DOVirtual.DelayedCall(2.05f, () => {
+            if (!IsPaused) bellSoundSFX.Play();
+        });
+    }
+
+
+    // private void OnEnable() {
+    //     TogglePauseResume();
+    // }
+
+
+    
+    
+    private void OnTriggerEnter(Collider other) {
+    }
+
+    public event Action OnStepForward;
+
+    public bool StepForwardOnce() {
+        if (isStepping) return false;
+
+        isStepping = true;
+        IterateBlockMovement();
+        DOVirtual.DelayedCall(GameSettings.Instance.gameTickInSeconds, () => isStepping = false);
+        OnStepForward?.Invoke();
+        return true;
+    }
+
+
+    public void ManualStart() {
+        forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
+        InitilizeEmptyForceGrid();
+
+        IsPaused = true;
+
+        if (!startLevelPaused) Invoke(nameof(TogglePauseResume), 2f);
+        //DOVirtual.DelayedCall(2f, () => bellSoundSFX.Play());
+
+        // Invoke(nameof(RingBell), 1.4f);
+
+        // DOVirtual.DelayedCall(delay: 2, () => StartGameTickLoop());
+    }
+
+    public event Action OnGameTickStarted;
+
+    private void StartGameTickLoop() {
+        if (gameTickCoroutine != null)
+            StopCoroutine(gameTickCoroutine);
+
+        gameTickCoroutine = StartCoroutine(GameTickLoop());
+    }
+
+
+    private void RaycastToPoint(Transform transform) {
+        var ray = new Ray(transform.position, transform.forward);
+        if (Physics.Raycast(ray, out var hit)) {
+            Debug.DrawLine(ray.origin, hit.point, Color.red);
+            Debug.Log($"Hit object: {hit.collider.gameObject.name} at distance: {hit.distance}");
+        }
+    }
+
+
+    private IEnumerator GameTickLoop() {
+        while (true) {
+            if (finishGameLoop)
+                yield break;
+
+            while (IsPaused) yield return null;
+
+            OnGameTickStarted?.Invoke();
+            IterateBlockMovement();
+
+            yield return new WaitForSeconds(GameSettings.Instance.gameTickInSeconds);
+        }
+    }
+
+    public event Action<bool> OnPauseToggled;
+
+
+    public void TogglePauseResume() {
+        if (IsPaused) StartGameTickLoop();
+        //bellSoundSFX.Play();
+        Log(IsPaused ? "Resuming Autoplay" : "Pause at next tick");
+
+        IsPaused = !IsPaused;
+        OnPauseToggled?.Invoke(IsPaused);
+    }
+
+
+    private void RingBell() {
+        bellSoundSFX.Play();
+    }
 
     /// <summary>
-    /// Class to hold the forces acting upon a grid cell, stored as 4 booleans, one for each direction. 
-    /// Forces are stored as booleans so that forces to do not prematurely cancel out with Vector Math and create unpredicatable outcomes.
+    ///     the main loop of the force system, steps one iteration forward and then begins the animations.
     /// </summary>
-    [System.Serializable]
-    public class CellForce {
+    public void IterateBlockMovement() {
+        PushGridStateToStack();
+
+        InitilizeEmptyForceGrid();
+
+        gridRef.ActiveGridState.UpdateCoordList();
+
+        AddInitialForcesToForceGrid();
+        //ReadForcesOnForceGrid();
+
+        var timeout = 0;
+        while (ReadForcesOnForceGrid() && timeout <= 10) {
+            AddDerivedForcesToForceGrid();
+            timeout++;
+            if (timeout >= 10)
+                LogError("force caluclation infinite loop");
+        }
+
+        Log($"grid force iteration looped {timeout} times");
+
+        timeout = 0;
+        var longerGridDimension = Mathf.Max(forceGrid.GetLength(0), forceGrid.GetLength(1));
+
+        CheckBlockedBlocks();
+        while (CheckBlockedBlocks() && timeout <= longerGridDimension) timeout++;
+        Log($"grid blocked check iteration looped {timeout} times");
+
+        gridRef.ActiveGridState.ClearBlockStateGrid();
+        foreach (var b in gridRef.ActiveGridState.BlocksList) {
+            b.Move();
+            //add back onto gridblockstate
+            gridRef.ActiveGridState.GridBlockStates[b.coord.x, b.coord.y] = b;
+            Log($"moving {b.gameObject.name}");
+        }
+
+        gridRef.ActiveGridState.UpdateCoordList();
+        Log("Full block grid iteration");
+    }
+
+
+    [Button]
+    private void InitilizeEmptyForceGrid() {
+        forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
+
+        for (var x = 0; x < forceGrid.GetLength(0); x++)
+        for (var y = 0; y < forceGrid.GetLength(1); y++)
+            forceGrid[x, y] = new CellForce();
+    }
+
+    public void AddInitialForcesToForceGrid() {
+        foreach (var b in gridRef.ActiveGridState.BlocksList) {
+            gridRef.ActiveGridState.GridBlockStates[b.coord.x, b.coord.y] = b;
+            if (b.frozen) continue;
+
+
+            var moveIntent = b.GetMovementIntention();
+            var targetCell = b.coord + moveIntent;
+
+            b.lastForces = new CellForce();
+            b.lastForces.SetForceFromVector2Int(moveIntent);
+
+            //block target cell isnt on grid (at edge)
+            if (!gridRef.isValidGridCoord(targetCell)) continue;
+            Log(
+                $"{b.name} just set force to {b.lastForces.QueryForce()} at {targetCell} from moveIntent {b.GetMovementIntention()}");
+
+            forceGrid[targetCell.x, targetCell.y].AddForceFromCell(b.lastForces);
+        }
+    }
+
+    public void AddDerivedForcesToForceGrid() {
+        foreach (var b in gridRef.ActiveGridState.BlocksList) {
+            if (b.frozen) continue;
+
+            var collapsedForce = b.lastForces.QueryForce();
+            var targetCell = b.coord + collapsedForce;
+
+            //block target cell isnt on grid (at edge)
+            if (!gridRef.isValidGridCoord(targetCell) || targetCell == b.coord) {
+                Log($"{gameObject.name} can't add force to grid, target cell out of bounds");
+                continue;
+            }
+
+            forceGrid[targetCell.x, targetCell.y].AddForceFromCell(new CellForce(collapsedForce));
+            Log($"{gameObject.name} adding force {collapsedForce} to grid at {targetCell}");
+            //diagonal force
+            if (collapsedForce.x != 0 && collapsedForce.y != 0) {
+                var xTarget = b.coord + new Vector2Int(collapsedForce.x, 0);
+                forceGrid[xTarget.x, xTarget.y].AddForceFromCell(new CellForce(new Vector2Int(collapsedForce.x, 0)));
+                var yTarget = b.coord + new Vector2Int(0, collapsedForce.y);
+                forceGrid[yTarget.x, yTarget.y].AddForceFromCell(new CellForce(new Vector2Int(0, collapsedForce.y)));
+                Log($"{gameObject} is moving diagonally, adding orthogonal forces at {xTarget} and {yTarget}");
+            }
+        }
+    }
+
+    public bool ReadForcesOnForceGrid() {
+        var changes = false;
+
+        foreach (var b in gridRef.ActiveGridState.BlocksList) {
+            if (b.frozen) continue;
+
+            var moveIntent = b.lastForces.QueryForce();
+            var targetCell = b.coord + moveIntent;
+
+            var forces = new CellForce(b.lastForces);
+
+            //add force from target cell
+            //target cell is added first because otherwise other forces would change it before it could read them
+            if (!gridRef.isValidGridCoord(targetCell)) {
+                //LogWarning($"tried to read forces from invalid cell {targetCell}");
+            }
+            else {
+                forces.AddForceFromCell(forceGrid[targetCell.x, targetCell.y]);
+            }
+
+            //add force on current cell
+            forces.AddForceFromCell(forceGrid[b.coord.x, b.coord.y]);
+
+            if (!b.lastForces.Equals(forces))
+                changes = true;
+
+            b.lastForces.AddForceFromCell(forces);
+        }
+
+        return changes;
+    }
+
+    public bool CheckBlockedBlocks() {
+        var changes = false;
+
+        foreach (var b in gridRef.ActiveGridState.BlocksList) {
+            if (b.frozen) continue;
+            if (b.blocked || b.lastForces.NoInputs()) continue;
+
+            var moveIntent = b.lastForces.QueryForce();
+            if (moveIntent == Vector2Int.zero) continue;
+            var targetCell = b.coord + moveIntent;
+
+            //progressive checks for different block conditions
+            //if target cell is on grid
+            if (!gridRef.isValidGridCoord(targetCell)) {
+                b.blocked = true;
+                Log($"{b.name} is blocked, target cell {targetCell} is not valid");
+                //b.lastForces = new CellForce();
+            }
+            //if recieving forces in all directions
+            else if (b.lastForces.AllInputs()) {
+                b.blocked = true;
+                Log($"{b.name} is blocked, recieving all forces, deadlocked");
+            }
+            //if target cell is occupied and that block is blocked or cant be pushed
+            else {
+                var otherB = gridRef.QueryGridCoordBlockState(targetCell);
+
+                if (otherB == null) {
+                }
+                else if (otherB.blocked || otherB.lastForces.AllInputs()) {
+                    b.blocked = true;
+                }
+                else {
+                    //check if block at target cell can move out your way
+                    var otherForce = otherB.lastForces.QueryForce();
+
+                    var xBlocked = otherB.lastForces.XLocked() || otherForce.x != moveIntent.x;
+                    var yBlocked = otherB.lastForces.YLocked() || otherForce.y != moveIntent.y;
+
+                    if ((moveIntent.x != 0 && xBlocked) || (moveIntent.y != 0 && yBlocked)) b.blocked = true;
+                }
+
+                //check extra for diagonals
+                //TODO
+                //if (!b.blocked && moveIntent.x != 0 && moveIntent.y != 0) {  //diagonal
+                var xBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(moveIntent.x, 0));
+                Log(
+                    $"block {b.name} queried {b.coord + new Vector2Int(moveIntent.x, 0)} and found {xBlock?.gameObject.name}");
+                var yBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(0, moveIntent.y));
+
+                var blockedOnX = false;
+                if (xBlock != null && moveIntent.x != 0)
+                    blockedOnX = xBlock.blocked || xBlock.lastForces.XLocked() ||
+                                 moveIntent.x != xBlock.lastForces.QueryForce().x;
+                var blockedOnY = false;
+                if (yBlock != null && moveIntent.y != 0)
+                    blockedOnY = yBlock.blocked || yBlock.lastForces.YLocked() ||
+                                 moveIntent.y != yBlock.lastForces.QueryForce().y;
+
+                if (blockedOnX || blockedOnY) b.blocked = true;
+                //}
+            }
+
+            //if now blocked, update other variables
+            if (b.blocked) changes = true;
+            //b.lastForces = new CellForce();
+        }
+
+        return changes;
+    }
+
+    /// <summary>
+    ///     Class to hold the forces acting upon a grid cell, stored as 4 booleans, one for each direction.
+    ///     Forces are stored as booleans so that forces to do not prematurely cancel out with Vector Math and create
+    ///     unpredicatable outcomes.
+    /// </summary>
+    [Serializable]
+    public class CellForce
+    {
         public bool
             up, down, left, right;
 
         public Vector2Int firstDir = Vector2Int.zero;
 
+        public CellForce() {
+        }
+
+        public CellForce(Vector2Int inVec2Int) {
+            SetForceFromVector2Int(inVec2Int);
+        }
+
+        public CellForce(CellForce original) {
+            SetForceFromVector2Int(original.QueryForce());
+        }
+
         public Vector2Int QueryForce() {
-            Vector2Int finalForce = Vector2Int.zero;
+            var finalForce = Vector2Int.zero;
 
             if (up) finalForce += Vector2Int.up;
             if (down) finalForce += Vector2Int.down;
@@ -46,18 +372,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             if (right) finalForce += Vector2Int.right;
 
             return finalForce;
-        }
-
-        public CellForce() {
-
-        }
-
-        public CellForce(Vector2Int inVec2Int) {
-            this.SetForceFromVector2Int(inVec2Int);
-        }
-
-        public CellForce(CellForce original) {
-            SetForceFromVector2Int(original.QueryForce());
         }
 
         public void SetForceFromVector2Int(Vector2Int inForceVec2) {
@@ -74,14 +388,14 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             right = right || otherCell.right;
 
             if (firstDir == Vector2.zero)
-                firstDir = this.QueryForce();
+                firstDir = QueryForce();
         }
 
         public bool Equals(CellForce otherCell) {
             if (up == otherCell.up &&
-                    down == otherCell.down &&
-                    left == otherCell.left &&
-                    right == otherCell.right)
+                down == otherCell.down &&
+                left == otherCell.left &&
+                right == otherCell.right)
                 return true;
             return false;
         }
@@ -105,19 +419,16 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         public override string ToString() {
             return $"CellForce: (Up: {up}, Down: {down}, Left: {left}, Right: {right})";
         }
-
     }
-
-    public CellForce[,] forceGrid;
 
     #region History Stack
 
-
-    [ShowInInspector, ReadOnly]
-    private Stack<BlockGridHistory> undoStack = new Stack<BlockGridHistory>();
+    [ShowInInspector] [ReadOnly] private Stack<BlockGridHistory> undoStack = new();
 
 
-    public void ClearUndoStack() => undoStack.Clear();
+    public void ClearUndoStack() {
+        undoStack.Clear();
+    }
 
 
     private void PushGridStateToStack() {
@@ -125,7 +436,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     }
 
     public bool StepForwardWithUndo() {
-
         if (isStepping) return false;
 
 
@@ -143,14 +453,11 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         }
 
         var snapshot = undoStack.Pop();
-        foreach (var snap in snapshot.blockSnapshots) {
-            if (snap.block != null) {
+        foreach (var snap in snapshot.blockSnapshots)
+            if (snap.block != null)
                 snap.ApplyUndo();
-            }
-            else {
+            else
                 LogError("Snapshot block reference missing!");
-            }
-        }
 
         // Rebuild state grid
         gridRef.ActiveGridState.ClearBlockStateGrid();
@@ -159,336 +466,32 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
     #endregion
 
-    private bool isStepping = false;
-    public event Action OnStepForward;
-
-    public bool StepForwardOnce() {
-        if (isStepping) return false;
-
-        isStepping = true;
-        IterateBlockMovement();
-        DOVirtual.DelayedCall(GameSettings.Instance.gameTickInSeconds, () => isStepping = false);
-        OnStepForward?.Invoke();
-        return true;
-    }
-
-    protected override void Awake() {
-        base.Awake();
-        if (coordinator == null)
-            coordinator = this;
-        else Destroy(this);
-
-        if (gridRef == null)
-            gridRef = GetComponent<BlockGrid>();
-    }
-
-    private void Start() {
-        DOVirtual.DelayedCall(2.05f, () => { if (!isPaused) bellSoundSFX.Play(); });
-    }
-
-
-    public void ManualStart() {
-        forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
-        InitilizeEmptyForceGrid();
-
-        isPaused = true;
-
-        if (!startLevelPaused) Invoke(nameof(TogglePauseResume), 2f);
-        //DOVirtual.DelayedCall(2f, () => bellSoundSFX.Play());
-
-        // Invoke(nameof(RingBell), 1.4f);
-
-        // DOVirtual.DelayedCall(delay: 2, () => StartGameTickLoop());
-    }
-
-
-
-    // private void OnEnable() {
-    //     TogglePauseResume();
-    // }
-
-
-    private Coroutine gameTickCoroutine;
-    public event Action OnGameTickStarted;
-    private void StartGameTickLoop() {
-        if (gameTickCoroutine != null)
-            StopCoroutine(gameTickCoroutine);
-
-        gameTickCoroutine = StartCoroutine(GameTickLoop());
-    }
-
-    private IEnumerator GameTickLoop() {
-        while (true) {
-            while (isPaused) {
-                yield return null;
-            }
-
-            OnGameTickStarted?.Invoke();
-            IterateBlockMovement();
-
-            yield return new WaitForSeconds(GameSettings.Instance.gameTickInSeconds);
-        }
-    }
-
-
-    private bool isPaused = true;
-    public bool IsPaused => isPaused;
-    public event Action<bool> OnPauseToggled;
-
-
-
-    public void TogglePauseResume() {
-        if (isPaused) {
-            StartGameTickLoop();
-            //bellSoundSFX.Play();
-        }
-
-        Log(isPaused ? "Resuming Autoplay" : "Pause at next tick");
-
-        isPaused = !isPaused;
-        OnPauseToggled?.Invoke(isPaused);
-    }
-
-
-
-
-    private void RingBell() {
-        bellSoundSFX.Play();
-    }
-
-    /// <summary>
-    /// the main loop of the force system, steps one iteration forward and then begins the animations.
-    /// </summary>
-    public void IterateBlockMovement() {
-        PushGridStateToStack();
-
-        InitilizeEmptyForceGrid();
-
-        gridRef.ActiveGridState.UpdateCoordList();
-
-        AddInitialForcesToForceGrid();
-        //ReadForcesOnForceGrid();
-
-        int timeout = 0;
-        while (ReadForcesOnForceGrid() && timeout <= 10) {
-            AddDerivedForcesToForceGrid();
-            timeout++;
-            if (timeout >= 10)
-                LogError("force caluclation infinite loop");
-        }
-        Log($"grid force iteration looped {timeout} times");
-
-        timeout = 0;
-        int longerGridDimension = Mathf.Max(forceGrid.GetLength(0), forceGrid.GetLength(1));
-
-        CheckBlockedBlocks();
-        while (CheckBlockedBlocks() && timeout <= longerGridDimension) {
-            timeout++;
-        }
-        Log($"grid blocked check iteration looped {timeout} times");
-
-        gridRef.ActiveGridState.ClearBlockStateGrid();
-        foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
-            b.Move();
-            //add back onto gridblockstate
-            gridRef.ActiveGridState.GridBlockStates[b.coord.x, b.coord.y] = b;
-            Log($"moving {b.gameObject.name}");
-        }
-
-        gridRef.ActiveGridState.UpdateCoordList();
-        Log("Full block grid iteration");
-    }
-
-
-
-    [Button]
-    private void InitilizeEmptyForceGrid() {
-        forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
-
-        for (int x = 0; x < forceGrid.GetLength(0); x++) {
-            for (int y = 0; y < forceGrid.GetLength(1); y++) {
-                forceGrid[x, y] = new CellForce();
-            }
-        }
-    }
-
-    public void AddInitialForcesToForceGrid() {
-        foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
-            gridRef.ActiveGridState.GridBlockStates[b.coord.x, b.coord.y] = b;
-            if (b.frozen) continue;
-
-
-            Vector2Int moveIntent = b.GetMovementIntention();
-            Vector2Int targetCell = b.coord + moveIntent;
-
-            b.lastForces = new CellForce();
-            b.lastForces.SetForceFromVector2Int(moveIntent);
-
-            //block target cell isnt on grid (at edge)
-            if (!gridRef.isValidGridCoord(targetCell)) {
-                continue;
-            }
-            Log($"{b.name} just set force to {b.lastForces.QueryForce()} at {targetCell} from moveIntent {b.GetMovementIntention()}");
-
-            forceGrid[targetCell.x, targetCell.y].AddForceFromCell(b.lastForces);
-        }
-    }
-
-    public void AddDerivedForcesToForceGrid() {
-        foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
-            if (b.frozen) continue;
-
-            Vector2Int collapsedForce = b.lastForces.QueryForce();
-            Vector2Int targetCell = b.coord + collapsedForce;
-
-            //block target cell isnt on grid (at edge)
-            if (!gridRef.isValidGridCoord(targetCell) || targetCell == b.coord) {
-                Log($"{gameObject.name} can't add force to grid, target cell out of bounds");
-                continue;
-            }
-
-            forceGrid[targetCell.x, targetCell.y].AddForceFromCell(new CellForce(collapsedForce));
-            Log($"{gameObject.name} adding force {collapsedForce} to grid at {targetCell}");
-            //diagonal force
-            if (collapsedForce.x != 0 && collapsedForce.y != 0) {
-                var xTarget = b.coord + new Vector2Int(collapsedForce.x, 0);
-                forceGrid[xTarget.x, xTarget.y].AddForceFromCell(new CellForce(new Vector2Int(collapsedForce.x, 0)));
-                var yTarget = b.coord + new Vector2Int(0, collapsedForce.y);
-                forceGrid[yTarget.x, yTarget.y].AddForceFromCell(new CellForce(new Vector2Int(0, collapsedForce.y)));
-                Log($"{gameObject} is moving diagonally, adding orthogonal forces at {xTarget} and {yTarget}");
-            }
-        }
-    }
-
-    public bool ReadForcesOnForceGrid() {
-        bool changes = false;
-
-        foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
-            if (b.frozen) continue;
-
-            Vector2Int moveIntent = b.lastForces.QueryForce();
-            Vector2Int targetCell = b.coord + moveIntent;
-
-            var forces = new CellForce(b.lastForces);
-
-            //add force from target cell
-            //target cell is added first because otherwise other forces would change it before it could read them
-            if (!gridRef.isValidGridCoord(targetCell)) {
-                //LogWarning($"tried to read forces from invalid cell {targetCell}");
-            }
-            else {
-                forces.AddForceFromCell(forceGrid[targetCell.x, targetCell.y]);
-            }
-            //add force on current cell
-            forces.AddForceFromCell(forceGrid[b.coord.x, b.coord.y]);
-
-            if (!b.lastForces.Equals(forces))
-                changes = true;
-
-            b.lastForces.AddForceFromCell(forces);
-        }
-
-        return changes;
-    }
-
-    public bool CheckBlockedBlocks() {
-        bool changes = false;
-
-        foreach (BlockBehaviour b in gridRef.ActiveGridState.BlocksList) {
-            if (b.frozen) continue;
-            if (b.blocked || b.lastForces.NoInputs()) continue;
-
-            Vector2Int moveIntent = b.lastForces.QueryForce();
-            if (moveIntent == Vector2Int.zero) continue;
-            Vector2Int targetCell = b.coord + moveIntent;
-
-            //progressive checks for different block conditions
-            //if target cell is on grid
-            if (!gridRef.isValidGridCoord(targetCell)) {
-                b.blocked = true;
-                Log($"{b.name} is blocked, target cell {targetCell} is not valid");
-                //b.lastForces = new CellForce();
-            }
-            //if recieving forces in all directions
-            else if (b.lastForces.AllInputs()) {
-                b.blocked = true;
-                Log($"{b.name} is blocked, recieving all forces, deadlocked");
-            }
-            //if target cell is occupied and that block is blocked or cant be pushed
-            else {
-                var otherB = gridRef.QueryGridCoordBlockState(targetCell);
-
-                if (otherB == null) {
-
-                }
-                else if (otherB.blocked || otherB.lastForces.AllInputs()) {
-                    b.blocked = true;
-                }
-                else {
-                    //check if block at target cell can move out your way
-                    var otherForce = otherB.lastForces.QueryForce();
-
-                    bool xBlocked = otherB.lastForces.XLocked() || otherForce.x != moveIntent.x;
-                    bool yBlocked = otherB.lastForces.YLocked() || otherForce.y != moveIntent.y;
-
-                    if (moveIntent.x != 0 && xBlocked || moveIntent.y != 0 && yBlocked) {
-                        b.blocked = true;
-                    }
-                }
-
-                //check extra for diagonals
-                //TODO
-                //if (!b.blocked && moveIntent.x != 0 && moveIntent.y != 0) {  //diagonal
-                var xBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(moveIntent.x, 0));
-                Log($"block {b.name} queried {b.coord + new Vector2Int(moveIntent.x, 0)} and found {xBlock?.gameObject.name}");
-                var yBlock = gridRef.QueryGridCoordBlockState(b.coord + new Vector2Int(0, moveIntent.y));
-
-                bool blockedOnX = false;
-                if (xBlock != null && moveIntent.x != 0)
-                    blockedOnX = xBlock.blocked || xBlock.lastForces.XLocked() || moveIntent.x != xBlock.lastForces.QueryForce().x;
-                bool blockedOnY = false;
-                if (yBlock != null && moveIntent.y != 0)
-                    blockedOnY = yBlock.blocked || yBlock.lastForces.YLocked() || moveIntent.y != yBlock.lastForces.QueryForce().y;
-
-                if (blockedOnX || blockedOnY) b.blocked = true;
-                //}
-            }
-
-            //if now blocked, update other variables
-            if (b.blocked) {
-                changes = true;
-                //b.lastForces = new CellForce();
-            }
-        }
-
-        return changes;
-    }
-
     #region debug
+
 #if UNITY_EDITOR
 
     private void OnDrawGizmos() {
-        gridRef.ForEachCellAtCellCenter((Vector2Int coord, Vector3 pos) => DrawDirectionalSquares(coord, pos));
+        gridRef.ForEachCellAtCellCenter((coord, pos) => DrawDirectionalSquares(coord, pos));
     }
 
     /// <summary>
-    /// Draws all Forces a grid coord is recieving as gizmo
+    ///     Draws all Forces a grid coord is recieving as gizmo
     /// </summary>
     /// <param name="coord"></param>
     /// <param name="center"></param>
     public void DrawDirectionalSquares(Vector2Int coord, Vector3 center) {
         // Half the length of the square (0.5f makes total size 1 unit)
-        float dist = 0.25f;
-        float size = .2f;
+        var dist = 0.25f;
+        var size = .2f;
 
         //get cell force
-        CellForce cellForce = forceGrid != null ? forceGrid[coord.x, coord.y] : new CellForce();
+        var cellForce = forceGrid != null ? forceGrid[coord.x, coord.y] : new CellForce();
 
         // Default color (grey)
-        Color defaultColor = Color.grey;
-        Color highlightColor = Color.blue;
+        var defaultColor = Color.grey;
+        var highlightColor = Color.blue;
 
-        Handles.Label(center, $"{coord}", new GUIStyle() { alignment = TextAnchor.MiddleCenter });
+        Handles.Label(center, $"{coord}", new GUIStyle { alignment = TextAnchor.MiddleCenter });
 
         // Up square
         Gizmos.color = cellForce.up ? highlightColor : defaultColor;
@@ -507,7 +510,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         Gizmos.DrawWireCube(center + Vector3.down * dist, Vector3.one * size);
     }
 #endif
+
     #endregion
-
-
 }

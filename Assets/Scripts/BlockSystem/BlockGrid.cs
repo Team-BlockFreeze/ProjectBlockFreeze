@@ -1,51 +1,86 @@
-using UnityEngine;
-using Sirenix.OdinInspector;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEditor;
-using Unity.VisualScripting;
+using UnityEngine;
+using UnityUtils;
 
-public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
-
-    [Title("Grid Settings")]
-    [SerializeField, ReadOnly] private Vector2Int gridSize;
-    public Vector2Int GridSize => gridSize;
+public class BlockGrid : Singleton<BlockGrid>
+{
+    [Title("Grid Settings")] [SerializeField] [ReadOnly]
+    private Vector2Int gridSize;
 
     [SerializeField] private Vector2Int goalCoord;
 
-    [OnValueChanged("LoadStateFromSO")]
-    [SerializeField, InlineEditor]
+    [OnValueChanged("LoadStateFromSO")] [SerializeField] [InlineEditor]
     private LevelDataSO levelData;
-    public LevelDataSO LevelData => levelData;
 
-    [SerializeField]
-    private bool loadFromLvlSelectOnStart = false;
+    [SerializeField] private bool loadFromLvlSelectOnStart;
 
-    [FoldoutGroup("Grid Rendering"), SerializeField]
+    [FoldoutGroup("Grid Rendering")] [SerializeField]
     private SpriteRenderer validGridSprite;
 
-    [FoldoutGroup("Grid Rendering"), SerializeField]
+    [FoldoutGroup("Grid Rendering")] [SerializeField]
     private Transform gridPlaneParentT;
 
-    [FoldoutGroup("Grid Rendering"), SerializeField]
+    [FoldoutGroup("Grid Rendering")] [SerializeField]
     private MeshRenderer gridPlaneMeshR;
 
-    [FoldoutGroup("Grid Rendering"), SerializeField]
+    [FoldoutGroup("Grid Rendering")] [SerializeField]
     private SnapToGrid goalBlockScript;
 
-    [FoldoutGroup("Grid Rendering"), SerializeField]
+    [FoldoutGroup("Grid Rendering")] [SerializeField]
     private Material pingpongMAT;
 
-    [SerializeField]
-    public GridState ActiveGridState;
+    [SerializeField] public GridState ActiveGridState;
 
 
     [SerializeField] private Transform blocksList;
+    public Vector2Int GridSize => gridSize;
+    public LevelDataSO LevelData => levelData;
+    public Vector2Int GoalCoord => goalCoord;
 
+    private void Start() {
+        //gridSize = startGridStateSO.GridSize;
+        if (loadFromLvlSelectOnStart) {
+            levelData = LevelAreaController.Instance.ChosenLevel;
+            LoadStateFromSO();
+        }
+
+        ActiveGridState.GridBlockStates = new BlockBehaviour[gridSize.x, gridSize.y];
+
+        //foreach (var block in ActiveGridState.GridBlockStates) {
+        //    if (block == null) continue;
+
+        //    ActiveGridState.BlocksList.Add(block);
+        //}
+
+        ReloadGridVisuals();
+
+        BlockCoordinator.Instance?.ManualStart();
+    }
+
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos() {
+        //Draw Debug grid lines
+        var botLeft = GetBotLeftOriginPos();
+        for (var i = 1; i < gridSize.x; i++) {
+            var start = botLeft + Vector3.right * i;
+            Gizmos.DrawLine(start, start + Vector3.up * gridSize.y);
+        }
+
+        for (var i = 1; i < gridSize.y; i++) {
+            var start = botLeft + Vector3.up * i;
+            Gizmos.DrawLine(start, start + Vector3.right * gridSize.y);
+        }
+    }
+#endif
 
 
     [PropertyOrder(-10)]
-    [FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
+    [FoldoutGroup("Actions")]
+    [Button(ButtonSizes.Medium)]
     public void LoadStateFromSO() {
         BlockCoordinator.Instance.ClearUndoStack();
 
@@ -67,7 +102,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
 
         //load blocks from level data SO
         foreach (var bData in levelData.Blocks) {
-            BlockBehaviour newBlock = GameObject.Instantiate(bData.blockTypeFab, blocksList).GetComponent<BlockBehaviour>();
+            var newBlock = Instantiate(bData.blockTypeFab, blocksList).GetComponent<BlockBehaviour>();
             newBlock.transform.position = GetWorldSpaceFromCoord(bData.gridCoord);
             //newBlock.transform.parent
             newBlock.SetGridRef(this);
@@ -77,14 +112,11 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
             newBlock.SetMovePath(bData.movePath?.ToArray());
 
 
-
             //! dirty solution for now -kerry
-            if (newBlock.moveMode == BlockBehaviour.BlockMoveState.pingpong && newBlock.gameObject.GetComponent<BlockKey>() == null) {
-
+            if (newBlock.moveMode == BlockBehaviour.BlockMoveState.pingpong &&
+                newBlock.gameObject.GetComponent<BlockKey>() == null) {
                 Renderer blockRenderer = newBlock.GetComponentInChildren<MeshRenderer>();
-                if (blockRenderer != null) {
-                    blockRenderer.sharedMaterial = pingpongMAT;
-                }
+                if (blockRenderer != null) blockRenderer.sharedMaterial = pingpongMAT;
             }
             //! dirty solution for now -kerry
 
@@ -92,7 +124,6 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
                 newBlock.TrySetFreeze(true);
 
             newBlock.UpdateMovementVisualiser();
-
         }
 
 
@@ -103,11 +134,12 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     //public void SaveStateToSO() { }
 
     [PropertyOrder(-10)]
-    [FoldoutGroup("Actions"), Button(ButtonSizes.Large)]
+    [FoldoutGroup("Actions")]
+    [Button(ButtonSizes.Large)]
     public void ResetActiveGrid() {
         while (blocksList.childCount > 0) {
-            Transform child = blocksList.GetChild(0);
-            GameObject.DestroyImmediate(child.gameObject);
+            var child = blocksList.GetChild(0);
+            DestroyImmediate(child.gameObject);
         }
 
 
@@ -119,11 +151,12 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     }
 
     [PropertyOrder(-10)]
-    [FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
+    [FoldoutGroup("Actions")]
+    [Button(ButtonSizes.Medium)]
     public void ReloadGridVisuals() {
         validGridSprite.size = new Vector2(gridSize.x, gridSize.y);
 
-        float planePosY = gridSize.y % 2 == 0 ? 0 : -0.5f / gridPlaneParentT.localScale.y;
+        var planePosY = gridSize.y % 2 == 0 ? 0 : -0.5f / gridPlaneParentT.localScale.y;
         gridPlaneParentT.position = new Vector3(GetBotLeftOriginPos().x, planePosY, 0);
 
         var goalWorldPos = GetWorldSpaceFromCoord(goalCoord) - Vector3.one * 0.5f;
@@ -145,35 +178,13 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     //[InlineEditor]
 
 
-
     public void SetGoalCoord(Vector2Int coord) {
         goalCoord = coord;
         EditorUtility.SetDirty(this);
     }
-    public Vector2Int GoalCoord => goalCoord;
-
-    private void Start() {
-        //gridSize = startGridStateSO.GridSize;
-        if (loadFromLvlSelectOnStart) {
-            levelData = LevelSelectorBranches.Instance.ChosenLevel;
-            LoadStateFromSO();
-        }
-
-        ActiveGridState.GridBlockStates = new BlockBehaviour[gridSize.x, gridSize.y];
-
-        //foreach (var block in ActiveGridState.GridBlockStates) {
-        //    if (block == null) continue;
-
-        //    ActiveGridState.BlocksList.Add(block);
-        //}
-
-        ReloadGridVisuals();
-
-        BlockCoordinator.Instance?.ManualStart();
-    }
 
     public bool isValidGridCoord(Vector2Int coord) {
-        bool isValid = true;
+        var isValid = true;
         if (coord.x < 0 || coord.x >= gridSize.x) isValid = false;
         if (coord.y < 0 || coord.y >= gridSize.y) isValid = false;
         return isValid;
@@ -183,7 +194,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
         var isValid = true; // isValidGridCoord(coord);
         //Log($"print BlockState 2D Array size {ActiveGridState.GridBlockStates.GetLength(0)}, {ActiveGridState.GridBlockStates.GetLength(1)}");
         if (!isValid || ActiveGridState.GridBlockStates == null) return null;
-        else return ActiveGridState.GridBlockStates[coord.x, coord.y];
+        return ActiveGridState.GridBlockStates[coord.x, coord.y];
     }
 
     public Vector3 GetWorldSpaceFromCoord(Vector2Int coord) {
@@ -192,14 +203,14 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
 
     public Vector3 GetWorldPosSnappedToGrid(Vector3 pos) {
         var floatGridPos = pos - GetBotLeftOriginPos();
-        Vector2Int gridPos = new Vector2Int((int)floatGridPos.x, (int)floatGridPos.y);
+        var gridPos = new Vector2Int((int)floatGridPos.x, (int)floatGridPos.y);
         return GetWorldSpaceFromCoord(gridPos);
     }
 
     public Vector2Int GetGridCoordFromWorldPos(Vector3 pos) {
         var floatGridPos = pos - GetBotLeftOriginPos();
         floatGridPos -= new Vector3(0.5f, 0.5f, 0);
-        Vector2Int gridPos = new Vector2Int((int)floatGridPos.x, (int)floatGridPos.y);
+        var gridPos = new Vector2Int((int)floatGridPos.x, (int)floatGridPos.y);
 
         return gridPos;
     }
@@ -207,7 +218,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     public void TryPlaceOnGrid(BlockBehaviour block) {
         var pos = block.transform.position;
         var floatGridPos = pos - GetBotLeftOriginPos();
-        Vector2Int gridPos = new Vector2Int((int)floatGridPos.x, (int)floatGridPos.y);
+        var gridPos = new Vector2Int((int)floatGridPos.x, (int)floatGridPos.y);
         Log($"trying to add block {block.gameObject.name} to add block at {gridPos}");
 
 
@@ -216,6 +227,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
             LogWarning($"failed to add block at {gridPos}, invalid coord");
             return;
         }
+
         if (QueryGridCoordBlockState(gridPos) != null) {
             //fail
             LogWarning($"failed to add block at {gridPos}, coord occupied");
@@ -224,7 +236,8 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
 
         //valid
         //try remove existing entry
-        if (ActiveGridState.GridBlockStates == null) ActiveGridState.GridBlockStates = new BlockBehaviour[gridSize.x, gridSize.y];
+        if (ActiveGridState.GridBlockStates == null)
+            ActiveGridState.GridBlockStates = new BlockBehaviour[gridSize.x, gridSize.y];
         if (ActiveGridState.BlocksList.Remove(block))
             if (isValidGridCoord(block.coord))
                 ActiveGridState.GridBlockStates[block.coord.x, block.coord.y] = null;
@@ -244,7 +257,7 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     }
 
     public Vector3 GetTopLeftOriginPos() {
-        return transform.position + new Vector3(-(float)gridSize.x * .5f, (float)gridSize.y * .5f);
+        return transform.position + new Vector3(-(float)gridSize.x * .5f, gridSize.y * .5f);
     }
 
     public Vector3 GetBotLeftOriginPos() {
@@ -258,31 +271,13 @@ public class BlockGrid : UnityUtils.Singleton<BlockGrid> {
     }
 
     public void ForEachCellAtCellCenter(Action<Vector2Int, Vector3> action) {
-        for (int x = 0; x < gridSize.x; x++) {
-            for (int y = 0; y < gridSize.y; y++) {
-                Vector3 cellCenterPos = GetBotLeftOriginPos() + Vector3.one * .5f + new Vector3(x, y);
-                action(new Vector2Int(x, y), cellCenterPos);
-            }
+        for (var x = 0; x < gridSize.x; x++)
+        for (var y = 0; y < gridSize.y; y++) {
+            var cellCenterPos = GetBotLeftOriginPos() + Vector3.one * .5f + new Vector3(x, y);
+            action(new Vector2Int(x, y), cellCenterPos);
         }
     }
 
     public void ForEachCellCoord(Action<Vector2Int> action) {
-
     }
-
-
-#if UNITY_EDITOR
-    private void OnDrawGizmos() {
-        //Draw Debug grid lines
-        Vector3 botLeft = GetBotLeftOriginPos();
-        for (int i = 1; i < gridSize.x; i++) {
-            Vector3 start = botLeft + Vector3.right * i;
-            Gizmos.DrawLine(start, start + Vector3.up * gridSize.y);
-        }
-        for (int i = 1; i < gridSize.y; i++) {
-            Vector3 start = botLeft + Vector3.up * i;
-            Gizmos.DrawLine(start, start + Vector3.right * gridSize.y);
-        }
-    }
-#endif
 }

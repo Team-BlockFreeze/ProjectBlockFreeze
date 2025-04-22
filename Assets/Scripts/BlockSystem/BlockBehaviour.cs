@@ -1,13 +1,9 @@
 using UnityEngine;
-using UnityEditor;
 using Sirenix.OdinInspector;
 using DG.Tweening;
 using UnityEngine.Events;
-using UnityEditor.Build.Pipeline;
-using System.Runtime.CompilerServices;
 using System;
 
-[System.Serializable]
 public class BlockBehaviour : LoggerMonoBehaviour {
     [Title("Grid Reference")]
     [SerializeField, InlineEditor]
@@ -159,8 +155,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     }
 
     Tween moveTween;
-
-
+    
 
     public UnityEvent Event_NextMoveBegan = new UnityEvent();
 

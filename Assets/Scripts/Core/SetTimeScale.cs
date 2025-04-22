@@ -1,44 +1,31 @@
-using Ami.BroAudio;
 using System;
+using Ami.BroAudio;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SetTimeScale : MonoBehaviour {
-    [SerializeField]
-    private bool startSelected = false;
+public class SetTimeScale : MonoBehaviour
+{
+    private static readonly UnityEvent Event_TimeScaleButtonPressed = new();
 
-    [SerializeField]
-    private bool soloSelectToggle = false;
+    [SerializeField] private bool startSelected;
 
-    public static event Action<float> OnTimeScaleChanged;
+    [SerializeField] private bool soloSelectToggle;
 
-    private Color defaultCol;
-    private Color selectedCol;
+    [Header("Audio")] [SerializeField] private SoundID soundFX;
 
-    private bool selected;
+    [SerializeField] private float timeScaleToSet = 1f;
 
     private Button button;
 
-    private static UnityEvent Event_TimeScaleButtonPressed = new UnityEvent();
+    private Color defaultCol;
 
-    [Header("Audio")]
-    [SerializeField]
-    private SoundID soundFX;
+    private bool selected;
+    private Color selectedCol;
 
-    private void OnEnable() {
-        if (soloSelectToggle) return;
-        Event_TimeScaleButtonPressed.AddListener(UnselectButton);
-    }
-
-    private void OnDisable() {
-        if (soloSelectToggle) return;
-        Event_TimeScaleButtonPressed.RemoveListener(UnselectButton);
-    }
-
-    private void UnselectButton() {
-        SetColor(false);
+    private void Awake() {
+        UndoOnce();
     }
 
     private void Start() {
@@ -55,6 +42,22 @@ public class SetTimeScale : MonoBehaviour {
         }
     }
 
+    private void OnEnable() {
+        if (soloSelectToggle) return;
+        Event_TimeScaleButtonPressed.AddListener(UnselectButton);
+    }
+
+    private void OnDisable() {
+        if (soloSelectToggle) return;
+        Event_TimeScaleButtonPressed.RemoveListener(UnselectButton);
+    }
+
+    public static event Action<float> OnTimeScaleChanged;
+
+    private void UnselectButton() {
+        SetColor(false);
+    }
+
     private void SetColor(bool? forceState = null) {
         if (forceState.HasValue)
             selected = forceState.Value;
@@ -64,8 +67,6 @@ public class SetTimeScale : MonoBehaviour {
         button.colors = colors;
     }
 
-    [SerializeField]
-    private float timeScaleToSet = 1f;
     public void DoSetTimeScale() {
         Time.timeScale = timeScaleToSet;
         OnTimeScaleChanged?.Invoke(timeScaleToSet);
@@ -83,11 +84,11 @@ public class SetTimeScale : MonoBehaviour {
 
         if (!selected) soundFX.Play();
 
-        Transform pauseSprite = transform.Find("PauseButton");
-        Transform playSprite = transform.Find("PlayButton");
+        var pauseSprite = transform.Find("PauseButton");
+        var playSprite = transform.Find("PlayButton");
 
         if (pauseSprite != null) pauseSprite.gameObject.SetActive(selected); // Show when unpaused
-        if (playSprite != null) playSprite.gameObject.SetActive(!selected);    // Show when paused
+        if (playSprite != null) playSprite.gameObject.SetActive(!selected); // Show when paused
 
         EventSystem.current.SetSelectedGameObject(null);
     }
@@ -99,9 +100,7 @@ public class SetTimeScale : MonoBehaviour {
         // if(BlockCoordinator.Instance.StepForwardOnce())
         //     soundFX.Play();
 
-        if (BlockCoordinator.Instance.StepForwardWithUndo()) {
-            soundFX.Play();
-        }
+        if (BlockCoordinator.Instance.StepForwardWithUndo()) soundFX.Play();
 
         EventSystem.current.SetSelectedGameObject(null);
     }

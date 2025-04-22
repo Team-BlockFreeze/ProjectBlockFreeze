@@ -2,13 +2,16 @@ using Systems.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneManagementButton : MonoBehaviour {
+public class SceneManagementButton : MonoBehaviour
+{
+    private const int baseLevelIdx = 2;
+
     public void ReloadScene() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void LoadNextScene() {
-        int i = SceneManager.GetActiveScene().buildIndex + 1;
+        var i = SceneManager.GetActiveScene().buildIndex + 1;
         if (i >= SceneManager.sceneCountInBuildSettings) {
             Debug.LogError($"Tried to load level at build index {i}, out of bounds");
             return;
@@ -19,11 +22,10 @@ public class SceneManagementButton : MonoBehaviour {
     }
 
     public void LoadAsyncSceneGroupByIdx(int idx) {
-        SceneLoader.Instance.LoadSceneGroup(index: idx, delayInSeconds: 0f);
+        SceneLoader.Instance.LoadSceneGroup(idx, 0f);
     }
 
-    const int baseLevelIdx = 2;
     public void LoadAsynceNextLevel() {
-        LevelSelectorBranches.Instance.LoadNextLevel();
+        LevelAreaController.Instance.LoadNextLevel();
     }
 }
