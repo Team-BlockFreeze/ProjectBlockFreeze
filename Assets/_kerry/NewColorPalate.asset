@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd11320069744432a9d718e3719ed437, type: 3}
+  m_Name: NewColorPalate
+  m_EditorClassIdentifier: 
+  fogTopColor: {r: 0, g: 0.18875837, b: 1, a: 0.70980394}
+  fogBottomColor: {r: 0.3537736, g: 0.76518935, b: 1, a: 0.34117648}
+  islandBorder: {fileID: 0}
+  islandMiddle: {fileID: 2100000, guid: b720916f84c05c445a1e56e7d5ac7c34, type: 2}
+  loopBlock: {fileID: 2100000, guid: 1c7aa3aa0c3e3ce4292d1f0f81fcf1d4, type: 2}
+  pingPongBlock: {fileID: 2100000, guid: cb19563ac7b88584ebdb0e797d56cb87, type: 2}
+  keyBlock: {fileID: 2100000, guid: c9246dafac93fac41b0351a38d18f163, type: 2}
+  wallBlock: {fileID: 2100000, guid: 14cb546010f50094e873b130ca4ae35f, type: 2}
+  frozen: {fileID: 2100000, guid: 6553f9e4d30cb1b469189d915c02d5de, type: 2}

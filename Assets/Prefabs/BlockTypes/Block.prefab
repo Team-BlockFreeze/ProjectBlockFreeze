@@ -117,9 +117,9 @@ MonoBehaviour:
   coord: {x: 3, y: 3}
   movePath: 0200000002000000000000000200000001000000010000000100000001000000
   cubeRenderer: {fileID: 7441460586598380325}
-  normalMat: {fileID: 2100000, guid: a7c5947e5cb9058428c2256076061cf4, type: 2}
-  frozenMat: {fileID: 2100000, guid: 6553f9e4d30cb1b469189d915c02d5de, type: 2}
-  pingpongMAT: {fileID: 2100000, guid: e8d379a722d03a24b9be9ddb6e0ef962, type: 2}
+  normalMat: {fileID: 0}
+  frozenMat: {fileID: 0}
+  pingpongMAT: {fileID: 0}
   moveIntentionVisual: {fileID: 7816804011719650362}
   littleDirTriangle: {fileID: 5501142072554771676}
   frozen: 0
@@ -5415,8 +5415,7 @@ MeshRenderer:
   m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: a7c5947e5cb9058428c2256076061cf4, type: 2}
+  m_Materials: []
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -939,10 +939,10 @@
     "m_Guid": {
         "m_GuidSerialized": "5f5db753-f685-4cef-89aa-8702a7481a24"
     },
-    "m_Name": "TopCol",
+    "m_Name": "BottomColor",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "TopCol",
-    "m_DefaultReferenceName": "_TopCol",
+    "m_RefNameGeneratedByDisplayName": "BottomColor",
+    "m_DefaultReferenceName": "_BottomColor",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
@@ -1172,7 +1172,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "1e66e84c116646e5b0ef2883e9aa4d5f",
     "m_Id": 0,
-    "m_DisplayName": "BottomCol",
+    "m_DisplayName": "TopColor",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -2214,7 +2214,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "4e8f3af771234aacb5ad1cf2888761cc",
     "m_Id": 0,
-    "m_DisplayName": "TopCol",
+    "m_DisplayName": "BottomColor",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -3039,10 +3039,10 @@
     "m_Guid": {
         "m_GuidSerialized": "1f8ec66f-e458-47eb-b046-a2ff1fb3b96e"
     },
-    "m_Name": "BottomCol",
+    "m_Name": "TopColor",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "BottomCol",
-    "m_DefaultReferenceName": "_BottomCol",
+    "m_RefNameGeneratedByDisplayName": "TopColor",
+    "m_DefaultReferenceName": "_TopColor",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
@@ -3192,7 +3192,7 @@
     "m_Title": "Graidents",
     "m_Position": {
         "x": 1030.0,
-        "y": -820.0000610351563
+        "y": -820.0
     }
 }
 
@@ -4162,7 +4162,7 @@
     "m_Title": "Reverse Z Check",
     "m_Position": {
         "x": -1247.0,
-        "y": 187.00006103515626
+        "y": 187.0
     }
 }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityUtils;
 
 public class BlockGrid : Singleton<BlockGrid>
@@ -29,13 +30,27 @@ public class BlockGrid : Singleton<BlockGrid>
     [FoldoutGroup("Grid Rendering")] [SerializeField]
     private SnapToGrid goalBlockScript;
 
-    [FoldoutGroup("Grid Rendering")] [SerializeField]
-    private Material pingpongMAT;
+    [FoldoutGroup("Block Materials")] [SerializeField]
+    public Material frozenMAT;
+
+    [FoldoutGroup("Block Materials")] [SerializeField]
+    public Material loopMAT;
+
+    [FoldoutGroup("Block Materials")] [SerializeField]
+    public Material pingpongMAT;
+
+    [FoldoutGroup("Block Materials")] [SerializeField]
+    public Material wallMAT;
+
+    [FoldoutGroup("Block Materials")] [SerializeField]
+    public Material keyMAT;
 
     [SerializeField] public GridState ActiveGridState;
 
 
-    [SerializeField] private Transform blocksList;
+    [FormerlySerializedAs("blocksList")] [SerializeField]
+    private Transform blocksListTransform;
+
     public Vector2Int GridSize => gridSize;
     public LevelDataSO LevelData => levelData;
     public Vector2Int GoalCoord => goalCoord;
@@ -102,7 +117,7 @@ public class BlockGrid : Singleton<BlockGrid>
 
         //load blocks from level data SO
         foreach (var bData in levelData.Blocks) {
-            var newBlock = Instantiate(bData.blockTypeFab, blocksList).GetComponent<BlockBehaviour>();
+            var newBlock = Instantiate(bData.blockTypeFab, blocksListTransform).GetComponent<BlockBehaviour>();
             newBlock.transform.position = GetWorldSpaceFromCoord(bData.gridCoord);
             //newBlock.transform.parent
             newBlock.SetGridRef(this);
@@ -112,13 +127,9 @@ public class BlockGrid : Singleton<BlockGrid>
             newBlock.SetMovePath(bData.movePath?.ToArray());
 
 
-            //! dirty solution for now -kerry
-            if (newBlock.moveMode == BlockBehaviour.BlockMoveState.pingpong &&
-                newBlock.gameObject.GetComponent<BlockKey>() == null) {
-                Renderer blockRenderer = newBlock.GetComponentInChildren<MeshRenderer>();
-                if (blockRenderer != null) blockRenderer.sharedMaterial = pingpongMAT;
-            }
-            //! dirty solution for now -kerry
+            ColorPalateInjector.Instance.InjectColorsIntoScene();
+            ApplyMaterialsToBlocks(newBlock);
+
 
             if (bData.startFrozen)
                 newBlock.TrySetFreeze(true);
@@ -130,6 +141,50 @@ public class BlockGrid : Singleton<BlockGrid>
         EditorUtility.SetDirty(this);
     }
 
+    private void ApplyMaterialsToBlocks(BlockBehaviour newBlock) {
+        if (newBlock == null) return;
+
+        Renderer blockRenderer = newBlock.GetComponentInChildren<MeshRenderer>();
+        if (blockRenderer == null) return;
+
+        var isWall = newBlock.gameObject.name.Contains("Block Wall");
+        var isKey = newBlock.gameObject.name.Contains("Block Key");
+
+        if (newBlock.frozen && !isWall) {
+            blockRenderer.sharedMaterial = frozenMAT;
+            newBlock.BlockMaterial = frozenMAT;
+            return;
+        }
+
+        if (isKey) {
+            blockRenderer.sharedMaterial = keyMAT;
+            newBlock.BlockMaterial = keyMAT;
+            return;
+        }
+
+        if (isWall) {
+            blockRenderer.sharedMaterial = wallMAT;
+            newBlock.BlockMaterial = wallMAT;
+            return;
+        }
+
+        switch (newBlock.moveMode) {
+            case BlockBehaviour.BlockMoveState.pingpong:
+                blockRenderer.sharedMaterial = pingpongMAT;
+                newBlock.BlockMaterial = pingpongMAT;
+                break;
+
+            case BlockBehaviour.BlockMoveState.loop:
+                blockRenderer.sharedMaterial = loopMAT;
+                newBlock.BlockMaterial = loopMAT;
+                break;
+
+            default:
+                Debug.LogWarning($"Unhandled block move mode: {newBlock.moveMode} on {newBlock.name}");
+                break;
+        }
+    }
+
     //[FoldoutGroup("Actions"), Button(ButtonSizes.Medium)]
     //public void SaveStateToSO() { }
 
@@ -137,8 +192,8 @@ public class BlockGrid : Singleton<BlockGrid>
     [FoldoutGroup("Actions")]
     [Button(ButtonSizes.Large)]
     public void ResetActiveGrid() {
-        while (blocksList.childCount > 0) {
-            var child = blocksList.GetChild(0);
+        while (blocksListTransform.childCount > 0) {
+            var child = blocksListTransform.GetChild(0);
             DestroyImmediate(child.gameObject);
         }
 

@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3599889983405176078, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: moveMode
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3599889983405176078, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: canBeFrozen
@@ -143,6 +143,10 @@ PrefabInstance:
     - target: {fileID: 6275303335436671402, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7441460586598380325, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7441460586598380325, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

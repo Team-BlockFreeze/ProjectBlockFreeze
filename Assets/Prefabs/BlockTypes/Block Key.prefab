@@ -27,7 +27,7 @@ PrefabInstance:
     - target: {fileID: 3599889983405176078, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: normalMat
       value: 
-      objectReference: {fileID: 2100000, guid: 14cb546010f50094e873b130ca4ae35f, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 3599889983405176078, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: movePath.Array.size
       value: 1
@@ -56,9 +56,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlockVariant Key
       objectReference: {fileID: 0}
+    - target: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5174078030499856777, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: m_ShadowMesh.m_InitialTrim
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5634588931351033279, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6208843980616002938, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6275303335436671402, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: m_Color.b
@@ -74,7 +86,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6275303335436671402, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7441460586598380325, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7441460586598380325, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -91,6 +107,18 @@ PrefabInstance:
     - target: {fileID: 7816804011719650362, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: m_Color.r
       value: 0.6117647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7882050058715300487, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8641934421214440577, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690390629474992754, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9128580375101533787, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -160,6 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d007e9bc335e26743a25520ed309876d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logging: 1
   block: {fileID: 4164878174581440264}
 --- !u!120 &-7633024134142255350
 LineRenderer:
