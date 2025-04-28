@@ -30,15 +30,15 @@ MonoBehaviour:
     task: reorder level list
     isComplete: 0
   - owner:
-      name: Other
-      color: {r: 0.4198113, g: 1, b: 1, a: 1}
-      index: 2
+      name: Ryan
+      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
+      index: 1
     task: bugfix diagonal force through walls
     isComplete: 0
   - owner:
-      name: Other
-      color: {r: 0.4198113, g: 1, b: 1, a: 1}
-      index: 2
+      name: Ryan
+      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
+      index: 1
     task: cardinal force through walls
     isComplete: 0
   - owner:
@@ -64,4 +64,70 @@ MonoBehaviour:
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
     task: border needs to be dynamic with level size
+    isComplete: 0
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: fix reloading while playing creating visual bugs.
+    isComplete: 0
+  - owner:
+      name: Ryan
+      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
+      index: 1
+    task: asethetic stuff
+    isComplete: 0
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: blocks that cant be frozen
+    isComplete: 0
+  - owner:
+      name: Ryan
+      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
+      index: 1
+    task: recreate concept block in color schemes
+    isComplete: 0
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: change color pallete to be colors and not material
+    isComplete: 0
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: change frozen visual effect to be an overlay that still shows base block
+    isComplete: 0
+  - owner:
+      name: Ryan
+      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
+      index: 1
+    task: base level asethetic finalized
+    isComplete: 0
+  - owner:
+      name: Ryan
+      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
+      index: 1
+    task: base island with small margin
+    isComplete: 0
+  - owner:
+      name: Ryan
+      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
+      index: 1
+    task: try real world buttons and make them look good
+    isComplete: 0
+  - owner:
+      name: Ryan
+      color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
+      index: 1
+    task: tinker and finalise depth fog and gradient approach
+    isComplete: 0
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: level property if it starts autoplaying or not
     isComplete: 0
