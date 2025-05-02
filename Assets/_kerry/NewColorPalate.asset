@@ -16,8 +16,15 @@ MonoBehaviour:
   fogBottomColor: {r: 0.3537736, g: 0.76518935, b: 1, a: 0.34117648}
   islandBorder: {fileID: 0}
   islandMiddle: {fileID: 2100000, guid: b720916f84c05c445a1e56e7d5ac7c34, type: 2}
-  loopBlock: {fileID: 2100000, guid: 1c7aa3aa0c3e3ce4292d1f0f81fcf1d4, type: 2}
-  pingPongBlock: {fileID: 2100000, guid: cb19563ac7b88584ebdb0e797d56cb87, type: 2}
-  keyBlock: {fileID: 2100000, guid: c9246dafac93fac41b0351a38d18f163, type: 2}
-  wallBlock: {fileID: 2100000, guid: 14cb546010f50094e873b130ca4ae35f, type: 2}
+  loopBlock: {fileID: 2100000, guid: a7c5947e5cb9058428c2256076061cf4, type: 2}
+  pingPongBlock: {fileID: 2100000, guid: e8d379a722d03a24b9be9ddb6e0ef962, type: 2}
+  keyBlock: {fileID: 2100000, guid: 14cb546010f50094e873b130ca4ae35f, type: 2}
+  wallBlock: {fileID: 2100000, guid: 73344cb17d81bfd41bd4505a5c0dc4a6, type: 2}
   frozen: {fileID: 2100000, guid: 6553f9e4d30cb1b469189d915c02d5de, type: 2}
+  islandBorderColor: {r: 0.8679245, g: 0.36436453, b: 0.36436453, a: 0}
+  islandMiddleColor: {r: 0, g: 0, b: 0, a: 0}
+  loopBlockColor: {r: 0.8207547, g: 0.8207547, b: 0.8207547, a: 1}
+  pingPongBlockColor: {r: 0.2216981, g: 0.64760417, b: 0.8867924, a: 1}
+  keyBlockColor: {r: 0.9245283, g: 0.3009078, b: 0.3009078, a: 1}
+  wallBlockColor: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
+  frozenColor: {r: 0.14462443, g: 0.41176313, b: 0.4716981, a: 0}

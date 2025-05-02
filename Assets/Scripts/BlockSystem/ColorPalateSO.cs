@@ -14,24 +14,54 @@ public class ColorPalateSO : ScriptableObject
 
     [ColorUsage(true, true)] public Color fogBottomColor;
 
-    [Title("Island Materials")] [PreviewField(Alignment = ObjectFieldAlignment.Left)]
+    // === Materials Tab ===
+    [TabGroup("Materials", "Materials")]
+    [Title("Island Materials")]
+    [PreviewField(Alignment = ObjectFieldAlignment.Left)]
     public Material islandBorder;
 
-    [PreviewField(Alignment = ObjectFieldAlignment.Left)]
+    [TabGroup("Materials", "Materials")] [PreviewField(Alignment = ObjectFieldAlignment.Left)]
     public Material islandMiddle;
 
-    [Title("Block Materials")] [PreviewField(Alignment = ObjectFieldAlignment.Left)]
+    [TabGroup("Materials", "Materials")]
+    [Title("Block Materials")]
+    [PreviewField(Alignment = ObjectFieldAlignment.Left)]
     public Material loopBlock;
 
-    [PreviewField(Alignment = ObjectFieldAlignment.Left)]
+    [TabGroup("Materials", "Materials")] [PreviewField(Alignment = ObjectFieldAlignment.Left)]
     public Material pingPongBlock;
 
-    [PreviewField(Alignment = ObjectFieldAlignment.Left)]
+    [TabGroup("Materials", "Materials")] [PreviewField(Alignment = ObjectFieldAlignment.Left)]
     public Material keyBlock;
 
-    [PreviewField(Alignment = ObjectFieldAlignment.Left)]
+    [TabGroup("Materials", "Materials")] [PreviewField(Alignment = ObjectFieldAlignment.Left)]
     public Material wallBlock;
 
-    [Title("Special Materials")] [PreviewField(Alignment = ObjectFieldAlignment.Left)]
+    [TabGroup("Materials", "Materials")]
+    [Title("Special Materials")]
+    [PreviewField(Alignment = ObjectFieldAlignment.Left)]
     public Material frozen;
+
+
+    // === Material Colors Tab ===
+    [TabGroup("Materials", "Material Colors")] [Title("Island Material Colors")]
+    public Color islandBorderColor;
+
+    [TabGroup("Materials", "Material Colors")]
+    public Color islandMiddleColor;
+
+    [TabGroup("Materials", "Material Colors")] [Title("Block Material Colors")]
+    public Color loopBlockColor;
+
+    [TabGroup("Materials", "Material Colors")]
+    public Color pingPongBlockColor;
+
+    [TabGroup("Materials", "Material Colors")]
+    public Color keyBlockColor;
+
+    [TabGroup("Materials", "Material Colors")]
+    public Color wallBlockColor;
+
+    [TabGroup("Materials", "Material Colors")] [Title("Special Material Colors")]
+    public Color frozenColor;
 }

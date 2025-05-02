@@ -10,13 +10,13 @@ public class ColorPalateInjector : Singleton<ColorPalateInjector>
     [Button]
     public void InjectColorsIntoScene() {
         InjectFogGradientColors();
-        InjectBlockColors();
-        InjectIslandColors();
+        InjectBlockMaterials();
+        InjectIslandMaterials();
 
         // TODO: Add more injections
     }
 
-    private void InjectBlockColors() {
+    private void InjectBlockMaterials() {
         var blockGridInstance = BlockGrid.Instance;
         if (blockGridInstance == null) {
             Debug.LogWarning("No BlockGrid instance found in scene!");
@@ -28,17 +28,28 @@ public class ColorPalateInjector : Singleton<ColorPalateInjector>
         blockGridInstance.pingpongMAT = colorPalateSO.pingPongBlock;
         blockGridInstance.wallMAT = colorPalateSO.wallBlock;
         blockGridInstance.keyMAT = colorPalateSO.keyBlock;
+
+        // Inject base colors
+        blockGridInstance.frozenMAT.SetColor("_EmissionColor", colorPalateSO.frozenColor);
+
+        blockGridInstance.loopMAT.SetColor("_BaseColor", colorPalateSO.loopBlockColor);
+        blockGridInstance.pingpongMAT.SetColor("_BaseColor", colorPalateSO.pingPongBlockColor);
+        blockGridInstance.wallMAT.SetColor("_BaseColor", colorPalateSO.wallBlockColor);
+        blockGridInstance.keyMAT.SetColor("_BaseColor", colorPalateSO.keyBlockColor);
     }
 
-    private void InjectIslandColors() {
+    private void InjectIslandMaterials() {
         var islandObject = GameObject.FindWithTag("IslandMiddle");
         if (islandObject == null) {
             Debug.LogWarning("No object with IslandMiddle tag found!");
             return;
         }
 
-        var meshRenderer = islandObject.GetComponent<MeshRenderer>();
-        meshRenderer.sharedMaterial = colorPalateSO.islandMiddle;
+        var mat = islandObject.GetComponent<MeshRenderer>().sharedMaterial;
+        mat = colorPalateSO.islandMiddle;
+
+        mat.EnableKeyword("_EMISSION");
+        mat.SetColor("_EmissionColor", colorPalateSO.islandMiddleColor);
     }
 
     private void InjectFogGradientColors() {
