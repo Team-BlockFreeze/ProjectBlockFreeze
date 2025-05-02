@@ -63,12 +63,6 @@ MonoBehaviour:
       name: Kerry
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
-    task: border needs to be dynamic with level size
-    isComplete: 0
-  - owner:
-      name: Kerry
-      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
-      index: 0
     task: fix reloading while playing creating visual bugs.
     isComplete: 1
   - owner:
