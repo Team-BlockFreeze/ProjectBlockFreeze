@@ -41,8 +41,8 @@ public class BlockBehaviour : LoggerMonoBehaviour
     [Title("Visuals")] [SerializeField] [FoldoutGroup("Renderers")]
     private MeshRenderer cubeRenderer;
 
-    // [SerializeField, FoldoutGroup("Materials")]
-    // private Material normalMat, frozenMat, pingpongMAT;
+    [SerializeField] [FoldoutGroup("Materials")]
+    private Material normalMat, frozenMat, pingpongMAT;
 
     [SerializeField] [FoldoutGroup("Renderers")]
     private SpriteRenderer moveIntentionVisual;
@@ -334,10 +334,15 @@ public class BlockBehaviour : LoggerMonoBehaviour
         blocked = frozen;
 
 
-        if (moveMode == BlockMoveState.pingpong && GetComponent<BlockKey>() == null)
-            cubeRenderer.material = frozen ? gridRef.frozenMAT : gridRef.pingpongMAT;
+        if (frozen)
+            cubeRenderer.material.SetFloat("_BlendFactor", 1f);
         else
-            cubeRenderer.material = frozen ? gridRef.frozenMAT : blockMAT;
+            cubeRenderer.material.SetFloat("_BlendFactor", 0f);
+
+        // if (moveMode == BlockMoveState.pingpong && GetComponent<BlockKey>() == null)
+        //     cubeRenderer.material = frozen ? gridRef.frozenMAT : gridRef.pingpongMAT;
+        // else
+        //     cubeRenderer.material = frozen ? gridRef.frozenMAT : blockMAT;
 
         OnFreezeBlock?.Invoke();
     }
