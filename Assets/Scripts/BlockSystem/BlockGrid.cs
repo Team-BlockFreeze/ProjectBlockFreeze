@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -136,6 +137,14 @@ public class BlockGrid : Singleton<BlockGrid>
 
             newBlock.UpdateMovementVisualiser();
         }
+
+
+        if (levelData.autoplayOnStart && GameSettings.Instance.IsAutoPlaying == false)
+
+            DOVirtual.DelayedCall(LevelData.autoPlayOnStartDelay,
+                () => {
+                    GameObject.FindGameObjectWithTag("PausePlayButtons").GetComponent<SetTimeScale>().TogglePause();
+                });
 
 
         EditorUtility.SetDirty(this);

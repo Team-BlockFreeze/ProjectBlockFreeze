@@ -6,6 +6,7 @@ TagManager:
   tags:
   - FogGradient
   - IslandMiddle
+  - PausePlayButtons
   layers:
   - Default
   - TransparentFX

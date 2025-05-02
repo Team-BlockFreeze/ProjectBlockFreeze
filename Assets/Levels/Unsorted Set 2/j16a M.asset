@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
   m_Name: j16a M
   m_EditorClassIdentifier: 
+  autoplayOnStart: 1
+  autoPlayOnStartDelay: 0.5
   GridSize: {x: 5, y: 4}
   GoalCoord: {x: 0, y: 0}
   blocks:
