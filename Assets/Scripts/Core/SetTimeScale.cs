@@ -21,7 +21,6 @@ public class SetTimeScale : MonoBehaviour
 
     private Color defaultCol;
 
-    private bool selected;
     private Color selectedCol;
 
     private void Awake() {
@@ -35,7 +34,8 @@ public class SetTimeScale : MonoBehaviour
         selectedCol = new Color(defaultCol.r, defaultCol.g * .5f, defaultCol.b * .5f);
 
         if (startSelected) {
-            selected = true;
+            GameSettings.Instance.IsAutoPlaying = true;
+
             SetColor();
 
             //EventSystem.current.SetSelectedGameObject(gameObject);
@@ -60,10 +60,10 @@ public class SetTimeScale : MonoBehaviour
 
     private void SetColor(bool? forceState = null) {
         if (forceState.HasValue)
-            selected = forceState.Value;
+            GameSettings.Instance.IsAutoPlaying = forceState.Value;
 
         var colors = button.colors;
-        colors.normalColor = selected ? selectedCol : defaultCol;
+        colors.normalColor = GameSettings.Instance.IsAutoPlaying ? selectedCol : defaultCol;
         button.colors = colors;
     }
 
@@ -79,16 +79,18 @@ public class SetTimeScale : MonoBehaviour
     public void TogglePause() {
         BlockCoordinator.Instance.TogglePauseResume();
 
-        selected = !selected;
+        GameSettings.Instance.IsAutoPlaying = !GameSettings.Instance.IsAutoPlaying;
         SetColor();
 
-        if (!selected) soundFX.Play();
+        if (!GameSettings.Instance.IsAutoPlaying) soundFX.Play();
 
         var pauseSprite = transform.Find("PauseButton");
         var playSprite = transform.Find("PlayButton");
 
-        if (pauseSprite != null) pauseSprite.gameObject.SetActive(selected); // Show when unpaused
-        if (playSprite != null) playSprite.gameObject.SetActive(!selected); // Show when paused
+        if (pauseSprite != null)
+            pauseSprite.gameObject.SetActive(GameSettings.Instance.IsAutoPlaying); // Show when unpaused
+        if (playSprite != null)
+            playSprite.gameObject.SetActive(!GameSettings.Instance.IsAutoPlaying); // Show when paused
 
         EventSystem.current.SetSelectedGameObject(null);
     }

@@ -52,7 +52,7 @@ MonoBehaviour:
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
     task: restart doesn't do a reload scene and just resets the grid
-    isComplete: 0
+    isComplete: 1
   - owner:
       name: Kerry
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
@@ -70,7 +70,7 @@ MonoBehaviour:
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
     task: fix reloading while playing creating visual bugs.
-    isComplete: 0
+    isComplete: 1
   - owner:
       name: Ryan
       color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}

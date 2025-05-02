@@ -1,21 +1,27 @@
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class IngameCanvasButtons : MonoBehaviour {
-    [Header("Canvas Panels")]
-    [SerializeField] private GameObject settingsMenuCanvas;
+public class IngameCanvasButtons : MonoBehaviour
+{
+    [Header("Canvas Panels")] [SerializeField]
+    private GameObject settingsMenuCanvas;
+
     [SerializeField] private GameObject gameSettingsCanvas;
     [SerializeField] private GameObject soundSettingsCanvas;
     [SerializeField] private GameObject buttonsCanvas;
     [SerializeField] private GameObject blurOverlay;
 
-    [Header("Fade Settings")]
-    [SerializeField] private float fadeDuration = 0.25f;
+    [Header("Fade Settings")] [SerializeField]
+    private float fadeDuration = 0.25f;
 
     private GameObject[] allCanvases;
 
+
+    private bool hasCalledReset;
+
     private void Awake() {
-        allCanvases = new GameObject[] { settingsMenuCanvas, gameSettingsCanvas, soundSettingsCanvas, buttonsCanvas };
+        allCanvases = new[] { settingsMenuCanvas, gameSettingsCanvas, soundSettingsCanvas, buttonsCanvas };
         ExitButton();
     }
 
@@ -40,11 +46,11 @@ public class IngameCanvasButtons : MonoBehaviour {
     }
 
     private void ShowOnlyCanvas(GameObject targetCanvas) {
-        Sequence fadeSequence = DOTween.Sequence();
+        var fadeSequence = DOTween.Sequence();
 
-        foreach (GameObject canvas in allCanvases) {
+        foreach (var canvas in allCanvases)
             if (canvas.activeSelf && canvas != targetCanvas) {
-                CanvasGroup cg = canvas.GetComponent<CanvasGroup>();
+                var cg = canvas.GetComponent<CanvasGroup>();
                 if (cg != null) {
                     cg.DOKill();
                     fadeSequence.Append(cg.DOFade(0f, fadeDuration).SetEase(Ease.InQuad).OnComplete(() => {
@@ -55,11 +61,10 @@ public class IngameCanvasButtons : MonoBehaviour {
                     canvas.SetActive(false);
                 }
             }
-        }
 
         fadeSequence.AppendCallback(() => {
-            bool showBlur = targetCanvas != buttonsCanvas;
-            CanvasGroup blurGroup = blurOverlay.GetComponent<CanvasGroup>();
+            var showBlur = targetCanvas != buttonsCanvas;
+            var blurGroup = blurOverlay.GetComponent<CanvasGroup>();
 
             if (blurGroup != null) {
                 blurGroup.DOKill();
@@ -79,7 +84,7 @@ public class IngameCanvasButtons : MonoBehaviour {
                 blurOverlay.SetActive(showBlur);
             }
 
-            CanvasGroup targetGroup = targetCanvas.GetComponent<CanvasGroup>();
+            var targetGroup = targetCanvas.GetComponent<CanvasGroup>();
             if (targetGroup != null) {
                 targetCanvas.SetActive(true);
                 targetGroup.alpha = 0f;
@@ -92,26 +97,25 @@ public class IngameCanvasButtons : MonoBehaviour {
         });
     }
 
-
-    private bool hasCalledReset = false;
-
     public void ReloadLevel() {
-        GameObject levelRoot = GetRootObjectByName("Level Design");
+        var levelRoot = GetRootObjectByName("Level Design");
 
         if (levelRoot == null) {
             Debug.LogWarning("Level Design object not found");
             return;
         }
 
-        Transform t = levelRoot.transform;
-        Vector3 originalPos = t.position;
+        if (GameSettings.Instance.IsAutoPlaying) GetComponentInChildren<SetTimeScale>().TogglePause();
+
+        var t = levelRoot.transform;
+        var originalPos = t.position;
         hasCalledReset = false;
 
-        float moveDistance = 100f;
-        float moveDuration = 0.5f;
-        float overshootDistance = 5f;
-        float returnDuration = 0.3f;
-        float settleDuration = 0.2f;
+        var moveDistance = 100f;
+        var moveDuration = 0.5f;
+        var overshootDistance = 5f;
+        var returnDuration = 0.3f;
+        var settleDuration = 0.2f;
 
         t.DOMoveZ(originalPos.z + moveDistance, moveDuration)
             .SetEase(Ease.InQuad)
@@ -131,16 +135,10 @@ public class IngameCanvasButtons : MonoBehaviour {
     }
 
 
-
     private GameObject GetRootObjectByName(string name) {
-        foreach (GameObject go in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()) {
+        foreach (var go in SceneManager.GetActiveScene().GetRootGameObjects())
             if (go.name == name)
                 return go;
-        }
         return null;
     }
-
-
-
-
 }
