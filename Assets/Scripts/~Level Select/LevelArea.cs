@@ -6,15 +6,14 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
-public class LevelArea : MonoBehaviour
-{
+public class LevelArea : MonoBehaviour {
     private const int baseLevelIdx = 2;
     private const int levelSelectIdx = 1;
 
     public string GroupName;
 
 
-    [SerializeField] [FolderPath] private string levelsPath;
+    [SerializeField][FolderPath] private string levelsPath;
 
     [SerializeField] private Vector2Int layoutXY = new(4, 5);
 
@@ -25,7 +24,7 @@ public class LevelArea : MonoBehaviour
     public ParticleSystem clickParticlePrefab;
     public SoundID LevelSelectedSFX;
 
-    [ReadOnly] [SerializeField] private List<GameObject> LevelButtons = new();
+    [ReadOnly][SerializeField] private List<GameObject> LevelButtons = new();
 
 
     public LevelButton[,] buttonMatrix;
@@ -121,7 +120,7 @@ public class LevelArea : MonoBehaviour
             var buttonComponent = newButton.GetComponent<LevelButton>();
 
             buttonComponent.GridPosition = new Vector2Int(x, y);
-            buttonComponent.IsUnlocked = x == 0 && y == 0; //! Unlock first level only
+            // buttonComponent.IsUnlocked = x == 0 && y == 0; //! Unlock first level only
 
             var pos = topLeft + (Vector2.right * x + Vector2.down * y) * 2f;
             newButton.transform.position = pos;
@@ -161,6 +160,28 @@ public class LevelArea : MonoBehaviour
     }
 
 
+
+    public void UnlockCell(Vector2Int cell) {
+        if (cell.x < 0 || cell.x >= layoutXY.x || cell.y < 0 || cell.y >= layoutXY.y) {
+            Debug.LogWarning("Cell out of bounds: " + cell);
+            return;
+        }
+
+        if (buttonMatrix == null) {
+            Debug.LogWarning("Button matrix not initialized.");
+            return;
+        }
+
+        if (cell.x < 0 || cell.x >= layoutXY.x || cell.y < 0 || cell.y >= layoutXY.y) {
+            Debug.LogWarning("Cell out of bounds: " + cell);
+            return;
+        }
+
+        var button = buttonMatrix[cell.x, cell.y];
+        if (button != null) button.IsUnlocked = true;
+    }
+
+
     [Button]
     public void UnlockAdjacentCells(Vector2Int cell) {
         if (buttonMatrix == null) {
@@ -197,6 +218,19 @@ public class LevelArea : MonoBehaviour
         }
 
         return null; // Not found
+    }
+
+    public Vector2Int GetGridPositionOfLevel(string levelNumber) {
+        Debug.Log("GetGridPositionOfLevel: " + levelNumber);
+
+        foreach (var level in levels) {
+            if (level.name.StartsWith(levelNumber)) {
+                var pos = GetGridPosition(level);
+                if (pos.HasValue) return pos.Value;
+            }
+        }
+
+        return new Vector2Int(-1, -1); // Not found
     }
 
     [BoxGroup("Buttons")]
@@ -251,7 +285,7 @@ public class LevelArea : MonoBehaviour
             buttonDict[gridPos] = btn;
             LevelButtons.Add(btn.gameObject);
 
-            if (i == 0) btn.IsUnlocked = true; //! Akways unlock first button
+            // if (i == 0) btn.IsUnlocked = true; //! Akways unlock first button
 
             maxSize.x = Mathf.Max(maxSize.x, x + 1);
             maxSize.y = Mathf.Max(maxSize.y, y + 1);

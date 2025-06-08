@@ -8,8 +8,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
-public class LevelAreaController : PersistentSingleton<LevelAreaController>
-{
+public class LevelAreaController : PersistentSingleton<LevelAreaController> {
     private const int baseLevelIdx = 2;
     private const int levelSelectIdx = 1;
 
@@ -31,22 +30,20 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController>
     /// <param name="currentLevel"></param>
     [SerializeField] private List<LevelArea> selectors;
 
-    [SerializeField] [ReadOnly] private string currentBranch;
+    [SerializeField][ReadOnly] private string currentBranch;
 
 
-    [SerializeField] [ReadOnly] private LevelDataSO chosenLevel;
+    [SerializeField][ReadOnly] private LevelDataSO chosenLevel;
 
     [SerializeField] private SerializedDictionary<string, LevelArea> selectorMap = new();
 
 
-    public string CurrentBranch
-    {
+    public string CurrentBranch {
         get => currentBranch;
         set => currentBranch = value;
     }
 
-    public LevelDataSO ChosenLevel
-    {
+    public LevelDataSO ChosenLevel {
         get => chosenLevel;
         set => chosenLevel = value;
     }
@@ -95,9 +92,10 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController>
 
         if (selector != null) {
             var gridPos = selector.GetGridPosition(completedLevel);
-            Debug.Log("Grid pos: " + gridPos);
 
-            if (gridPos.HasValue) selector.UnlockAdjacentCells(gridPos.Value);
+            if (gridPos.HasValue) {
+                selector.UnlockAdjacentCells(gridPos.Value);
+            }
         }
     }
 
@@ -189,7 +187,9 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController>
         if (string.IsNullOrEmpty(branchTarget))
             return;
 
+
         var branchGroup = new string(branchTarget.TakeWhile(char.IsLetter).ToArray());
+        var branchNumber = new string(branchTarget.SkipWhile(char.IsLetter).TakeWhile(char.IsDigit).ToArray());
 
         // Find the target LevelArea using the branch group
         var targetArea = GetSelectorForGroup(branchGroup);
@@ -198,6 +198,9 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController>
 
         CurrentBranch = branchGroup;
 
+        // Unlock level you're transitioning towards
+        var targetAreaGridPos = targetArea.GetGridPositionOfLevel(branchTarget);
+        targetArea.UnlockCell(targetAreaGridPos);
 
         var sequence = DOTween.Sequence();
         sequence.Append(transform.DOMove(-targetArea.transform.position + transform.position, 1f)
@@ -205,6 +208,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController>
         // .Join(transform.DOScale(Vector3.one * 0.8f, 0.5f))
         // .Append(transform.DOScale(Vector3.one, 0.5f));
     }
+
 
 
     private LevelDataSO FindFirstLevelInNextGroup(string currentGroup) {
