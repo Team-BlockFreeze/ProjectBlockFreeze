@@ -4,26 +4,29 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "LevelData", menuName = "ScriptableObjects/Level Data")]
-public class LevelDataSO : ScriptableObject
-{
+public class LevelDataSO : ScriptableObject {
     [BoxGroup("Level Settings")] public bool autoplayOnStart;
-    [Range(0.5f, 5f)] public float autoPlayOnStartDelay;
 
-    [BoxGroup("Grid Settings")] [SerializeField] [MinValue(1)]
+    [ShowIf("autoplayOnStart"), Range(0.5f, 5f)] public float autoPlayOnStartDelay;
+
+    [BoxGroup("Grid Settings")]
+    [SerializeField]
+    [MinValue(1)]
     public Vector2Int GridSize = new(5, 5);
 
     public Vector2Int GoalCoord;
 
-    [BoxGroup("Blocks")] [ListDrawerSettings(ShowFoldout = true)] [SerializeField]
+    [BoxGroup("Blocks")]
+    [ListDrawerSettings(ShowFoldout = true)]
+    [SerializeField]
     private List<BlockData> blocks = new();
 
     public List<BlockData> Blocks => blocks;
 }
 
 [Serializable]
-public class BlockData
-{
-    [BoxGroup] [SerializeField] public Vector2Int gridCoord;
+public class BlockData {
+    [BoxGroup][SerializeField] public Vector2Int gridCoord;
 
     public GameObject blockTypeFab;
 

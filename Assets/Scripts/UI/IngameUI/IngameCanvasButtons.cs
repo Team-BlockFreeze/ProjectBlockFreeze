@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class IngameCanvasButtons : MonoBehaviour
-{
-    [Header("Canvas Panels")] [SerializeField]
+public class IngameCanvasButtons : MonoBehaviour {
+    [Header("Canvas Panels")]
+    [SerializeField]
     private GameObject settingsMenuCanvas;
 
     [SerializeField] private GameObject gameSettingsCanvas;
@@ -12,7 +13,8 @@ public class IngameCanvasButtons : MonoBehaviour
     [SerializeField] private GameObject buttonsCanvas;
     [SerializeField] private GameObject blurOverlay;
 
-    [Header("Fade Settings")] [SerializeField]
+    [Header("Fade Settings")]
+    [SerializeField]
     private float fadeDuration = 0.25f;
 
     private GameObject[] allCanvases;
@@ -136,9 +138,17 @@ public class IngameCanvasButtons : MonoBehaviour
 
 
     private GameObject GetRootObjectByName(string name) {
-        foreach (var go in SceneManager.GetActiveScene().GetRootGameObjects())
-            if (go.name == name)
-                return go;
+        List<Scene> validScenes = new();
+        validScenes.Add(SceneManager.GetSceneByName("Empty Grid Level"));
+        validScenes.Add(SceneManager.GetSceneByName("Kerry's Scene for level creating"));
+
+        foreach (var scene in validScenes)
+
+            foreach (var go in scene.GetRootGameObjects()) {
+                if (go.name == name) {
+                    return go;
+                }
+            }
         return null;
     }
 }

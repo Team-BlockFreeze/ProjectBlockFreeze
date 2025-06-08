@@ -4,10 +4,8 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BlockBehaviour : LoggerMonoBehaviour
-{
-    public enum BlockMoveState
-    {
+public class BlockBehaviour : LoggerMonoBehaviour {
+    public enum BlockMoveState {
         loop,
         pingpong,
         teleport,
@@ -15,8 +13,7 @@ public class BlockBehaviour : LoggerMonoBehaviour
     }
 
 
-    public enum Direction
-    {
+    public enum Direction {
         up,
         down,
         left,
@@ -26,10 +23,13 @@ public class BlockBehaviour : LoggerMonoBehaviour
 
     public static UnityEvent OnFreezeBlock;
 
-    [Title("Grid Reference")] [SerializeField] [InlineEditor]
+    [Title("Grid Reference")]
+    [SerializeField]
+    [InlineEditor]
     private BlockGrid gridRef;
 
-    [Title("Movement Settings")] [EnumToggleButtons]
+    [Title("Movement Settings")]
+    [EnumToggleButtons]
     public BlockMoveState moveMode = BlockMoveState.loop;
 
     public bool canBeFrozen = true;
@@ -38,16 +38,21 @@ public class BlockBehaviour : LoggerMonoBehaviour
 
     [SerializeField] private Direction[] movePath;
 
-    [Title("Visuals")] [SerializeField] [FoldoutGroup("Renderers")]
+    [Title("Visuals")]
+    [SerializeField]
+    [FoldoutGroup("Renderers")]
     private MeshRenderer cubeRenderer;
 
-    [SerializeField] [FoldoutGroup("Materials")]
+    [SerializeField]
+    [FoldoutGroup("Materials")]
     private Material normalMat, frozenMat, pingpongMAT;
 
-    [SerializeField] [FoldoutGroup("Renderers")]
+    [SerializeField]
+    [FoldoutGroup("Renderers")]
     private SpriteRenderer moveIntentionVisual;
 
-    [SerializeField] [FoldoutGroup("Renderers")]
+    [SerializeField]
+    [FoldoutGroup("Renderers")]
     private SpriteRenderer littleDirTriangle;
 
     [FoldoutGroup("Debug")] public bool frozen;
@@ -65,7 +70,7 @@ public class BlockBehaviour : LoggerMonoBehaviour
 
     private Tween activeTween;
 
-    [ShowInInspector] [ReadOnly] private int moveIdx;
+    [ShowInInspector][ReadOnly] private int moveIdx;
 
     private Tween moveTween;
 
@@ -73,8 +78,7 @@ public class BlockBehaviour : LoggerMonoBehaviour
     public BlockGrid GridRef => gridRef;
     private Vector3Int GetNextMoveVec => DirToVec3Int(movePath[moveIdx++]);
 
-    public Material BlockMaterial
-    {
+    public Material BlockMaterial {
         get => blockMAT;
         set => blockMAT = value;
     }
@@ -91,8 +95,10 @@ public class BlockBehaviour : LoggerMonoBehaviour
         if (gridRef == null) return;
 
         var wasOnList = gridRef.ActiveGridState.BlocksList.Remove(this);
-        if (wasOnList && gridRef.isValidGridCoord(coord))
+        if (wasOnList && gridRef.isValidGridCoord(coord) && gridRef.ActiveGridState.GridBlockStates != null) {
+
             gridRef.ActiveGridState.GridBlockStates[coord.x, coord.y] = null;
+        }
         gridRef.ActiveGridState.UpdateCoordList();
     }
 

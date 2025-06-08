@@ -7,49 +7,62 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityUtils;
 
-public class BlockGrid : Singleton<BlockGrid>
-{
-    [Title("Grid Settings")] [SerializeField] [ReadOnly]
+public class BlockGrid : Singleton<BlockGrid> {
+    [Title("Grid Settings")]
+    [SerializeField]
+    [ReadOnly]
     private Vector2Int gridSize;
 
     [SerializeField] private Vector2Int goalCoord;
 
-    [OnValueChanged("LoadStateFromSO")] [SerializeField] [InlineEditor]
+    [OnValueChanged("LoadStateFromSO")]
+    [SerializeField]
+    [InlineEditor]
     private LevelDataSO levelData;
 
-    [SerializeField] private bool loadFromLvlSelectOnStart;
+    [SerializeField] private bool loadFromLvlSelectOnStart = true;
 
-    [FoldoutGroup("Grid Rendering")] [SerializeField]
+    [FoldoutGroup("Grid Rendering")]
+    [SerializeField]
     private SpriteRenderer validGridSprite;
 
-    [FoldoutGroup("Grid Rendering")] [SerializeField]
+    [FoldoutGroup("Grid Rendering")]
+    [SerializeField]
     private Transform gridPlaneParentT;
 
-    [FoldoutGroup("Grid Rendering")] [SerializeField]
+    [FoldoutGroup("Grid Rendering")]
+    [SerializeField]
     private MeshRenderer gridPlaneMeshR;
 
-    [FoldoutGroup("Grid Rendering")] [SerializeField]
+    [FoldoutGroup("Grid Rendering")]
+    [SerializeField]
     private SnapToGrid goalBlockScript;
 
-    [FoldoutGroup("Block Materials")] [SerializeField]
+    [FoldoutGroup("Block Materials")]
+    [SerializeField]
     public Material frozenMAT;
 
-    [FoldoutGroup("Block Materials")] [SerializeField]
+    [FoldoutGroup("Block Materials")]
+    [SerializeField]
     public Material loopMAT;
 
-    [FoldoutGroup("Block Materials")] [SerializeField]
+    [FoldoutGroup("Block Materials")]
+    [SerializeField]
     public Material pingpongMAT;
 
-    [FoldoutGroup("Block Materials")] [SerializeField]
+    [FoldoutGroup("Block Materials")]
+    [SerializeField]
     public Material wallMAT;
 
-    [FoldoutGroup("Block Materials")] [SerializeField]
+    [FoldoutGroup("Block Materials")]
+    [SerializeField]
     public Material keyMAT;
 
     [SerializeField] public GridState ActiveGridState;
 
 
-    [FormerlySerializedAs("blocksList")] [SerializeField]
+    [FormerlySerializedAs("blocksList")]
+    [SerializeField]
     private Transform blocksListTransform;
 
     public Vector2Int GridSize => gridSize;
@@ -336,10 +349,10 @@ public class BlockGrid : Singleton<BlockGrid>
 
     public void ForEachCellAtCellCenter(Action<Vector2Int, Vector3> action) {
         for (var x = 0; x < gridSize.x; x++)
-        for (var y = 0; y < gridSize.y; y++) {
-            var cellCenterPos = GetBotLeftOriginPos() + Vector3.one * .5f + new Vector3(x, y);
-            action(new Vector2Int(x, y), cellCenterPos);
-        }
+            for (var y = 0; y < gridSize.y; y++) {
+                var cellCenterPos = GetBotLeftOriginPos() + Vector3.one * .5f + new Vector3(x, y);
+                action(new Vector2Int(x, y), cellCenterPos);
+            }
     }
 
     public void ForEachCellCoord(Action<Vector2Int> action) {

@@ -6337,6 +6337,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Light and PP
       objectReference: {fileID: 0}
+    - target: {fileID: 7079237789975257295, guid: bd6e69e2efc0c794a842ea3f80b18480, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
