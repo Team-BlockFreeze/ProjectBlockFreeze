@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
+[SelectionBase]
 public class BlockBehaviour : LoggerMonoBehaviour {
     public enum BlockMoveState {
         loop,
