@@ -76,7 +76,7 @@ MonoBehaviour:
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
     task: blocks that cant be frozen
-    isComplete: 0
+    isComplete: 1
   - owner:
       name: Ryan
       color: {r: 1, g: 0.9911243, b: 0.5896226, a: 1}
@@ -125,3 +125,9 @@ MonoBehaviour:
       index: 0
     task: level property if it starts autoplaying or not
     isComplete: 1
+  - owner:
+      name: Kerry
+      color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
+      index: 0
+    task: Add icon to show canBeFrozen state
+    isComplete: 0
