@@ -139,16 +139,25 @@ public class IngameCanvasButtons : MonoBehaviour {
 
     private GameObject GetRootObjectByName(string name) {
         List<Scene> validScenes = new();
-        validScenes.Add(SceneManager.GetSceneByName("Empty Grid Level"));
-        validScenes.Add(SceneManager.GetSceneByName("Kerry's Scene for level creating"));
 
-        foreach (var scene in validScenes)
+        // Add scenes only if loaded and valid
+        Scene gridScene = SceneManager.GetSceneByName("Empty Grid Level");
+        if (gridScene.IsValid() && gridScene.isLoaded)
+            validScenes.Add(gridScene);
 
+        Scene debugScene = SceneManager.GetSceneByName("Kerry's Scene for level creating");
+        if (debugScene.IsValid() && debugScene.isLoaded)
+            validScenes.Add(debugScene);
+
+        foreach (var scene in validScenes) {
             foreach (var go in scene.GetRootGameObjects()) {
                 if (go.name == name) {
                     return go;
                 }
             }
+        }
+
         return null;
     }
+
 }

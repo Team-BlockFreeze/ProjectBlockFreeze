@@ -34,6 +34,8 @@ public class LevelEditorWindow : EditorWindow {
         }
     }
 
+    // ur welcome -Kerry
+    [MenuItem("Window/Level Editor")]
     [MenuItem("Tools/Level Editor")]
     public static void ShowWindow() {
         GetWindow<LevelEditorWindow>("Level Editor").Show();
@@ -243,10 +245,16 @@ public class LevelEditorWindow : EditorWindow {
 
         // In a real scenario, you'd likely have a way to select the BlockData instance
         // For this example, we'll just assume selectedBlockOfLevel is initialized in OnEnable
+
+        /// <summary>
+        /// Every time you add a parameter to the level editor, you'll need to bulk set default values for all levels. 
+        /// Go to BlockDataFixer.cs to fix this
+        /// </summary>
         if (SelectedBlockOfLevel != null) {
             EditorGUILayout.LabelField($"Block at {SelectedBlockOfLevel.gridCoord}", EditorStyles.label);
             selectedBlockOfLevel.pathMode = (BlockBehaviour.BlockMoveState)EditorGUILayout.EnumPopup(selectedBlockOfLevel.pathMode);
             selectedBlockOfLevel.startFrozen = EditorGUILayout.Toggle("Start Frozen?", selectedBlockOfLevel.startFrozen);
+            selectedBlockOfLevel.canBeFrozen = EditorGUILayout.Toggle("Can Be Frozen?", selectedBlockOfLevel.canBeFrozen);
             if (proxySelectedBlockMoveList != null) {
                 proxySelectedBlockMoveList.DoLayoutList();
             }

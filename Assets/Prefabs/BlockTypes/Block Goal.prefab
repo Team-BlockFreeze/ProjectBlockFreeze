@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 5327627746091663972}
   - component: {fileID: 391269089931123890}
   m_Layer: 0
-  m_Name: GoalSquare
+  m_Name: Block Goal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

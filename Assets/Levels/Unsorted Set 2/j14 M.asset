@@ -12,31 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
   m_Name: j14 M
   m_EditorClassIdentifier: 
+  autoplayOnStart: 0
+  autoPlayOnStartDelay: 0
   GridSize: {x: 7, y: 7}
   GoalCoord: {x: 0, y: 2}
   blocks:
   - gridCoord: {x: 3, y: 0}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
+    canBeFrozen: 1
     movePath: 00000000
     startFrozen: 0
   - gridCoord: {x: 3, y: 1}
     blockTypeFab: {fileID: 4010693687487196053, guid: bf951e09032b85348b23fb7f4e81b3d8, type: 3}
     pathMode: 0
+    canBeFrozen: 1
     movePath: 04000000
     startFrozen: 0
   - gridCoord: {x: 6, y: 3}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
+    canBeFrozen: 1
     movePath: 02000000
     startFrozen: 0
   - gridCoord: {x: 3, y: 6}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
+    canBeFrozen: 1
     movePath: 01000000
     startFrozen: 0
   - gridCoord: {x: 5, y: 3}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
+    canBeFrozen: 1
     movePath: 04000000
     startFrozen: 0

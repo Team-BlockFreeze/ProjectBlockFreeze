@@ -59,6 +59,7 @@ public class BlockGrid : Singleton<BlockGrid> {
     public Material keyMAT;
 
     [SerializeField] public GridState ActiveGridState;
+    public BlockTypesListSO blockTypesList;
 
 
     [FormerlySerializedAs("blocksList")]
@@ -92,6 +93,8 @@ public class BlockGrid : Singleton<BlockGrid> {
 
 #if UNITY_EDITOR
     private void OnDrawGizmos() {
+        // Debug.Log(ActiveGridState.BlocksList[5].canBeFrozen);
+
         //Draw Debug grid lines
         var botLeft = GetBotLeftOriginPos();
         for (var i = 1; i < gridSize.x; i++) {
@@ -131,6 +134,8 @@ public class BlockGrid : Singleton<BlockGrid> {
 
         //load blocks from level data SO
         foreach (var bData in levelData.Blocks) {
+
+            // Block inits
             var newBlock = Instantiate(bData.blockTypeFab, blocksListTransform).GetComponent<BlockBehaviour>();
             newBlock.transform.position = GetWorldSpaceFromCoord(bData.gridCoord);
             //newBlock.transform.parent
@@ -140,15 +145,19 @@ public class BlockGrid : Singleton<BlockGrid> {
             newBlock.moveMode = bData.pathMode;
             newBlock.SetMovePath(bData.movePath?.ToArray());
 
-
+            // Apply mats
             ColorPalateInjector.Instance.InjectColorsIntoScene();
             ApplyMaterialsToBlocks(newBlock);
 
+            if (bData.startFrozen) newBlock.TrySetFreeze(true);
 
-            if (bData.startFrozen)
-                newBlock.TrySetFreeze(true);
+
+            // Make sure canBeFrozen is applied LAST 
+            if (bData.canBeFrozen == false) newBlock.canBeFrozen = false;
 
             newBlock.UpdateMovementVisualiser();
+
+            // Debug.Log($"Block: '{bData.GetBlockType()}' at {bData.gridCoord}");
         }
 
 

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 867849937301602193}
   - component: {fileID: 7457198301043145190}
   m_Layer: 0
-  m_Name: Block
+  m_Name: Block Path
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133,6 +133,7 @@ MonoBehaviour:
   Event_NextMoveBegan:
     m_PersistentCalls:
       m_Calls: []
+  blockMAT: {fileID: 0}
 --- !u!114 &5174078030499856777
 MonoBehaviour:
   m_ObjectHideFlags: 0
