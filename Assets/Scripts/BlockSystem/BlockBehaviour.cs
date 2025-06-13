@@ -55,6 +55,9 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [SerializeField]
     [FoldoutGroup("Renderers")]
     private SpriteRenderer littleDirTriangle;
+    [FoldoutGroup("Renderers")]
+    [SerializeField] public SpriteRenderer blockTypeIcon;
+    [ReadOnly] public string blockType;
 
     [FoldoutGroup("Debug")] public bool frozen;
 

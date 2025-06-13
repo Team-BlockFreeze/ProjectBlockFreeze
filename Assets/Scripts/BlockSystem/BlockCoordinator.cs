@@ -8,16 +8,16 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator>
-{
+public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     [SerializeField] private bool startLevelPaused = true;
-    
-    
 
-    [Header("References")] [SerializeField]
+
+
+    [Header("References")]
+    [SerializeField]
     private BlockGrid gridRef;
 
-    [Header("Audio")] [SerializeField] private SoundID bellSoundSFX;
+    [Header("Audio")][SerializeField] private SoundID bellSoundSFX;
 
 
     private bool finishGameLoop;
@@ -26,7 +26,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator>
 
     private Coroutine gameTickCoroutine;
 
-    
+
     private bool isStepping;
     public static BlockCoordinator Coordinator { get; private set; }
 
@@ -55,8 +55,8 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator>
     // }
 
 
-    
-    
+
+
     private void OnTriggerEnter(Collider other) {
     }
 
@@ -185,8 +185,8 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator>
         forceGrid = new CellForce[gridRef.LevelData.GridSize.x, gridRef.LevelData.GridSize.y];
 
         for (var x = 0; x < forceGrid.GetLength(0); x++)
-        for (var y = 0; y < forceGrid.GetLength(1); y++)
-            forceGrid[x, y] = new CellForce();
+            for (var y = 0; y < forceGrid.GetLength(1); y++)
+                forceGrid[x, y] = new CellForce();
     }
 
     public void AddInitialForcesToForceGrid() {
@@ -345,8 +345,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator>
     ///     unpredicatable outcomes.
     /// </summary>
     [Serializable]
-    public class CellForce
-    {
+    public class CellForce {
         public bool
             up, down, left, right;
 
@@ -423,7 +422,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator>
 
     #region History Stack
 
-    [ShowInInspector] [ReadOnly] private Stack<BlockGridHistory> undoStack = new();
+    [ShowInInspector][ReadOnly] private Stack<BlockGridHistory> undoStack = new();
 
 
     public void ClearUndoStack() {

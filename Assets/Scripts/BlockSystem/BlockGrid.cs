@@ -58,6 +58,10 @@ public class BlockGrid : Singleton<BlockGrid> {
     [SerializeField]
     public Material keyMAT;
 
+    [FoldoutGroup("Icons")]
+    [SerializeField]
+    public Sprite staticBlockIcon;
+
     [SerializeField] public GridState ActiveGridState;
     public BlockTypesListSO blockTypesList;
 
@@ -152,8 +156,10 @@ public class BlockGrid : Singleton<BlockGrid> {
             if (bData.startFrozen) newBlock.TrySetFreeze(true);
 
 
-            // Make sure canBeFrozen is applied LAST 
             if (bData.canBeFrozen == false) newBlock.canBeFrozen = false;
+
+            newBlock.blockType = bData.GetBlockType();
+            newBlock.blockTypeIcon.sprite = GetIconForBlockType(newBlock.blockType);
 
             newBlock.UpdateMovementVisualiser();
 
@@ -170,6 +176,20 @@ public class BlockGrid : Singleton<BlockGrid> {
 
 
         EditorUtility.SetDirty(this);
+    }
+
+    private Sprite GetIconForBlockType(string blockType) {
+        if (blockType.Contains("wall")) return null;
+
+
+        if (blockType.Contains("static")) {
+            Debug.Log(blockType);
+            return staticBlockIcon;
+        }
+
+
+        Debug.Log($"No icon for block type: {blockType}");
+        return null;
     }
 
     private void ApplyMaterialsToBlocks(BlockBehaviour newBlock) {
