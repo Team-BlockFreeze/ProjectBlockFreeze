@@ -255,6 +255,7 @@ public class LevelEditorWindow : EditorWindow {
             selectedBlockOfLevel.pathMode = (BlockBehaviour.BlockMoveState)EditorGUILayout.EnumPopup(selectedBlockOfLevel.pathMode);
             selectedBlockOfLevel.startFrozen = EditorGUILayout.Toggle("Start Frozen?", selectedBlockOfLevel.startFrozen);
             selectedBlockOfLevel.canBeFrozen = EditorGUILayout.Toggle("Can Be Frozen?", selectedBlockOfLevel.canBeFrozen);
+            selectedBlockOfLevel.pushableWhenFrozen = EditorGUILayout.Toggle("Pushable When Frozen?", selectedBlockOfLevel.pushableWhenFrozen);
             if (proxySelectedBlockMoveList != null) {
                 proxySelectedBlockMoveList.DoLayoutList();
             }
