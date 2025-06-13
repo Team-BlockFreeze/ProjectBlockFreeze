@@ -107,7 +107,7 @@ public class IngameCanvasButtons : MonoBehaviour {
             return;
         }
 
-        if (GameSettings.Instance.IsAutoPlaying) GetComponentInChildren<SetTimeScale>().TogglePause();
+        BlockCoordinator.Instance.SetAutoplay(false);
 
         var t = levelRoot.transform;
         var originalPos = t.position;

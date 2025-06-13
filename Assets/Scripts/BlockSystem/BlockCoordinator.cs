@@ -123,6 +123,10 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     public event Action<bool> OnPauseToggled;
 
 
+    public void SetAutoplay(bool isPaused) {
+        GameObject.FindGameObjectWithTag("PausePlayButtons").GetComponent<SetTimeScale>().SetAutoplay(isPaused);
+    }
+
     public void TogglePauseResume() {
         if (IsPaused) StartGameTickLoop();
         //bellSoundSFX.Play();
@@ -136,6 +140,8 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     private void RingBell() {
         bellSoundSFX.Play();
     }
+
+    #region Game Tick Logic
 
     /// <summary>
     ///     the main loop of the force system, steps one iteration forward and then begins the animations.
@@ -189,10 +195,15 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
                 forceGrid[x, y] = new CellForce();
     }
 
+    public void AddForceToBlock(BlockBehaviour block, Vector2Int force) {
+        if (!gridRef.isValidGridCoord(block.coord)) return;
+        forceGrid[block.coord.x, block.coord.y].AddForceFromCell(new CellForce(force));
+    }
+
     public void AddInitialForcesToForceGrid() {
         foreach (var b in gridRef.ActiveGridState.BlocksList) {
             gridRef.ActiveGridState.GridBlockStates[b.coord.x, b.coord.y] = b;
-            if (b.frozen) continue;
+            if (b.frozen && !b.pushableWhenFrozen) continue;
 
 
             var moveIntent = b.GetMovementIntention();
@@ -212,7 +223,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
     public void AddDerivedForcesToForceGrid() {
         foreach (var b in gridRef.ActiveGridState.BlocksList) {
-            if (b.frozen) continue;
+            if (b.frozen && !b.pushableWhenFrozen) continue;
 
             var collapsedForce = b.lastForces.QueryForce();
             var targetCell = b.coord + collapsedForce;
@@ -240,7 +251,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         var changes = false;
 
         foreach (var b in gridRef.ActiveGridState.BlocksList) {
-            if (b.frozen) continue;
+            if (b.frozen && !b.pushableWhenFrozen) continue;
 
             var moveIntent = b.lastForces.QueryForce();
             var targetCell = b.coord + moveIntent;
@@ -268,12 +279,17 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         return changes;
     }
 
+    #endregion
+
+    #region Blocked block logic
     public bool CheckBlockedBlocks() {
         var changes = false;
 
         foreach (var b in gridRef.ActiveGridState.BlocksList) {
-            if (b.frozen) continue;
-            if (b.blocked || b.lastForces.NoInputs()) continue;
+            b.blocked = false;
+
+            if (b.frozen && !b.pushableWhenFrozen) continue;
+            if (b.lastForces.NoInputs()) continue;
 
             var moveIntent = b.lastForces.QueryForce();
             if (moveIntent == Vector2Int.zero) continue;
@@ -296,6 +312,10 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
                 var otherB = gridRef.QueryGridCoordBlockState(targetCell);
 
                 if (otherB == null) {
+                }
+                else if (otherB.pushableWhenFrozen && otherB.frozen) {
+                    Debug.Log($"block {b.name} is blocked by {otherB.name}, which is frozen but can move while frozen");
+                    // AddForceToBlock(otherB, moveIntent);
                 }
                 else if (otherB.blocked || otherB.lastForces.AllInputs()) {
                     b.blocked = true;
@@ -338,6 +358,10 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
         return changes;
     }
+
+    #endregion
+
+    #region CellForce Class
 
     /// <summary>
     ///     Class to hold the forces acting upon a grid cell, stored as 4 booleans, one for each direction.
@@ -419,6 +443,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             return $"CellForce: (Up: {up}, Down: {down}, Left: {left}, Right: {right})";
         }
     }
+    #endregion
 
     #region History Stack
 
@@ -479,34 +504,38 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     /// <param name="coord"></param>
     /// <param name="center"></param>
     public void DrawDirectionalSquares(Vector2Int coord, Vector3 center) {
-        // Half the length of the square (0.5f makes total size 1 unit)
-        var dist = 0.25f;
-        var size = .2f;
+        // Increased distance and size for more visibility
+        var dist = 0.35f;
+        var size = .27f;
 
         //get cell force
         var cellForce = forceGrid != null ? forceGrid[coord.x, coord.y] : new CellForce();
 
-        // Default color (grey)
-        var defaultColor = Color.grey;
-        var highlightColor = Color.blue;
+        // More contrasting colors
+        var defaultColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);  // Darker grey
+        var highlightColor = new Color(0.2f, 0.4f, 1f, 1f);    // Brighter blue
 
-        Handles.Label(center, $"{coord}", new GUIStyle { alignment = TextAnchor.MiddleCenter });
+        // Larger, bold coordinate label
+        var style = new GUIStyle {
+            alignment = TextAnchor.MiddleCenter,
+            fontSize = 12,
+            fontStyle = FontStyle.Bold
+        };
+        Handles.Label(center, $"{coord}", style);
 
-        // Up square
-        Gizmos.color = cellForce.up ? highlightColor : defaultColor;
-        Gizmos.DrawWireCube(center + Vector3.up * dist, Vector3.one * size);
+        // Draw filled cubes with wire outlines for better visibility
+        void DrawEnhancedCube(Vector3 pos, bool isActive) {
+            Gizmos.color = isActive ? highlightColor : defaultColor;
+            Gizmos.DrawCube(pos, Vector3.one * size * 0.8f);
+            Gizmos.color = isActive ? Color.white : Color.grey;
+            Gizmos.DrawWireCube(pos, Vector3.one * size);
+        }
 
-        // Left square
-        Gizmos.color = cellForce.left ? highlightColor : defaultColor;
-        Gizmos.DrawWireCube(center + Vector3.left * dist, Vector3.one * size);
-
-        // Right square
-        Gizmos.color = cellForce.right ? highlightColor : defaultColor;
-        Gizmos.DrawWireCube(center + Vector3.right * dist, Vector3.one * size);
-
-        // Down square
-        Gizmos.color = cellForce.down ? highlightColor : defaultColor;
-        Gizmos.DrawWireCube(center + Vector3.down * dist, Vector3.one * size);
+        // Draw directional indicators
+        DrawEnhancedCube(center + Vector3.up * dist, cellForce.up);
+        DrawEnhancedCube(center + Vector3.left * dist, cellForce.left);
+        DrawEnhancedCube(center + Vector3.right * dist, cellForce.right);
+        DrawEnhancedCube(center + Vector3.down * dist, cellForce.down);
     }
 #endif
 

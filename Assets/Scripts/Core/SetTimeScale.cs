@@ -5,15 +5,14 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SetTimeScale : MonoBehaviour
-{
+public class SetTimeScale : MonoBehaviour {
     private static readonly UnityEvent Event_TimeScaleButtonPressed = new();
 
     [SerializeField] private bool startSelected;
 
     [SerializeField] private bool soloSelectToggle;
 
-    [Header("Audio")] [SerializeField] private SoundID soundFX;
+    [Header("Audio")][SerializeField] private SoundID soundFX;
 
     [SerializeField] private float timeScaleToSet = 1f;
 
@@ -80,6 +79,27 @@ public class SetTimeScale : MonoBehaviour
         BlockCoordinator.Instance.TogglePauseResume();
 
         GameSettings.Instance.IsAutoPlaying = !GameSettings.Instance.IsAutoPlaying;
+        SetColor();
+
+        if (!GameSettings.Instance.IsAutoPlaying) soundFX.Play();
+
+        var pauseSprite = transform.Find("PauseButton");
+        var playSprite = transform.Find("PlayButton");
+
+        if (pauseSprite != null)
+            pauseSprite.gameObject.SetActive(GameSettings.Instance.IsAutoPlaying); // Show when unpaused
+        if (playSprite != null)
+            playSprite.gameObject.SetActive(!GameSettings.Instance.IsAutoPlaying); // Show when paused
+
+        EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    public void SetAutoplay(bool isAutoplay) {
+        if (isAutoplay == GameSettings.Instance.IsAutoPlaying) return;
+
+        BlockCoordinator.Instance.TogglePauseResume();
+
+        GameSettings.Instance.IsAutoPlaying = isAutoplay;
         SetColor();
 
         if (!GameSettings.Instance.IsAutoPlaying) soundFX.Play();

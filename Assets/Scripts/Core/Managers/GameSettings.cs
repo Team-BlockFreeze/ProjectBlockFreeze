@@ -1,10 +1,15 @@
-public class GameSettings : PersistentSingleton<GameSettings>
-{
+using Sirenix.OdinInspector;
+
+public class GameSettings : PersistentSingleton<GameSettings> {
     public float gameTickInSeconds = 1f;
     public bool drawPreviewLinesOnStart;
     public bool showAllPreviewLinesOnPause;
     public bool togglePreviewLine;
 
     // Status vars
-    public bool IsAutoPlaying { get; set; }
+
+    [ReadOnly]
+    public bool isAutoPlaying;
+    public bool IsAutoPlaying { get => isAutoPlaying; set => isAutoPlaying = value; }
+
 }

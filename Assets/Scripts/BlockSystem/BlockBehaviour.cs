@@ -62,6 +62,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [FoldoutGroup("Debug")] public bool frozen;
 
     [FoldoutGroup("Debug")] public bool blocked;
+    [FoldoutGroup("Debug")] public bool pushableWhenFrozen = false;
 
     [ReadOnly] public BlockCoordinator.CellForce lastForces = new();
 
@@ -194,6 +195,8 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     }
 
     public Vector2Int GetMovementIntention() {
+        if (frozen) return Vector2Int.zero;
+
         Direction moveDir;
         moveDir = movePath != null ? movePath[moveIdx] : Direction.wait;
 
@@ -230,17 +233,20 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
     public void Move() {
         moveTween?.Kill();
-        if (frozen) {
+        if (frozen && !pushableWhenFrozen) {
             UpdateMovementVisualiser();
             blocked = true;
-            Log($"{gameObject.name} is frozen on {coord}");
+            Log($"{gameObject.name} is immovably frozen on {coord}");
             return;
         }
+
 
         //update movement visualiser
 
         var currentForceVec2I = lastForces.QueryForce();
-        if (!blocked && currentForceVec2I != Vector2Int.zero) {
+
+        // Debug.Log($"move called on {gameObject.name} with force {currentForceVec2I}" + "blocked: " + blocked);
+        if (!blocked && currentForceVec2I != Vector2Int.zero) { //! Regular movement
             Log("regular movement anim", gameObject);
             coord += currentForceVec2I;
 
@@ -249,7 +255,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
                 .SetEase(Ease.Linear)
                 .OnComplete(() => { OnAnimationCompleted?.Invoke(); });
         }
-        else if ((!frozen && lastForces.YLocked()) ||
+        else if ((!frozen && lastForces.YLocked()) || //! Squishage
                  (lastForces.XLocked() && lastForces.XLocked() != lastForces.YLocked())) {
             Log("triggering fall back animation", gameObject);
             var bumpTargetPos =
@@ -261,8 +267,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
             moveTween.Play();
         }
-        //block animation
-        else {
+        else { //! Regular block animation
             Log($"{gameObject.name} blocked bump anim");
             var bumpTargetPos =
                 (gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)currentForceVec2I - transform.position) * .15f -
@@ -286,33 +291,82 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
 
     [Button]
+
     public void UpdateMovementVisualiser() {
-        var colRef = moveIntentionVisual.color;
-        var moveIntent = GetMovementIntention();
+        // === Main Movement Indicator ===
+        var mainIndicatorTransform = moveIntentionVisual.transform;
+        var mainIndicatorSprite = moveIntentionVisual; // Assuming SpriteRenderer or similar
 
+        // Call the NEW visual-only method.
+        Vector2Int currentVisualIntent = GetVisualMovementIntention();
 
-        if (moveIntent == Vector2Int.zero) {
-            colRef.a = 0;
-            moveIntentionVisual.color = colRef;
+        // The logic now only cares if the block has a programmed move, regardless of freeze state.
+        if (currentVisualIntent == Vector2Int.zero) {
+            mainIndicatorSprite.enabled = false;
         }
         else {
-            colRef.a = 1;
-            moveIntentionVisual.color = colRef;
-            moveIntentionVisual.transform.up = (Vector3Int)moveIntent;
+            mainIndicatorSprite.enabled = true;
+            mainIndicatorTransform.up = (Vector3Int)currentVisualIntent;
         }
 
-        //next move indactor
-        colRef = littleDirTriangle.color;
-        var nextDir = PeekNextMovementIntention();
-        if (nextDir == Vector2Int.zero) {
-            colRef.a = 0;
-            littleDirTriangle.color = colRef;
+        // === Next Movement Indicator ===
+        var nextIndicatorTransform = littleDirTriangle.transform;
+        var nextIndicatorSprite = littleDirTriangle;
+
+        // Call the NEW visual-only "peek" method.
+        Vector2Int nextVisualIntent = PeekNextVisualMovementIntention();
+
+        if (nextVisualIntent == Vector2Int.zero) {
+            nextIndicatorSprite.enabled = false;
         }
         else {
-            colRef.a = 1;
-            littleDirTriangle.color = colRef;
-            littleDirTriangle.transform.up = (Vector3Int)nextDir;
+            nextIndicatorSprite.enabled = true;
+            nextIndicatorTransform.up = (Vector3Int)nextVisualIntent;
         }
+    }
+
+    // In BlockBehaviour.cs
+
+    /// <summary>
+    /// Calculates the movement intention purely for VISUAL purposes, ignoring the frozen state.
+    /// The BlockCoordinator should NEVER call this.
+    /// </summary>
+    /// <returns>The direction the block would move if it were not frozen.</returns>
+    public Vector2Int GetVisualMovementIntention() {
+        // NOTICE: The 'if (frozen)' check is intentionally removed from this version.
+        Direction moveDir;
+        moveDir = movePath != null && movePath.Length > 0 ? movePath[moveIdx] : Direction.wait;
+
+        switch (moveMode) {
+            case BlockMoveState.still:
+                moveDir = Direction.wait;
+                break;
+            case BlockMoveState.pingpong:
+                moveDir = pingpongIsForward ? moveDir : GetOppositeDir(moveDir);
+                break;
+        }
+
+        return (Vector2Int)DirToVec3Int(moveDir);
+    }
+
+    /// <summary>
+    /// Peeks at the next movement intention purely for VISUAL purposes, ignoring the frozen state.
+    /// </summary>
+    public Vector2Int PeekNextVisualMovementIntention() {
+        // This method simulates a step forward to see the next visual.
+        var holdIdx = moveIdx;
+        var holdForward = pingpongIsForward;
+
+        AdvanceMoveIdx();
+
+        // It calls our new visual method, not the physics one.
+        var moveIntent = GetVisualMovementIntention();
+
+        // Restore the state so this method has no side effects.
+        moveIdx = holdIdx;
+        pingpongIsForward = holdForward;
+
+        return moveIntent;
     }
 
     private Vector3Int DirToVec3Int(Direction dir) {
@@ -338,10 +392,13 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     public void TrySetFreeze(bool? freezeState = null) {
         if (!canBeFrozen) return;
 
-        if (freezeState == null) freezeState = !frozen;
 
-        frozen = freezeState.Value;
-        blocked = frozen;
+        // Check if state is actually changing before updatgn
+        bool requestedState = freezeState ?? !frozen;
+        if (requestedState == frozen) return;
+
+        frozen = requestedState;
+        // blocked = frozen; // Dont do this anymore because blocks new pushableWhenFrozen variable
 
 
         if (frozen)
@@ -355,5 +412,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         //     cubeRenderer.material = frozen ? gridRef.frozenMAT : blockMAT;
 
         OnFreezeBlock?.Invoke();
+
+        UpdateMovementVisualiser();
     }
 }

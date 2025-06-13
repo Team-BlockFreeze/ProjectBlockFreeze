@@ -10,7 +10,7 @@ public class BlockGridHistory {
         blockSnapshots = new List<BlockSnapshot>();
         foreach (var b in blocks) {
             // if (b.gameObject.name.Equals("BlockVariant Wall(Clone)")) continue;
-            if (b.canBeFrozen == false && b.blocked == true && b.frozen == true) {
+            if (b.canBeFrozen == false && b.blocked == true && b.frozen == true && b.pushableWhenFrozen == false) {
                 //! If a block is static, don't record its history
                 continue;
             }

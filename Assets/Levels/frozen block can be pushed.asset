@@ -26,6 +26,6 @@ MonoBehaviour:
   - gridCoord: {x: 3, y: 3}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
-    canBeFrozen: 0
+    canBeFrozen: 1
     movePath: 02000000
     startFrozen: 0

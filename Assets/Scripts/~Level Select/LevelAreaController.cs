@@ -85,6 +85,8 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
     }
 
     private void OnLevelComplete(LevelDataSO completedLevel) {
+
+
         Debug.Log($"Level completed: {completedLevel.name}");
 
         var selector = GetSelectorForLevel(completedLevel);
@@ -129,6 +131,8 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
         var parts = currentName.Split('_');
         var baseName = parts[0];
         var branchTarget = parts.Length > 1 ? parts[1] : null;
+
+        Debug.Log($"baseName: {baseName}, branchTarget: {branchTarget}");
 
         // Skip if branch detected
         if (!string.IsNullOrEmpty(branchTarget)) {
@@ -230,6 +234,8 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
     }
 
     public void LoadNextLevel() {
+        BlockCoordinator.Instance.SetAutoplay(false);
+
         var currentLevel = Instance.ChosenLevel;
 
         var next = Instance.GetNextLevel(currentLevel);

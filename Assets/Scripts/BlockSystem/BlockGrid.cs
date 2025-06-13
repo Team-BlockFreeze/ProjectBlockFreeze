@@ -171,7 +171,7 @@ public class BlockGrid : Singleton<BlockGrid> {
 
             DOVirtual.DelayedCall(LevelData.autoPlayOnStartDelay,
                 () => {
-                    GameObject.FindGameObjectWithTag("PausePlayButtons").GetComponent<SetTimeScale>().TogglePause();
+                    BlockCoordinator.Instance.SetAutoplay(false);
                 });
 
 
