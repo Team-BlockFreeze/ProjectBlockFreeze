@@ -223,6 +223,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-744b06f5956fdd1498a8c69f9fe5db3d-1656465653-0
         - globalObjectIdString: GlobalObjectId_V1-2-744b06f5956fdd1498a8c69f9fe5db3d-944949927-0
         - globalObjectIdString: GlobalObjectId_V1-2-744b06f5956fdd1498a8c69f9fe5db3d-840446840-0
+        - globalObjectIdString: GlobalObjectId_V1-2-744b06f5956fdd1498a8c69f9fe5db3d-657480303370009499-852515145
         values:
         - colorIndex: 3
           iconNameOrGuid: 
@@ -245,4 +246,6 @@ MonoBehaviour:
         - colorIndex: 2
           iconNameOrGuid: 
         - colorIndex: 3
+          iconNameOrGuid: 
+        - colorIndex: 2
           iconNameOrGuid: 
