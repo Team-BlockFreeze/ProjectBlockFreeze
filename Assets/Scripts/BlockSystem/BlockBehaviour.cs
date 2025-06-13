@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -33,7 +34,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [EnumToggleButtons]
     public BlockMoveState moveMode = BlockMoveState.loop;
 
-    public bool canBeFrozen = true;
 
     [BoxGroup("Positioning")] public Vector2Int coord = Vector2Int.zero;
 
@@ -56,13 +56,26 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [FoldoutGroup("Renderers")]
     private SpriteRenderer littleDirTriangle;
     [FoldoutGroup("Renderers")]
-    [SerializeField] public SpriteRenderer blockTypeIcon;
+    [SerializeField] public SpriteRenderer blockTypeIcon_topleft;
+    [FoldoutGroup("Renderers")]
+    [SerializeField] public SpriteRenderer blockTypeIcon_topright;
+
+    public void SetBlockTypeIcons(Dictionary<string, Sprite> icons) {
+        if (icons.ContainsKey("topleft")) blockTypeIcon_topleft.sprite = icons["topleft"];
+        if (icons.ContainsKey("topright")) blockTypeIcon_topright.sprite = icons["topright"];
+        // if (icons.ContainsKey("bottomleft")) blockTypeIcon_bottomleft.sprite = icons["bottomleft"];
+        // if (icons.ContainsKey("bottomright")) blockTypeIcon_bottomright.sprite = icons["bottomright"];
+    }
+
     [ReadOnly] public string blockType;
 
     [FoldoutGroup("Debug")] public bool frozen;
 
     [FoldoutGroup("Debug")] public bool blocked;
-    [FoldoutGroup("Debug")] public bool pushableWhenFrozen = false;
+
+    [FoldoutGroup("Special Properties")] public bool pushableWhenFrozen = false;
+    [FoldoutGroup("Special Properties")] public bool canBeFrozen = true;
+
 
     [ReadOnly] public BlockCoordinator.CellForce lastForces = new();
 

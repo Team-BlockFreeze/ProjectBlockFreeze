@@ -58,9 +58,11 @@ public class BlockGrid : Singleton<BlockGrid> {
     [SerializeField]
     public Material keyMAT;
 
-    [FoldoutGroup("Icons")]
-    [SerializeField]
-    public Sprite staticBlockIcon;
+    [FoldoutGroup("Special Properties Icons")]
+    public Sprite nofreezeBlockIcon;
+
+    [FoldoutGroup("Special Properties Icons")]
+    public Sprite pushableWhenFrozenIcon;
 
     [SerializeField] public GridState ActiveGridState;
     public BlockTypesListSO blockTypesList;
@@ -159,7 +161,7 @@ public class BlockGrid : Singleton<BlockGrid> {
             if (bData.canBeFrozen == false) newBlock.canBeFrozen = false;
 
             newBlock.blockType = bData.GetBlockType();
-            newBlock.blockTypeIcon.sprite = GetIconForBlockType(newBlock.blockType);
+            newBlock.SetBlockTypeIcons(GetIconsForBlockType(newBlock.blockType));
 
             newBlock.UpdateMovementVisualiser();
 
@@ -178,18 +180,20 @@ public class BlockGrid : Singleton<BlockGrid> {
         EditorUtility.SetDirty(this);
     }
 
-    private Sprite GetIconForBlockType(string blockType) {
-        if (blockType.Contains("wall")) return null;
+    private Dictionary<string, Sprite> GetIconsForBlockType(string blockType) {
+        if (blockType.Contains("wall")) return new Dictionary<string, Sprite>();
+        Dictionary<string, Sprite> icons = new Dictionary<string, Sprite>();
 
-
-        if (blockType.Contains("static")) {
+        if (blockType.Contains("nofreeze")) {
             Debug.Log(blockType);
-            return staticBlockIcon;
+            icons.Add("topleft", nofreezeBlockIcon);
         }
 
+        if (blockType.Contains("pushableWhenFrozen")) {
+            icons.Add("topright", pushableWhenFrozenIcon);
+        }
 
-        Debug.Log($"No icon for block type: {blockType}");
-        return null;
+        return icons;
     }
 
     private void ApplyMaterialsToBlocks(BlockBehaviour newBlock) {

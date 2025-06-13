@@ -35,6 +35,7 @@ public class BlockData {
     public BlockBehaviour.BlockMoveState pathMode;
 
     public bool canBeFrozen = true; // Default true
+    public bool pushableWhenFrozen = false;
     public List<BlockBehaviour.Direction> movePath = new() { BlockBehaviour.Direction.wait };
 
     public bool startFrozen;
@@ -76,7 +77,7 @@ public class BlockData {
         }
         else if (name.Contains("Path", StringComparison.OrdinalIgnoreCase)) {
             // Path is my name for "regular block". 
-            // Example output: "path_loop_static" -> regular block, loops, can't be frozen
+            // Example output: "path_loop_nofreeze" -> regular block, loops, can't be frozen
 
             type += "path";
 
@@ -87,7 +88,10 @@ public class BlockData {
 
             // Check if frozen
             if (canBeFrozen == false) {
-                type += "_static";
+                type += "_nofreeze";
+            }
+            if (pushableWhenFrozen == true) {
+                type += "_pushableWhenFrozen";
             }
         }
         // Check types based on inner parameters
