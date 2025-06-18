@@ -14,7 +14,11 @@ public static class BlockDataFixer {
     /// 4. Run the method from the Tools menu in Unity.
     /// 5. If shit's fucked, revert to previous commit
     /// </summary>
-    [MenuItem("Tools/Fix BlockData canBeFrozen Defaults")]
+
+
+
+
+    // [MenuItem("Tools/Fix BlockData canBeFrozen Defaults")]
     public static void FixCanBeFrozenDefaults() {
         string[] guids = AssetDatabase.FindAssets("t:LevelDataSO");
 

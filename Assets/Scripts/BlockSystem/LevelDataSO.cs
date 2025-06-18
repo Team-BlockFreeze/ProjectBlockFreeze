@@ -34,11 +34,13 @@ public class BlockData {
 
     public BlockBehaviour.BlockMoveState pathMode;
 
-    public bool canBeFrozen = true; // Default true
+
+    public bool canBeFrozen = true;
     public bool pushableWhenFrozen = false;
-    public List<BlockBehaviour.Direction> movePath = new() { BlockBehaviour.Direction.wait };
+    public bool phaseThrough = false;
 
     public bool startFrozen;
+    public List<BlockBehaviour.Direction> movePath = new() { BlockBehaviour.Direction.wait };
 
     //[BoxGroup]
     //[SerializeField, InlineEditor]
@@ -56,8 +58,6 @@ public class BlockData {
     public string GetBlockType() {
         if (blockTypeFab == null)
             return null;
-
-
 
 
         string name = blockTypeFab.name;

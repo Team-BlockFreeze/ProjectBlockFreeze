@@ -35,8 +35,8 @@ public class LevelEditorWindow : EditorWindow {
     }
 
     // ur welcome -Kerry
-    [MenuItem("Window/Level Editor")]
-    [MenuItem("Tools/Level Editor")]
+    [MenuItem("Window/___Level Editor___")]
+    [MenuItem("Tools/___Level Editor___")]
     public static void ShowWindow() {
         GetWindow<LevelEditorWindow>("Level Editor").Show();
     }
@@ -256,6 +256,7 @@ public class LevelEditorWindow : EditorWindow {
             selectedBlockOfLevel.startFrozen = EditorGUILayout.Toggle("Start Frozen?", selectedBlockOfLevel.startFrozen);
             selectedBlockOfLevel.canBeFrozen = EditorGUILayout.Toggle("Can Be Frozen?", selectedBlockOfLevel.canBeFrozen);
             selectedBlockOfLevel.pushableWhenFrozen = EditorGUILayout.Toggle("Pushable When Frozen?", selectedBlockOfLevel.pushableWhenFrozen);
+            selectedBlockOfLevel.phaseThrough = EditorGUILayout.Toggle("Phase Through?", selectedBlockOfLevel.phaseThrough);
             if (proxySelectedBlockMoveList != null) {
                 proxySelectedBlockMoveList.DoLayoutList();
             }

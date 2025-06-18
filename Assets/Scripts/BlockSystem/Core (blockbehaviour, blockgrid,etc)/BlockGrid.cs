@@ -160,6 +160,11 @@ public class BlockGrid : Singleton<BlockGrid> {
 
             if (bData.canBeFrozen == false) newBlock.canBeFrozen = false;
             if (bData.pushableWhenFrozen == true) newBlock.pushableWhenFrozen = true;
+            if (bData.phaseThrough == true) newBlock.phaseThrough = true;
+
+            //! If teleport block, update destination
+            newBlock.GetComponent<BlockTeleportTile>()?.UpdateTeleportDestination();
+
 
             newBlock.blockType = bData.GetBlockType();
             newBlock.SetBlockTypeIcons(GetIconsForBlockType(newBlock.blockType));

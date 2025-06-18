@@ -30,6 +30,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [InlineEditor]
     private BlockGrid gridRef;
 
+
     [Title("Movement Settings")]
     [EnumToggleButtons]
     public BlockMoveState moveMode = BlockMoveState.loop;
@@ -78,6 +79,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [FoldoutGroup("Special Properties")] public bool phaseThrough = false;
 
 
+
     [ReadOnly] public BlockCoordinator.CellForce lastForces = new();
 
 
@@ -101,6 +103,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         get => blockMAT;
         set => blockMAT = value;
     }
+
 
     private void Start() {
         UpdateMovementVisualiser();
@@ -383,7 +386,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         return moveIntent;
     }
 
-    private Vector3Int DirToVec3Int(Direction dir) {
+    public Vector3Int DirToVec3Int(Direction dir) {
         var dirVec = Vector3Int.zero;
         switch (dir) {
             case Direction.up:

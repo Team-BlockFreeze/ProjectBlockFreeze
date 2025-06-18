@@ -158,6 +158,11 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         }
     }
 
+    public void ProcessTileEffectsAfterTeleport() {
+        Log("Re-processing tile effects after a teleport event.");
+        ProcessTileEffects();
+    }
+
     /// <summary>
     /// This method will check all tile effects after a move.
     /// </summary>

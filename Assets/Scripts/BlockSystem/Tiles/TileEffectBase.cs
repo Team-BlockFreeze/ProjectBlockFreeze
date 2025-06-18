@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public abstract class TileEffectBase : LoggerMonoBehaviour, ITileEffect {
+
     [SerializeField] protected BlockBehaviour block;
 
     public BlockBehaviour TileBlock => block;
