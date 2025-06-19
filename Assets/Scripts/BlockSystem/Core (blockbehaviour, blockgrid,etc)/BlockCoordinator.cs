@@ -205,7 +205,13 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     #region Game Tick Logic
 
     /// <summary>
-    ///     the main loop of the force system, steps one iteration forward and then begins the animations.
+    /// 1. Save the current grid state to the undo stack.
+    /// 2. Initialize a new, empty `forceGrid`.
+    /// 3. Add initial forces based on each block's inherent movement intention.
+    /// 4. Iteratively propagate forces across the grid until the system is stable (no new forces are being created).
+    /// 5. Iteratively check for and flag any blocks that are blocked by walls or other blocks.
+    /// 6. Command each un-blocked block to execute its calculated move.
+    /// 7. Process tile effects.
     /// </summary>
     public void IterateBlockMovement() {
         PushGridStateToStack();
