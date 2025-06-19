@@ -307,14 +307,16 @@ public class BlockGrid : Singleton<BlockGrid> {
     }
 
     public BlockBehaviour QueryGridCoordBlockState(Vector2Int coord) {
+
         var isValid = true; // isValidGridCoord(coord);
         //Log($"print BlockState 2D Array size {ActiveGridState.GridBlockStates.GetLength(0)}, {ActiveGridState.GridBlockStates.GetLength(1)}");
         if (!isValid || ActiveGridState.GridBlockStates == null) return null;
 
-        if (coord.x >= ActiveGridState.GridBlockStates.GetLength(0) || coord.y >= ActiveGridState.GridBlockStates.GetLength(1)) {
+        if (coord.x >= ActiveGridState.GridBlockStates.GetLength(0) || coord.y >= ActiveGridState.GridBlockStates.GetLength(1) || coord.x < 0 || coord.y < 0) {
             LogWarning($"tried to query invalid grid coord {coord}");
             return null;
         }
+
 
         return ActiveGridState.GridBlockStates[coord.x, coord.y];
     }
