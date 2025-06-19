@@ -10,7 +10,26 @@ public class LevelArea : MonoBehaviour {
     private const int baseLevelIdx = 2;
     private const int levelSelectIdx = 1;
 
+    [ValidateInput("ValidateGroupName", "Duplicate GroupName detected! Another LevelArea already uses this name.", InfoMessageType.Warning)]
     public string GroupName;
+
+#if UNITY_EDITOR
+    private bool ValidateGroupName(string groupName) {
+        if (string.IsNullOrEmpty(groupName)) return true;
+
+        var allLevelAreas = FindObjectsByType<LevelArea>(FindObjectsSortMode.None);
+        int count = 0;
+
+        foreach (var area in allLevelAreas) {
+            if (area != this && !string.IsNullOrEmpty(area.GroupName) &&
+                area.GroupName.Equals(groupName, StringComparison.OrdinalIgnoreCase)) {
+                count++;
+            }
+        }
+
+        return count == 0;
+    }
+#endif
 
 
     [SerializeField][FolderPath] private string levelsPath;
@@ -108,37 +127,90 @@ public class LevelArea : MonoBehaviour {
             DestroyImmediate(b);
         LevelButtons.Clear();
 
-        buttonMatrix = new LevelButton[layoutXY.x, layoutXY.y]; // Initialize matrix
+        // Use a dictionary to track occupied positions instead of a fixed matrix
+        var occupiedPositions = new HashSet<Vector2Int>();
+        var buttonPositions = new Dictionary<Vector2Int, LevelButton>();
 
-        var topLeft = new Vector2(-layoutXY.x + 1, layoutXY.y - 1);
+        // Possible directions: right, down, left, up
+        var directions = new Vector2Int[] {
+            new Vector2Int(1, 0),   // right
+            new Vector2Int(0, -1),  // down
+            new Vector2Int(-1, 0),  // left
+            new Vector2Int(0, 1)    // up
+        };
 
-        var y = 0;
-        var x = 0;
-        foreach (var l in levels) {
+        var currentPos = Vector2Int.zero; // Start at (0,0)
+
+        for (int i = 0; i < levels.Count; i++) {
+            var l = levels[i];
             var newButton = Instantiate(buttonFab, transform);
-            // var newButton = GameObject.Instantiate(buttonFab, GameObject.Find("ButtonBlocks")?.transform);
             var buttonComponent = newButton.GetComponent<LevelButton>();
 
-            buttonComponent.GridPosition = new Vector2Int(x, y);
-            // buttonComponent.IsUnlocked = x == 0 && y == 0; //! Unlock first level only
-
-            var pos = topLeft + (Vector2.right * x + Vector2.down * y) * 2f;
-            newButton.transform.position = pos;
-
+            buttonComponent.GridPosition = currentPos;
             buttonComponent.Level = l;
 
-            buttonMatrix[x, y] = buttonComponent;
-            Debug.Log(buttonMatrix[x, y].GridPosition);
+            // Position the button in world space
+            var worldPos = new Vector2(currentPos.x * 2f, currentPos.y * 2f);
+            newButton.transform.position = worldPos;
 
+            // Track this position
+            occupiedPositions.Add(currentPos);
+            buttonPositions[currentPos] = buttonComponent;
             LevelButtons.Add(newButton.gameObject);
 
-            x++;
-            if (x >= layoutXY.x)
-                y++;
-            x = x % layoutXY.x;
+            Debug.Log($"Placed button {i} at {currentPos}");
+
+            // Find next position for the next button (if there is one)
+            if (i < levels.Count - 1) {
+                var availableDirections = new List<Vector2Int>();
+
+                // Check all directions for available spots
+                foreach (var dir in directions) {
+                    var nextPos = currentPos + dir;
+                    if (!occupiedPositions.Contains(nextPos)) {
+                        availableDirections.Add(dir);
+                    }
+                }
+
+                // Choose a random available direction
+                if (availableDirections.Count > 0) {
+                    var randomDir = availableDirections[UnityEngine.Random.Range(0, availableDirections.Count)];
+                    currentPos += randomDir;
+                }
+                else {
+                    // If no adjacent spots available, find any free spot near existing buttons
+                    currentPos = FindNearestFreePosition(occupiedPositions);
+                }
+            }
         }
 
+        // Convert dictionary to matrix for compatibility (optional, if other code needs buttonMatrix)
+        buttonMatrix = new LevelButton[1, 1]; // Minimal matrix since we're using dictionary
+
         EditorUtility.SetDirty(this);
+    }
+
+    private Vector2Int FindNearestFreePosition(HashSet<Vector2Int> occupiedPositions) {
+        // Check positions in expanding rings around existing buttons
+        for (int radius = 1; radius < 100; radius++) {
+            foreach (var occupied in occupiedPositions) {
+                // Check all positions at this radius from each occupied position
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -radius; y <= radius; y++) {
+                        // Only check positions on the edge of the radius (not inside)
+                        if (Mathf.Abs(x) == radius || Mathf.Abs(y) == radius) {
+                            var candidate = occupied + new Vector2Int(x, y);
+                            if (!occupiedPositions.Contains(candidate)) {
+                                return candidate;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Fallback: return a position far away (should never happen)
+        return new Vector2Int(100, 100);
     }
 
 
@@ -255,47 +327,53 @@ public class LevelArea : MonoBehaviour {
     [Button("Rebuild Matrix From Scene")]
     public void RebuildMatrixFromScene() {
         var buttonParent = transform;
-        if (buttonParent == null) {
-            Debug.LogWarning("ButtonBlocks object not found.");
+        var foundButtons = buttonParent.GetComponentsInChildren<LevelButton>();
+
+        if (foundButtons.Length == 0) {
+            buttonMatrix = new LevelButton[0, 0];
+            LevelButtons.Clear();
+            layoutXY = Vector2Int.zero;
+            Debug.Log("No buttons found to build matrix from.");
             return;
         }
 
-        var foundButtons = buttonParent.GetComponentsInChildren<LevelButton>();
-        // Debug.Log("Found " + foundButtons.Length + " buttons.");
-        LevelButtons.Clear();
+        LevelButtons = foundButtons.Select(b => b.gameObject).ToList();
 
-        Dictionary<Vector2Int, LevelButton> buttonDict = new();
-        var maxSize = Vector2Int.zero;
-
-        var topLeft = new Vector2(-layoutXY.x + 1, layoutXY.y - 1);
-        var cellSize = 2f;
-
-        var firstButtonOrigin = foundButtons[0].transform.position;
-
-        for (var i = 0; i < foundButtons.Length; i++) {
-            var btn = foundButtons[i];
+        Vector2 gridWorldOrigin = new Vector2(float.MaxValue, float.MinValue);
+        foreach (var btn in foundButtons) {
             var pos = btn.transform.position;
-            var localOffset = new Vector2(pos.x - firstButtonOrigin.x, pos.y - firstButtonOrigin.y);
+            if (pos.x < gridWorldOrigin.x) gridWorldOrigin.x = pos.x; // Find the minimum X (leftmost)
+            if (pos.y > gridWorldOrigin.y) gridWorldOrigin.y = pos.y; // Find the maximum Y (topmost)
+        }
 
-            var x = Mathf.RoundToInt(localOffset.x / cellSize);
-            var y = Mathf.RoundToInt(-localOffset.y / cellSize); // Downward Y
+        float cellSize = 2f;
+        Dictionary<Vector2Int, LevelButton> buttonDict = new();
+        Vector2Int maxSize = Vector2Int.zero;
+
+        foreach (var btn in foundButtons) {
+            var pos = btn.transform.position;
+
+            int x = Mathf.RoundToInt((pos.x - gridWorldOrigin.x) / cellSize);
+            int y = Mathf.RoundToInt((gridWorldOrigin.y - pos.y) / cellSize); // Y is inverted (world Y is up, grid Y is down)
 
             Vector2Int gridPos = new(x, y);
             btn.GridPosition = gridPos;
             buttonDict[gridPos] = btn;
-            LevelButtons.Add(btn.gameObject);
-
-            // if (i == 0) btn.IsUnlocked = true; //! Akways unlock first button
 
             maxSize.x = Mathf.Max(maxSize.x, x + 1);
             maxSize.y = Mathf.Max(maxSize.y, y + 1);
         }
 
+        // Create the matrix with the correct dimensions and populate it
         buttonMatrix = new LevelButton[maxSize.x, maxSize.y];
+        foreach (var kvp in buttonDict) {
+            if (kvp.Key.x < maxSize.x && kvp.Key.y < maxSize.y) {
+                buttonMatrix[kvp.Key.x, kvp.Key.y] = kvp.Value;
+            }
+        }
 
-        foreach (var kvp in buttonDict) buttonMatrix[kvp.Key.x, kvp.Key.y] = kvp.Value;
-
-        layoutXY = maxSize; // Optional: store new size
+        layoutXY = maxSize;
+        Debug.Log($"Matrix rebuilt with size {maxSize}. Found {foundButtons.Length} buttons.");
 
 #if UNITY_EDITOR
         EditorUtility.SetDirty(this);

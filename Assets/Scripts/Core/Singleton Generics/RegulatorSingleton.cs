@@ -16,9 +16,10 @@ namespace UnityUtils {
                 if (instance == null) {
                     instance = FindAnyObjectByType<T>();
                     if (instance == null) {
-                        var go = new GameObject(typeof(T).Name + " Auto-Generated");
-                        go.hideFlags = HideFlags.HideAndDontSave;
-                        instance = go.AddComponent<T>();
+                        Debug.LogWarning($"Singleton<{typeof(T).Name}> not found in scene");
+                        // var go = new GameObject(typeof(T).Name + " Auto-Generated");
+                        // go.hideFlags = HideFlags.HideAndDontSave;
+                        // instance = go.AddComponent<T>();
                     }
                 }
 

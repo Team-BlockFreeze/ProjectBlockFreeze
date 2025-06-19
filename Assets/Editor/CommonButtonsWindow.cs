@@ -43,6 +43,7 @@ public class CommonButtonsWindow : OdinEditorWindow {
     [BoxGroup("Block Grid")]
     [Button("Load State from SO", ButtonSizes.Medium)]
     private void LoadStateFromSO() {
+        if (levelDataToLoad == null) return;
         BlockGrid.Instance.SetLevelData(levelDataToLoad);
         BlockGrid.Instance.LoadStateFromSO();
     }

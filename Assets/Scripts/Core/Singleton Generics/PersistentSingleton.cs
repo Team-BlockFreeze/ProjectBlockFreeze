@@ -16,9 +16,10 @@ public class PersistentSingleton<T> : LoggerMonoBehaviour where T : Component {
             if (instance == null) {
                 instance = FindFirstObjectByType<T>();
                 if (instance == null) {
-                    GameObject obj = new GameObject();
-                    obj.name = typeof(T).Name + "AutoCreated";
-                    instance = obj.AddComponent<T>();
+                    Debug.LogWarning($"Singleton<{typeof(T).Name}> not found in scene");
+                    // GameObject obj = new GameObject();
+                    // obj.name = typeof(T).Name + "AutoCreated";
+                    // instance = obj.AddComponent<T>();
                 }
             }
 
