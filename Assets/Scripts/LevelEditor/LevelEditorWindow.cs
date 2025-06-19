@@ -133,12 +133,12 @@ public class LevelEditorWindow : EditorWindow {
         EditorGUILayout.BeginHorizontal();
 
         // ---------------------- LEFT SIDE ----------------------
-        EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+        //! Removed GUILayout.ExpandWidth(true) and gave it a minimum width -Kerry
+        EditorGUILayout.BeginVertical(GUILayout.MinWidth(400));
 
         PopulateMoveListOnMouseHover();
         GUILayout.Label("Level Editor", EditorStyles.boldLabel);
 
-        // File path and level data
         EditorGUILayout.BeginHorizontal();
         defaultLevelFolderPath = EditorGUILayout.TextField("Levels Folder Path", defaultLevelFolderPath);
         if (GUILayout.Button("Select", GUILayout.MaxWidth(60))) {
@@ -151,6 +151,7 @@ public class LevelEditorWindow : EditorWindow {
 
         EditorGUILayout.BeginHorizontal();
         levelData = (LevelDataSO)EditorGUILayout.ObjectField("Level Data", levelData, typeof(LevelDataSO), false);
+
 
         if (GUILayout.Button(" + ", GUILayout.Width(30))) {
             string path = EditorUtility.SaveFilePanelInProject("Create New Level File", "NewLevel", "asset", "Enter name", defaultLevelFolderPath);
@@ -180,6 +181,7 @@ public class LevelEditorWindow : EditorWindow {
         }
         GUI.enabled = true;
         EditorGUILayout.EndHorizontal();
+        availableBlocks = (BlockTypesListSO)EditorGUILayout.ObjectField("Available Blocks", availableBlocks, typeof(BlockTypesListSO), false);
 
         if (levelData == null) {
             EditorGUILayout.HelpBox("No LevelData SO selected", MessageType.Info);
@@ -200,7 +202,6 @@ public class LevelEditorWindow : EditorWindow {
 
         // Path Creator Area
         if (Event.current.type == EventType.MouseDown && IsMouseInsidePathCreator()) {
-            // Debug.Log("tried to start drawing");
             isDrawingPath = true;
         }
 
@@ -211,7 +212,7 @@ public class LevelEditorWindow : EditorWindow {
         GUI.Button(new Rect(gridOffset.x - 5, gridOffset.y - 5, 10, 10), "");
         DrawClearButton();
 
-        EditorGUILayout.EndVertical();
+        EditorGUILayout.EndVertical(); // End of Left Side
 
         // ---------------------- RIGHT SIDE ----------------------
         EditorGUILayout.BeginVertical(GUILayout.Width(300));
@@ -221,12 +222,14 @@ public class LevelEditorWindow : EditorWindow {
         DrawGrid();
         GUILayout.Space(10);
         DrawSelectedBlockPathMoveList();
-        EditorGUILayout.EndVertical();
+        EditorGUILayout.EndVertical(); // End of Right Side
+
+        // Flexible space removes the horiontal 'nothing' space between left and right side, -Kerry
+        GUILayout.FlexibleSpace();
 
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.EndScrollView();
     }
-
 
 
 
@@ -322,8 +325,6 @@ public class LevelEditorWindow : EditorWindow {
     }
 
     private void DrawPresetButtons() {
-        availableBlocks = (BlockTypesListSO)EditorGUILayout.ObjectField("Available Blocks", availableBlocks, typeof(BlockTypesListSO), false);
-
         GUILayout.Label("Select Block Preset", EditorStyles.boldLabel);
 
         if (availableBlocks == null) {
