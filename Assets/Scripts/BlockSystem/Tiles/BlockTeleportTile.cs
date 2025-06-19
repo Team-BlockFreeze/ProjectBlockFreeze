@@ -29,6 +29,37 @@ public class BlockTeleportTile : TileEffectBase {
 
     // there's a reference to block called 'block' in TileEffectBase parent class
 
+
+
+    private LineRenderer lineRenderer;
+
+    protected override void Awake() {
+        base.Awake();
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.enabled = true;
+    }
+
+    protected override void OnEnable() {
+        base.OnEnable();
+        UpdateLineRenderer();
+    }
+    protected override void OnDisable() {
+        base.OnDisable();
+        lineRenderer.enabled = false;
+        lineRenderer = null;
+    }
+    private void OnValidate() {
+        UpdateLineRenderer();
+    }
+    private void UpdateLineRenderer() {
+        if (Grid == null || lineRenderer == null) return;
+
+        Vector3 start = transform.position;
+        Vector3 end = Grid.GetWorldSpaceFromCoord(teleportDestination);
+        lineRenderer.SetPosition(0, start);
+        lineRenderer.SetPosition(1, end);
+    }
+
     public void UpdateTeleportDestination() {
         BlockBehaviour.Direction[] movePath = block.GetMovePath();
 
@@ -55,6 +86,9 @@ public class BlockTeleportTile : TileEffectBase {
     }
 
     public override void OnBlockExit(BlockBehaviour exitingBlock) {
+        if (exitingBlock == this.block) return;
+
+        Log($"Block '{exitingBlock.name}' exited teleport tile at {block.coord}.");
     }
 
     private void StartTeleportSequence(BlockBehaviour blockToTeleport) {
