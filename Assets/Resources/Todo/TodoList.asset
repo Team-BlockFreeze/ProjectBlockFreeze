@@ -130,4 +130,4 @@ MonoBehaviour:
       color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
       index: 0
     task: Add icon to show canBeFrozen state
-    isComplete: 0
+    isComplete: 1

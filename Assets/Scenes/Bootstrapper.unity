@@ -714,10 +714,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logging: 0
   UnparentOnAwake: 1
-  gameTickInSeconds: 0.5
+  gameTickInSeconds: 0.25
   drawPreviewLinesOnStart: 1
   showAllPreviewLinesOnPause: 1
   togglePreviewLine: 1
+  isAutoPlaying: 0
 --- !u!4 &279762957
 Transform:
   m_ObjectHideFlags: 0
