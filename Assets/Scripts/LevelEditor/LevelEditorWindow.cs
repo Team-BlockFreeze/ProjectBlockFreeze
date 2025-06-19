@@ -335,15 +335,20 @@ public class LevelEditorWindow : EditorWindow {
 
         GUIStyle selectedStyle = new GUIStyle(GUI.skin.button);
         selectedStyle.normal.background = MakeTex(2, 2, new Color(0f, 1, 1, .5f));
+        selectedStyle.fontStyle = FontStyle.Bold;
 
         foreach (var blockType in availableBlocks.blockTypes) {
             if (selectedBlockTypeToPlace == blockType) {
+                // Button is selected
                 if (GUILayout.Button(blockType.name, selectedStyle)) {
-                    selectedBlockTypeToPlace = blockType;
+                    // If clicked again -> deselefct
+                    selectedBlockTypeToPlace = null;
                 }
             }
             else {
+                // Button is not selceted
                 if (GUILayout.Button(blockType.name)) {
+                    // If click -> select it
                     selectedBlockTypeToPlace = blockType;
                 }
             }
@@ -351,6 +356,12 @@ public class LevelEditorWindow : EditorWindow {
 
         EditorGUILayout.EndHorizontal();
 
+        if (selectedBlockTypeToPlace == null) {
+            EditorGUILayout.LabelField("SELECT MODE: Left-Click to Select. Right-Click to erase.", EditorStyles.centeredGreyMiniLabel);
+        }
+        else {
+            EditorGUILayout.LabelField($"PAINT MODE: '{selectedBlockTypeToPlace.name} (To go back to SELECT mode, click the selected preset button again)'", EditorStyles.centeredGreyMiniLabel);
+        }
     }
 
     private List<Vector2Int> pathCells = new List<Vector2Int>();
@@ -564,48 +575,55 @@ public class LevelEditorWindow : EditorWindow {
 
 
     private void PlaceBlock(Vector2Int position) {
-
         //! Kerry: If right click, delete block
         if (Event.current.button == 1) {
             var blockToRemove = levelData.Blocks.Find(b => b.gridCoord == position);
             if (blockToRemove != null) {
-                if (blockToRemove == selectedBlockOfLevel) {
-                    selectedBlockOfLevel = null;
-                    proxySelectedBlockMoveList.list = null;
+                if (blockToRemove == SelectedBlockOfLevel) {
+                    SelectedBlockOfLevel = null;
                 }
                 levelData.Blocks.Remove(blockToRemove);
                 EditorUtility.SetDirty(levelData);
             }
+            Event.current.Use();
             return;
         }
 
-        if (selectedBlockTypeToPlace == null) return;
+        BlockData blockAtPosition = levelData.Blocks.Find(b => b.gridCoord == position);
 
-        var existingBlock = levelData.Blocks.Find(b => b.gridCoord == position);
-
-        if (selectedBlockTypeToPlace.name.Contains("oal")) {
-            levelData.GoalCoord = position;
-            EditorUtility.SetDirty(levelData);
-            return;
-        }
-
-        if (existingBlock != null) {
-            if (existingBlock == selectedBlockOfLevel)
-                levelData.Blocks.Remove(existingBlock);
-            else {
-                selectedBlockOfLevel = existingBlock;
-                proxySelectedBlockMoveList.list = selectedBlockOfLevel.movePath;
+        if (selectedBlockTypeToPlace != null) {
+            if (selectedBlockTypeToPlace.name.Contains("oal")) {
+                levelData.GoalCoord = position;
+                EditorUtility.SetDirty(levelData);
+                return;
             }
+
+            if (blockAtPosition != null) {
+                if (blockAtPosition == SelectedBlockOfLevel) {
+                    SelectedBlockOfLevel = null;
+                }
+                // levelData.Blocks.Remove(blockAtPosition);
+            }
+
+            var newBlock = new BlockData(selectedBlockTypeToPlace, position);
+            if (selectedBlockTypeToPlace.name.Contains("Wall")) {
+                newBlock.startFrozen = true;
+            }
+            levelData.Blocks.Add(newBlock);
+
+            SelectedBlockOfLevel = newBlock;
         }
         else {
-            var newBlock = new BlockData(selectedBlockTypeToPlace, position);
-            if (selectedBlockTypeToPlace.name.Contains("Wall"))
-                newBlock.startFrozen = true;
-            levelData.Blocks.Add(newBlock);
-            SelectedBlockOfLevel = levelData.Blocks[levelData.Blocks.Count - 1];
+            if (blockAtPosition != null) {
+                SelectedBlockOfLevel = blockAtPosition;
+            }
+            else {
+                SelectedBlockOfLevel = null;
+            }
         }
 
         EditorUtility.SetDirty(levelData);
+        Repaint();
     }
 
 
