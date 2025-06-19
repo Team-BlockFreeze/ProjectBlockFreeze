@@ -14,6 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoplayOnStart: 0
   autoPlayOnStartDelay: 0
-  GridSize: {x: 5, y: 5}
-  GoalCoord: {x: 0, y: 0}
-  blocks: []
+  GridSize: {x: 10, y: 5}
+  GoalCoord: {x: -1, y: -1}
+  blocks:
+  - gridCoord: {x: 0, y: 0}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 04000000

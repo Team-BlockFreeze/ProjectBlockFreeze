@@ -563,11 +563,11 @@ public class LevelEditorWindow : EditorWindow {
                     case MoveDirection.down: return "⬇️";
                     case MoveDirection.left: return "⬅️";
                     case MoveDirection.right: return "➡️";
-                    default: return "■";
+                    default: return "⏹️";
                 }
             }
-            // If it's a Path block but has no path
-            return "■";
+            // Path Block with no path initialized
+            return "⏹️";
         }
 
         // Final fallback

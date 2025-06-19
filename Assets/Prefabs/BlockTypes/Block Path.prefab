@@ -288,9 +288,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logging: 0
   gridRef: {fileID: 0}
-  moveMode: 2
+  moveMode: 0
   coord: {x: 3, y: 3}
-  movePath: 0200000002000000000000000200000001000000010000000100000001000000
+  movePath: 04000000
   cubeRenderer: {fileID: 7441460586598380325}
   normalMat: {fileID: 0}
   frozenMat: {fileID: 0}
@@ -304,6 +304,7 @@ MonoBehaviour:
   blocked: 0
   pushableWhenFrozen: 0
   canBeFrozen: 1
+  phaseThrough: 0
   lastForces:
     up: 0
     down: 0
