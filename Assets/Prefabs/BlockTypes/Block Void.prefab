@@ -148,7 +148,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 930546574722306563, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
       propertyPath: phaseThrough
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2057110103714346827, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
       propertyPath: m_IsActive
