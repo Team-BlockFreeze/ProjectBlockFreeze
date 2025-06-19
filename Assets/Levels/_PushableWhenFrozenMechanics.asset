@@ -1536,7 +1536,7 @@ MonoBehaviour:
     pushableWhenFrozen: 1
     phaseThrough: 0
     startFrozen: 1
-    movePath: 04000000
+    movePath: 00000000
   - gridCoord: {x: 8, y: 18}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
@@ -1544,7 +1544,7 @@ MonoBehaviour:
     pushableWhenFrozen: 1
     phaseThrough: 0
     startFrozen: 1
-    movePath: 04000000
+    movePath: 02000000
   - gridCoord: {x: 12, y: 19}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0

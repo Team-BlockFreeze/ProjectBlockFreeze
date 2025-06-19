@@ -297,6 +297,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         }
 
 
+        if (frozen) return;
         AdvanceMoveIdx();
         blocked = false;
 
