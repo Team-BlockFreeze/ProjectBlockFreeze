@@ -101,7 +101,6 @@ public class BlockData {
             // Check movement types
             if (pathMode == BlockMoveState.loop) type += "_loop";
             else if (pathMode == BlockMoveState.pingpong) type += "_pingpong";
-            else if (pathMode == BlockMoveState.teleport) type += "_teleport";
 
             // Check if frozen
             if (canBeFrozen == false) {

@@ -566,7 +566,7 @@ public class LevelEditorWindow : EditorWindow {
                     default: return "⏹️";
                 }
             }
-            // Path Block with no path initialized
+            // Path Block with no path initialized (should be defaulted in the prefab)
             return "⏹️";
         }
 

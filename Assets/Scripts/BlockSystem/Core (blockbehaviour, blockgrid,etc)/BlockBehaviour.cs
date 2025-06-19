@@ -10,7 +10,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     public enum BlockMoveState {
         loop,
         pingpong,
-        teleport,
         still
     }
 
