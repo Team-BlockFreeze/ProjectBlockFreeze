@@ -19,6 +19,9 @@ public class BlockGrid : Singleton<BlockGrid> {
     [SerializeField]
     [InlineEditor]
     private LevelDataSO levelData;
+    public void SetLevelData(LevelDataSO data) {
+        levelData = data;
+    }
 
     [SerializeField] private bool loadFromLvlSelectOnStart = true;
 

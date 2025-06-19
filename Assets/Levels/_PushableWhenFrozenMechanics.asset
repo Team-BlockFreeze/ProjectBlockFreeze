@@ -1520,7 +1520,7 @@ MonoBehaviour:
     pushableWhenFrozen: 1
     phaseThrough: 0
     startFrozen: 0
-    movePath: 04000000
+    movePath: 01000000
   - gridCoord: {x: 6, y: 18}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
@@ -1528,8 +1528,128 @@ MonoBehaviour:
     pushableWhenFrozen: 1
     phaseThrough: 0
     startFrozen: 0
-    movePath: 04000000
+    movePath: 03000000
   - gridCoord: {x: 7, y: 17}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 1
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  - gridCoord: {x: 8, y: 18}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 1
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  - gridCoord: {x: 12, y: 19}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 01000000
+  - gridCoord: {x: 11, y: 18}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 03000000
+  - gridCoord: {x: 12, y: 18}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 1
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 03000000
+  - gridCoord: {x: 17, y: 18}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 03000000
+  - gridCoord: {x: 18, y: 18}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 1
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 02000000
+  - gridCoord: {x: 17, y: 17}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 00000000
+  - gridCoord: {x: 3, y: 11}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 00000000
+  - gridCoord: {x: 4, y: 12}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 02000000
+  - gridCoord: {x: 2, y: 11}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 1
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  - gridCoord: {x: 6, y: 12}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 03000000
+  - gridCoord: {x: 8, y: 12}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 04000000
+  - gridCoord: {x: 7, y: 12}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 1
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 02000000
+  - gridCoord: {x: 11, y: 12}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 03000000
+  - gridCoord: {x: 12, y: 12}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
     canBeFrozen: 1
@@ -1537,11 +1657,59 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 0
     movePath: 04000000
-  - gridCoord: {x: 8, y: 18}
+  - gridCoord: {x: 13, y: 12}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  - gridCoord: {x: 13, y: 11}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 00000000
+  - gridCoord: {x: 16, y: 13}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
     canBeFrozen: 1
     pushableWhenFrozen: 1
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 010000000300000000000000
+  - gridCoord: {x: 19, y: 13}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 02000000
+  - gridCoord: {x: 18, y: 13}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 01000000
+  - gridCoord: {x: 18, y: 12}
+    blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  - gridCoord: {x: 16, y: 12}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
     phaseThrough: 0
     startFrozen: 0
     movePath: 04000000
