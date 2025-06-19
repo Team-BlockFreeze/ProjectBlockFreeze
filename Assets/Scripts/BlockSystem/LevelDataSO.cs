@@ -7,6 +7,35 @@ using static BlockBehaviour;
 
 [CreateAssetMenu(fileName = "LevelData", menuName = "ScriptableObjects/Level Data")]
 public class LevelDataSO : ScriptableObject {
+
+    [Header("Level Progression")]
+    [Tooltip("The next level to load if this one is completed without branching.")]
+    [SerializeField] private LevelDataSO _nextLevelInSequence;
+
+    [Tooltip("A special transition that overrides the normal sequence.")]
+    [SerializeField] private BranchTarget _branch;
+
+    public LevelDataSO NextLevelInSequence => _nextLevelInSequence;
+    public BranchTarget Branch => _branch;
+    public bool HasBranch => _branch != null && !string.IsNullOrEmpty(_branch.TargetLevelName);
+
+    [System.Serializable]
+    public class BranchTarget {
+        [Tooltip("The group name of the Level Area to transition to (e.g., 'C').")]
+        public string TargetGroupName;
+
+        [Tooltip("The full name of the specific level to unlock in the target area (e.g., 'C1').")]
+        public string TargetLevelName;
+    }
+
+
+
+
+
+
+
+
+
     [BoxGroup("Level Settings")] public bool autoplayOnStart;
 
     [ShowIf("autoplayOnStart"), UnityEngine.Range(0.5f, 5f)] public float autoPlayOnStartDelay;

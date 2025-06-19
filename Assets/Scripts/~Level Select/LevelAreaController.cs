@@ -7,6 +7,8 @@ using Systems.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using UnityEditor;
+
 
 public class LevelAreaController : PersistentSingleton<LevelAreaController> {
     private const int baseLevelIdx = 2;
@@ -125,119 +127,47 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
     }
 
     public LevelDataSO GetNextLevel(LevelDataSO currentLevel) {
-        var currentName = currentLevel.name;
+        if (currentLevel == null) return null;
 
-        // Split by branch, eg: A2b_C1 → A2b where branch is 'C1'
-        var parts = currentName.Split('_');
-        var baseName = parts[0];
-        var branchTarget = parts.Length > 1 ? parts[1] : null;
-
-        Debug.Log($"baseName: {baseName}, branchTarget: {branchTarget}");
-
-        // Skip if branch detected
-        if (!string.IsNullOrEmpty(branchTarget)) {
-            TransitionToLevelArea(branchTarget);
-
-            Debug.Log($"Branch transition detected: {baseName} → {branchTarget}");
+        if (currentLevel.HasBranch) {
+            var branch = currentLevel.Branch;
+            Debug.Log($"Branch transition detected: {currentLevel.name} → Group {branch.TargetGroupName}, Level {branch.TargetLevelName}");
+            TransitionToLevelArea(branch);
             return null;
         }
 
-        // Parse baseName: Group (letters), Number (digits), Bonus (optional letter)
-        var groupPart = new string(baseName.TakeWhile(char.IsLetter).ToArray());
-        var remainder = baseName.Substring(groupPart.Length);
-        var numberPart = new string(remainder.TakeWhile(char.IsDigit).ToArray());
-        var bonusPart = new string(remainder.SkipWhile(char.IsDigit).ToArray());
-
-        if (!int.TryParse(numberPart, out var levelNum)) return null;
-
-        var currentSelector = GetSelectorForGroup(groupPart);
-        if (currentSelector == null) return null;
-
-        var levels = currentSelector.Levels;
-
-        // Try next bonus level (eg., A2a -> A2b)
-        if (!string.IsNullOrEmpty(bonusPart)) {
-            var nextBonus = (char)(bonusPart[0] + 1);
-            var nextBonusName = $"{groupPart}{levelNum}{nextBonus}";
-            var nextBonusLevel =
-                levels.FirstOrDefault(l => l.name.Equals(nextBonusName, StringComparison.OrdinalIgnoreCase));
-            if (nextBonusLevel != null) return nextBonusLevel;
-
-            // Fallback to next base level (eg., A3)
-            var nextBaseName = $"{groupPart}{levelNum + 1}";
-            var nextBase = levels.FirstOrDefault(l => l.name.Equals(nextBaseName, StringComparison.OrdinalIgnoreCase));
-            if (nextBase != null) return nextBase;
-
-            return FindFirstLevelInNextGroup(groupPart);
-        }
-
-        // Try bonus levels (A2a, A2b...) first
-        for (var c = 'a'; c <= 'z'; c++) {
-            var bonusName = $"{groupPart}{levelNum}{c}";
-            var bonus = levels.FirstOrDefault(l => l.name.Equals(bonusName, StringComparison.OrdinalIgnoreCase));
-            if (bonus != null) return bonus;
-        }
-
-        // Try next base level
-        var nextBaseLevelName = $"{groupPart}{levelNum + 1}";
-        var nextBaseLevel =
-            levels.FirstOrDefault(l => l.name.Equals(nextBaseLevelName, StringComparison.OrdinalIgnoreCase));
-        if (nextBaseLevel != null) return nextBaseLevel;
-
-        return FindFirstLevelInNextGroup(groupPart);
+        return currentLevel.NextLevelInSequence;
     }
 
-    private void TransitionToLevelArea(string branchTarget) {
-        if (string.IsNullOrEmpty(branchTarget))
+    private void TransitionToLevelArea(LevelDataSO.BranchTarget branch) {
+        if (branch == null) return;
+
+        var targetArea = GetSelectorForGroup(branch.TargetGroupName);
+        if (targetArea == null) {
+            Debug.LogError($"Cannot find target LevelArea for group '{branch.TargetGroupName}'");
             return;
+        }
 
+        CurrentBranch = branch.TargetGroupName;
 
-        var branchGroup = new string(branchTarget.TakeWhile(char.IsLetter).ToArray());
-        var branchNumber = new string(branchTarget.SkipWhile(char.IsLetter).TakeWhile(char.IsDigit).ToArray());
-
-        // Find the target LevelArea using the branch group
-        var targetArea = GetSelectorForGroup(branchGroup);
-        if (targetArea == null)
-            return;
-
-        CurrentBranch = branchGroup;
-
-        // Unlock level you're transitioning towards
-        var targetAreaGridPos = targetArea.GetGridPositionOfLevel(branchTarget);
-        targetArea.UnlockCell(targetAreaGridPos);
+        var targetGridPos = targetArea.GetGridPositionOfLevel(branch.TargetLevelName);
+        if (targetGridPos != null) {
+            targetArea.UnlockCell(targetGridPos);
+        }
+        else {
+            Debug.LogWarning($"Could not find level '{branch.TargetLevelName}' in area '{branch.TargetGroupName}' to unlock.");
+        }
 
         var sequence = DOTween.Sequence();
         sequence.Append(transform.DOMove(-targetArea.transform.position + transform.position, 1f)
             .SetEase(Ease.InOutQuad));
-        // .Join(transform.DOScale(Vector3.one * 0.8f, 0.5f))
-        // .Append(transform.DOScale(Vector3.one, 0.5f));
     }
 
-
-
-    private LevelDataSO FindFirstLevelInNextGroup(string currentGroup) {
-        if (string.IsNullOrEmpty(currentGroup) || currentGroup.Length != 1)
-            return null;
-
-        var nextGroup = (char)(currentGroup[0] + 1);
-        var selector = GetSelectorForGroup(nextGroup.ToString());
-        if (selector == null) return null;
-
-        for (var i = 1; i <= 10; i++) {
-            var candidate = $"{nextGroup}{i}";
-            var level =
-                selector.Levels.FirstOrDefault(l => l.name.Equals(candidate, StringComparison.OrdinalIgnoreCase));
-            if (level != null) return level;
-        }
-
-        return null;
-    }
 
     public void LoadNextLevel() {
         BlockCoordinator.Instance.SetAutoplay(false);
 
         var currentLevel = Instance.ChosenLevel;
-
         var next = Instance.GetNextLevel(currentLevel);
 
         if (next != null) {
@@ -248,4 +178,138 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
             SceneLoader.Instance.LoadSceneGroup(levelSelectIdx, 0);
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+#if UNITY_EDITOR
+
+    [Button("Auto-Link All Levels", ButtonSizes.Large), GUIColor(0.2f, 0.8f, 0.2f)]
+    [PropertySpace(20)]
+    private void AutoLinkAllLevels() {
+        // 1. Find all LevelDataSO assets in the project
+        string[] guids = AssetDatabase.FindAssets("t:LevelDataSO");
+        var allLevels = new List<LevelDataSO>(guids.Length);
+        foreach (var guid in guids) {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            allLevels.Add(AssetDatabase.LoadAssetAtPath<LevelDataSO>(path));
+        }
+
+        if (allLevels.Count == 0) {
+            Debug.LogWarning("No LevelDataSO assets found to link.");
+            return;
+        }
+
+        // 2. Create a lookup dictionary using the BASE name (before any '_').
+        // This is the key to solving the 'A8_D1' problem. We can now find 'a8' regardless of its branch.
+        var levelLookupByBaseName = new Dictionary<string, LevelDataSO>();
+        foreach (var level in allLevels) {
+            var baseName = level.name.Split('_')[0].ToLower();
+            if (!levelLookupByBaseName.ContainsKey(baseName)) {
+                levelLookupByBaseName.Add(baseName, level);
+            }
+            else {
+                // This warns you if you have, for example, 'A8_D1' and 'A8_E1'. The system can only link TO one of them.
+                Debug.LogWarning($"Duplicate base name found: '{baseName}'. Using '{levelLookupByBaseName[baseName].name}' and ignoring '{level.name}'. Please ensure base level names are unique.");
+            }
+        }
+
+        Debug.Log($"Found {allLevels.Count} levels. Processing links...");
+
+        // 3. Iterate through each level and link it.
+        foreach (var currentLevel in allLevels) {
+            SerializedObject so = new SerializedObject(currentLevel);
+            var nextLevelProp = so.FindProperty("_nextLevelInSequence");
+            var branchProp = so.FindProperty("_branch");
+
+            // Clear old data
+            nextLevelProp.objectReferenceValue = null;
+            branchProp.FindPropertyRelative("TargetGroupName").stringValue = string.Empty;
+            branchProp.FindPropertyRelative("TargetLevelName").stringValue = string.Empty;
+
+            var currentFullName = currentLevel.name;
+            var nameParts = currentFullName.Split('_');
+            var baseName = nameParts[0];
+
+            // --- Step A: Check if THIS level has a branch ---
+            if (nameParts.Length > 1 && !string.IsNullOrEmpty(nameParts[1])) {
+                var branchTargetName = nameParts[1];
+                var branchGroupName = new string(branchTargetName.TakeWhile(char.IsLetter).ToArray());
+
+                branchProp.FindPropertyRelative("TargetGroupName").stringValue = branchGroupName;
+                branchProp.FindPropertyRelative("TargetLevelName").stringValue = branchTargetName;
+                Debug.Log($"[{currentLevel.name}] is a branch level. Target: {branchTargetName}. No sequential next level.");
+            }
+            // --- Step B: If it's NOT a branch level, find its successor ---
+            else {
+                var groupPart = new string(baseName.TakeWhile(char.IsLetter).ToArray());
+                var remainder = baseName.Substring(groupPart.Length);
+                var numberPart = new string(remainder.TakeWhile(char.IsDigit).ToArray());
+                var bonusPart = new string(remainder.SkipWhile(char.IsDigit).ToArray());
+
+                if (!int.TryParse(numberPart, out var levelNum)) continue;
+
+                LevelDataSO nextLevelAsset = null;
+
+                // --- Linking Logic with Correct Precedence ---
+
+                // Priority 1: Check for the next bonus level in the same series (e.g., A5a -> A5b).
+                if (!string.IsNullOrEmpty(bonusPart)) {
+                    var nextBonusChar = (char)(bonusPart[0] + 1);
+                    var nextBonusName = $"{groupPart}{levelNum}{nextBonusChar}".ToLower();
+                    levelLookupByBaseName.TryGetValue(nextBonusName, out nextLevelAsset);
+                }
+                // Priority 2: If we are a base level (like A5), check for its first bonus level (A5a).
+                else // bonusPart is empty
+                {
+                    var firstBonusName = $"{groupPart}{levelNum}a".ToLower();
+                    levelLookupByBaseName.TryGetValue(firstBonusName, out nextLevelAsset);
+                }
+
+
+                // Priority 3: If no next/first bonus was found, look for the next main number (e.g., A5 or A5b -> A6).
+                if (nextLevelAsset == null) {
+                    var nextMainLevelName = $"{groupPart}{levelNum + 1}".ToLower();
+                    levelLookupByBaseName.TryGetValue(nextMainLevelName, out nextLevelAsset);
+                }
+
+                // Priority 4: If still no level found, try to find the start of the next group (e.g., A8 -> B1).
+                if (nextLevelAsset == null && groupPart.Length == 1) {
+                    var nextGroupChar = (char)(groupPart[0] + 1);
+
+                    // Check for B1a first, then B1
+                    var nextGroupFirstName = $"{nextGroupChar}1a".ToLower();
+                    if (!levelLookupByBaseName.TryGetValue(nextGroupFirstName, out nextLevelAsset)) {
+                        var nextGroupBaseName = $"{nextGroupChar}1".ToLower();
+                        levelLookupByBaseName.TryGetValue(nextGroupBaseName, out nextLevelAsset);
+                    }
+                }
+
+                // --- Assign the found level ---
+                if (nextLevelAsset != null) {
+                    nextLevelProp.objectReferenceValue = nextLevelAsset;
+                    Debug.Log($"[{currentLevel.name}] --> linked to next: [{nextLevelAsset.name}]");
+                }
+                else {
+                    Debug.Log($"[{currentLevel.name}] is an end-of-sequence level.");
+                }
+            }
+
+            so.ApplyModifiedProperties();
+            EditorUtility.SetDirty(currentLevel);
+        }
+
+        AssetDatabase.SaveAssets();
+        Debug.Log("Level linking complete!");
+    }
+#endif
+
 }
+

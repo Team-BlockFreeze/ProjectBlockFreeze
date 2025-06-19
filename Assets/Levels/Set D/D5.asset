@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
   m_Name: D5
   m_EditorClassIdentifier: 
+  _nextLevelInSequence: {fileID: 11400000, guid: 78afda453b43f7c4182632a6ca44ae16, type: 2}
+  _branch:
+    TargetGroupName: 
+    TargetLevelName: 
   autoplayOnStart: 0
   autoPlayOnStartDelay: 0
   GridSize: {x: 5, y: 5}
@@ -21,17 +25,23 @@ MonoBehaviour:
     blockTypeFab: {fileID: 4010693687487196053, guid: bf951e09032b85348b23fb7f4e81b3d8, type: 3}
     pathMode: 0
     canBeFrozen: 1
-    movePath: 04000000
+    pushableWhenFrozen: 0
+    phaseThrough: 0
     startFrozen: 0
+    movePath: 04000000
   - gridCoord: {x: 3, y: 4}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 1
     canBeFrozen: 1
-    movePath: 0400000004000000010000000100000001000000010000000400000004000000
+    pushableWhenFrozen: 0
+    phaseThrough: 0
     startFrozen: 0
+    movePath: 0400000004000000010000000100000001000000010000000400000004000000
   - gridCoord: {x: 3, y: 2}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
     canBeFrozen: 1
-    movePath: 0300000002000000020000000200000002000000030000000300000003000000
+    pushableWhenFrozen: 0
+    phaseThrough: 0
     startFrozen: 0
+    movePath: 0300000002000000020000000200000002000000030000000300000003000000

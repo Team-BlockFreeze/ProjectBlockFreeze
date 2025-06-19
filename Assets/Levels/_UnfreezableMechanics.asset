@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
   m_Name: _UnfreezableMechanics
   m_EditorClassIdentifier: 
+  _nextLevelInSequence: {fileID: 0}
+  _branch:
+    TargetGroupName: UnfreezableMechanics
+    TargetLevelName: UnfreezableMechanics
   autoplayOnStart: 0
   autoPlayOnStartDelay: 0
   GridSize: {x: 11, y: 11}
