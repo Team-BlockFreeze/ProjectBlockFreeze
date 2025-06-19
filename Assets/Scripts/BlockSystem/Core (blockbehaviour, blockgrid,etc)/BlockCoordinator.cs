@@ -369,9 +369,14 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             // b.blocked = false; //! Moved to main loop -Kerry
 
             // Skip blocks that shouldn't be checked.
-            if (b.blocked || (b.frozen && !b.pushableWhenFrozen) || b.lastForces.NoInputs()) {
-                continue;
-            }
+
+            if (b.blockType == "wall") continue;
+
+
+            //! Never skip any assumed blocked blocks anymore
+            // if (b.blocked || (b.frozen && !b.pushableWhenFrozen) || b.lastForces.NoInputs()) {
+            //     continue;
+            // }
 
             var moveIntent = b.lastForces.QueryForce();
             if (moveIntent == Vector2Int.zero) continue;
