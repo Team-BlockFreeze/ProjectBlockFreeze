@@ -595,13 +595,15 @@ public class LevelEditorWindow : EditorWindow {
         BlockData blockAtPosition = levelData.Blocks.Find(b => b.gridCoord == position);
 
         if (selectedBlockTypeToPlace != null) {
+            if (selectedBlockTypeToPlace.name.Contains("oal")) {
+                Undo.RecordObject(levelData, "Set Goal Position");
+                levelData.GoalCoord = position;
+                EditorUtility.SetDirty(levelData);
+                return;
+            }
+
             if (blockAtPosition == null) {
-                if (selectedBlockTypeToPlace.name.Contains("oal")) {
-                    Undo.RecordObject(levelData, "Set Goal Position");
-                    levelData.GoalCoord = position;
-                    EditorUtility.SetDirty(levelData);
-                    return;
-                }
+
 
                 Undo.RecordObject(levelData, "Place Block");
 
