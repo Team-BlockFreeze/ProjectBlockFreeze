@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3599889983405176078, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: moveMode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3599889983405176078, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: normalMat
@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: m_Name
-      value: BlockVariant Key
+      value: Block Key
       objectReference: {fileID: 0}
     - target: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
       propertyPath: m_IsActive

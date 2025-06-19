@@ -25,6 +25,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 930546574722306563, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
+      propertyPath: cubeRenderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 930546574722306563, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
       propertyPath: phaseThrough
       value: 1
       objectReference: {fileID: 0}
@@ -113,7 +117,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5400597026015054732, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
