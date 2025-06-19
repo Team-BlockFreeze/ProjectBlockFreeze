@@ -7,7 +7,7 @@ public class BlockVoid : TileEffectBase {
 
     // It's initially true just for visualization pre-runtime
     private void Start() {
-        GetComponent<SpriteRenderer>().enabled = false;
+        // GetComponent<SpriteRenderer>().enabled = false;
     }
 
     public override void OnBlockEnter(BlockBehaviour enteringBlock) {

@@ -49,6 +49,23 @@ public class BlockData {
     public BlockData(GameObject blockSourceFab, Vector2Int coord = new()) {
         blockTypeFab = blockSourceFab;
         gridCoord = coord;
+
+        this.movePath = new List<Direction>();
+
+        // Get the BlockBehaviour component from the source prefab
+        var behaviour = blockTypeFab.GetComponent<BlockBehaviour>();
+        if (behaviour != null) {
+            // Copy all the relevant data from the prefab to this instance
+            this.pathMode = behaviour.moveMode;
+            this.canBeFrozen = behaviour.canBeFrozen;
+            this.pushableWhenFrozen = behaviour.pushableWhenFrozen;
+            this.phaseThrough = behaviour.phaseThrough;
+
+            // Copy the move path array into our list
+            if (behaviour.GetMovePath() != null) {
+                this.movePath.AddRange(behaviour.GetMovePath());
+            }
+        }
     }
 
 
@@ -94,9 +111,12 @@ public class BlockData {
                 type += "_pushableWhenFrozen";
             }
         }
-        // Check types based on inner parameters
-        if (name.Contains("Path", StringComparison.OrdinalIgnoreCase)) {
-
+        // Check Tiles
+        if (name.Contains("Void", StringComparison.OrdinalIgnoreCase)) {
+            type += "void";
+        }
+        else if (name.Contains("Teleport", StringComparison.OrdinalIgnoreCase)) {
+            type += "teleport";
         }
 
         if (type == "") Debug.LogWarning($"Block: {name} has no type.");

@@ -521,26 +521,45 @@ public class LevelEditorWindow : EditorWindow {
 
 
     private string GetBlockSymbol(Vector2Int coord) {
-        foreach (var block in levelData.Blocks) {
-            if (block.gridCoord == coord) {
-                //safety is something fucked up creating a block
-                if (block.blockTypeFab == null) {
-                    levelData.Blocks.Remove(block);
-                    continue;
-                }
+        BlockData block = levelData.Blocks.Find(b => b.gridCoord == coord);
 
-                if (block.blockTypeFab.name.Contains("Key")) {
-                    return "🔑";
-                }
-                else if (block.blockTypeFab.name.Contains("Wall")) {
-                    return "🚫";
-                }
-                else {
-                    return "■";
+        if (block == null) {
+            return "□";
+        }
+
+
+        // Safety check 
+        if (block.blockTypeFab == null) {
+            // levelData.Blocks.Remove(block);
+            return "❓";
+        }
+
+        string prefabName = block.blockTypeFab.name;
+
+        if (prefabName.Contains("Key")) return "🔑";
+        if (prefabName.Contains("Void")) return "⚫";
+        if (prefabName.Contains("Teleport")) return "🌀";
+        if (prefabName.Contains("Wall")) return "⬛";
+
+        // Now handle the Path block by reading its saved data
+        if (prefabName.Contains("Path")) {
+            if (block.movePath != null && block.movePath.Count > 0) {
+                MoveDirection moveDir = block.movePath[0];
+                switch (moveDir) {
+                    case MoveDirection.wait: return "⏹️";
+                    case MoveDirection.up: return "⬆️";
+                    case MoveDirection.down: return "⬇️";
+                    case MoveDirection.left: return "⬅️";
+                    case MoveDirection.right: return "➡️";
+                    default: return "■";
                 }
             }
+            // If it's a Path block but has no path
+            return "■";
         }
-        return "□";
+
+        // Final fallback
+        return "■";
     }
 
 
