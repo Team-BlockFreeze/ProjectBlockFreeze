@@ -576,10 +576,11 @@ public class LevelEditorWindow : EditorWindow {
 
 
     private void PlaceBlock(Vector2Int position) {
-        //! Kerry: If right click, delete block
+        // Right click -> delete a block. (The only way to delete a block)
         if (Event.current.button == 1) {
             var blockToRemove = levelData.Blocks.Find(b => b.gridCoord == position);
             if (blockToRemove != null) {
+                Undo.RecordObject(levelData, "Delete Block");
                 if (blockToRemove == SelectedBlockOfLevel) {
                     SelectedBlockOfLevel = null;
                 }
@@ -590,29 +591,36 @@ public class LevelEditorWindow : EditorWindow {
             return;
         }
 
+        // From here, deal with Left-Click
         BlockData blockAtPosition = levelData.Blocks.Find(b => b.gridCoord == position);
 
         if (selectedBlockTypeToPlace != null) {
-            if (selectedBlockTypeToPlace.name.Contains("oal")) {
-                levelData.GoalCoord = position;
-                EditorUtility.SetDirty(levelData);
-                return;
-            }
-
-            if (blockAtPosition != null) {
-                if (blockAtPosition == SelectedBlockOfLevel) {
-                    SelectedBlockOfLevel = null;
+            if (blockAtPosition == null) {
+                if (selectedBlockTypeToPlace.name.Contains("oal")) {
+                    Undo.RecordObject(levelData, "Set Goal Position");
+                    levelData.GoalCoord = position;
+                    EditorUtility.SetDirty(levelData);
+                    return;
                 }
-                // levelData.Blocks.Remove(blockAtPosition);
-            }
 
-            var newBlock = new BlockData(selectedBlockTypeToPlace, position);
-            if (selectedBlockTypeToPlace.name.Contains("Wall")) {
-                newBlock.startFrozen = true;
-            }
-            levelData.Blocks.Add(newBlock);
+                Undo.RecordObject(levelData, "Place Block");
 
-            SelectedBlockOfLevel = newBlock;
+                var newBlock = new BlockData(selectedBlockTypeToPlace, position);
+
+                if (selectedBlockTypeToPlace.name.Contains("Wall")) {
+                    newBlock.startFrozen = true;
+                }
+                if (selectedBlockTypeToPlace.name.Contains("Tile")) {
+                    newBlock.phaseThrough = true;
+                }
+
+                levelData.Blocks.Add(newBlock);
+
+                SelectedBlockOfLevel = newBlock;
+            }
+            else {
+                SelectedBlockOfLevel = blockAtPosition;
+            }
         }
         else {
             if (blockAtPosition != null) {
@@ -626,6 +634,5 @@ public class LevelEditorWindow : EditorWindow {
         EditorUtility.SetDirty(levelData);
         Repaint();
     }
-
 
 }
