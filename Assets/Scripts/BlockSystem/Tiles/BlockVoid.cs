@@ -25,15 +25,21 @@ public class BlockVoid : TileEffectBase {
 
     }
 
-    private void AnimateBlockDisappear(BlockBehaviour enteringBlock) {
+    public void AnimateBlockDisappear(BlockBehaviour enteringBlock) {
         enteringBlock.transform.DOScale(0f, 0.5f).OnComplete(() => {
             enteringBlock.gameObject.SetActive(false);
+            enteringBlock.gameObject.GetComponent<BlockPreview>()?.GetEndDotInstance()?.SetActive(false);
             BlockCoordinator.Instance.GridRef.ActiveGridState.UpdateCoordList();
         });
     }
 
-    private void AnimateBlockAppear(BlockBehaviour exitingBlock) {
-        exitingBlock.transform.DOScale(1f, 0.5f);
+    public static void AnimateBlockAppear(BlockBehaviour block) {
+        BlockGrid.Instance.ActiveGridState.BlocksList.Add(block);
+
+        block.gameObject.SetActive(true);
+        block.gameObject.GetComponent<BlockPreview>()?.GetEndDotInstance()?.SetActive(true);
+        block.transform.localScale = Vector3.zero;
+        block.transform.DOScale(1f, 0.5f);
     }
 
 }

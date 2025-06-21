@@ -63,14 +63,6 @@ public class BlockSnapshot {
     }
 
 
-    // If a block was 'consumed' by a tile effect, bring it back
-    private void BlockReappearFromUndo() {
-        BlockGrid.Instance.ActiveGridState.BlocksList.Add(block);
-
-        block.gameObject.SetActive(true);
-        block.transform.localScale = Vector3.zero;
-        block.transform.DOScale(1f, 0.5f);
-    }
 
     public void ApplyUndo() {
         if (block == null) return;
@@ -78,7 +70,8 @@ public class BlockSnapshot {
 
         // If the block WAS active in the snapshot from previously, reactivate it
         if (wasActive && !block.gameObject.activeSelf) {
-            BlockReappearFromUndo();
+            BlockVoid.AnimateBlockAppear(block);
+
         }
         else if (!wasActive && block.gameObject.activeSelf) {
             BlockGrid.Instance.ActiveGridState.BlocksList.Remove(block);

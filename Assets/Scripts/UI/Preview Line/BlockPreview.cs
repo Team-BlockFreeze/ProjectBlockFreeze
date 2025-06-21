@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,7 +16,10 @@ public class BlockPreview : LoggerMonoBehaviour {
 
     // End Point
     [SerializeField] private GameObject endDotPrefab;
-    private GameObject endDotInstance;
+    private GameObject? endDotInstance;
+    public GameObject? GetEndDotInstance() {
+        return endDotInstance;
+    }
 
 
     private LongPressDetector longPressDetector;
