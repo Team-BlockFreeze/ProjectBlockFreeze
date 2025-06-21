@@ -406,14 +406,12 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         return dirVec;
     }
 
-    public void TrySetFreeze(bool? freezeState = null, bool bypassParameters = false) {
+    public void TrySetFreeze(bool? freezeState = null) {
         if (!canBeFrozen) return;
 
 
         // Check if state is actually changing before updatgn
         bool requestedState = freezeState ?? !frozen;
-        if (bypassParameters) requestedState = freezeState ?? requestedState; // If bypass is true, then freezeState is the only thing that matters.
-        if (requestedState == frozen) return;
 
         frozen = requestedState;
 

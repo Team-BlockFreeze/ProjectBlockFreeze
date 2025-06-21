@@ -89,7 +89,7 @@ public class BlockSnapshot {
         block.coord = previousCoord;
         block.SetMoveIdx(previousMoveIdx);
         block.frozen = wasFrozen;
-        block.TrySetFreeze(wasFrozen, bypassParameters: true);
+        block.TrySetFreeze(wasFrozen);
         block.blocked = wasBlocked;
 
         if (block.GridRef != null) {
