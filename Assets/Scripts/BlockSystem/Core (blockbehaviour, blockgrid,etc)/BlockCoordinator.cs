@@ -382,6 +382,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             // }
 
             if (b.frozen && !b.pushableWhenFrozen) {
+                b.blocked = true;
                 isCurrentlyBlocked = true;
             }
 
@@ -392,6 +393,9 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
             // 1. Is the target cell occupied?
             var otherB = gridRef.QueryGridCoordBlockState(targetCell);
+
+            // Debug.Log(otherB?.name);
+
 
             // 2. If occupied, hceck if it's phaseTrhgouh block. --> If it is, ignore it.
             if (otherB != null && otherB.phaseThrough) {
@@ -438,6 +442,11 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             }
 
             // 4. Final touches
+
+            if (isCurrentlyBlocked) {
+                // Debug.Log($"Block {b.name} is currently blocked");
+            }
+
             if (isCurrentlyBlocked) {
                 b.blocked = true;
                 changes = true;

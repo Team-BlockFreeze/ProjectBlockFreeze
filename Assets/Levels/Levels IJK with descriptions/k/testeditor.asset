@@ -37,3 +37,11 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 0
     movePath: 04000000
+  - gridCoord: {x: 3, y: 0}
+    blockTypeFab: {fileID: 5369788057482311557, guid: 13c531c31b60b2441ab760e3c8b63b61, type: 3}
+    pathMode: 3
+    canBeFrozen: 0
+    pushableWhenFrozen: 0
+    phaseThrough: 1
+    startFrozen: 0
+    movePath: 04000000
