@@ -29,6 +29,7 @@ public class BlockTeleportTile : TileEffectBase {
 
     // there's a reference to block called 'block' in TileEffectBase parent class
 
+    [SerializeField] private GameObject teleportIndicator;
 
 
     private LineRenderer lineRenderer;
@@ -42,11 +43,13 @@ public class BlockTeleportTile : TileEffectBase {
     protected override void OnEnable() {
         base.OnEnable();
         UpdateLineRenderer();
+        teleportIndicator.SetActive(true);
     }
     protected override void OnDisable() {
         base.OnDisable();
         lineRenderer.enabled = false;
         lineRenderer = null;
+        teleportIndicator.SetActive(false);
     }
     private void OnValidate() {
         UpdateLineRenderer();
@@ -58,6 +61,8 @@ public class BlockTeleportTile : TileEffectBase {
         Vector3 end = Grid.GetWorldSpaceFromCoord(teleportDestination);
         lineRenderer.SetPosition(0, start);
         lineRenderer.SetPosition(1, end);
+        teleportIndicator.transform.position = end;
+        // teleportIndicator.transform.localScale = Vector3.one * 0.3f;
     }
 
     public void UpdateTeleportDestination() {
