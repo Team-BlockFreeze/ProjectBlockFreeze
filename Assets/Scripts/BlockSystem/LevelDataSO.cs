@@ -118,15 +118,18 @@ public class BlockData {
         string type = "";
 
 
+        // Determine base type(s)
         if (name.Contains("Key", StringComparison.OrdinalIgnoreCase)) {
             type += "key";
         }
-        else if (name.Contains("Path", StringComparison.OrdinalIgnoreCase)) {
-            // Path is my name for "regular block". 
+        if (name.Contains("Path", StringComparison.OrdinalIgnoreCase)) {
+            // Path is my name for "regular block".
             // Example output: "path_loop_nofreeze" -> regular block, loops, can't be frozen
 
-            type += "path";
+            if (type != "key") type += "path";
+        }
 
+        if (name.Contains("Path", StringComparison.OrdinalIgnoreCase) || name.Contains("Key", StringComparison.OrdinalIgnoreCase)) {
             // Check movement types
             if (pathMode == BlockMoveState.loop) type += "_loop";
             else if (pathMode == BlockMoveState.pingpong) type += "_pingpong";
