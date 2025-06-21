@@ -406,15 +406,22 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         return dirVec;
     }
 
-    public void TrySetFreeze(bool? freezeState = null) {
+    public void TrySetFreeze(bool? freezeState = null, bool bypassParameters = false) {
         if (!canBeFrozen) return;
 
 
         // Check if state is actually changing before updatgn
         bool requestedState = freezeState ?? !frozen;
+        if (bypassParameters) requestedState = freezeState ?? requestedState; // If bypass is true, then freezeState is the only thing that matters.
         if (requestedState == frozen) return;
 
         frozen = requestedState;
+
+        if (!pushableWhenFrozen) {
+            blocked = frozen;
+        }
+
+
         // blocked = frozen; // Dont do this anymore because blocks new pushableWhenFrozen variable
 
 
@@ -432,4 +439,8 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
         UpdateMovementVisualiser();
     }
+
+
+
+
 }

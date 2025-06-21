@@ -366,6 +366,9 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         var changes = false;
 
         foreach (var b in gridRef.ActiveGridState.BlocksList) {
+            bool isCurrentlyBlocked = false;
+
+
             // b.blocked = false; //! Moved to main loop -Kerry
 
             // Skip blocks that shouldn't be checked.
@@ -377,6 +380,10 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             // if (b.blocked || (b.frozen && !b.pushableWhenFrozen) || b.lastForces.NoInputs()) {
             //     continue;
             // }
+
+            if (b.frozen && !b.pushableWhenFrozen) {
+                isCurrentlyBlocked = true;
+            }
 
             var moveIntent = b.lastForces.QueryForce();
             if (moveIntent == Vector2Int.zero) continue;
@@ -390,9 +397,11 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             if (otherB != null && otherB.phaseThrough) {
                 continue;
             }
+            if (otherB != null && otherB.blocked) {
+                isCurrentlyBlocked = true;
+            }
 
             // 3. If !phaseThrough, check other conditions
-            bool isCurrentlyBlocked = false;
             if (!gridRef.isValidGridCoord(targetCell)) {
                 isCurrentlyBlocked = true; // Blocked by grid bounds
             }
