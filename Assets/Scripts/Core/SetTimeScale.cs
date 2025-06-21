@@ -42,16 +42,10 @@ public class SetTimeScale : MonoBehaviour {
         }
     }
 
-    private InputSystem_Actions debugControls;
 
     private void OnEnable() {
         if (soloSelectToggle) return;
         Event_TimeScaleButtonPressed.AddListener(UnselectButton);
-
-        debugControls = new InputSystem_Actions();
-        debugControls.Player.StepForward.started += _ => StepForwardOnce();
-        debugControls.Player.Undo.started += _ => UndoOnce();
-        debugControls.Player.Enable();
 
     }
 
@@ -59,9 +53,6 @@ public class SetTimeScale : MonoBehaviour {
         if (soloSelectToggle) return;
         Event_TimeScaleButtonPressed.RemoveListener(UnselectButton);
 
-        debugControls.Player.StepForward.started -= _ => StepForwardOnce();
-        debugControls.Player.Undo.started -= _ => UndoOnce();
-        debugControls.Player.Disable();
     }
 
     public static event Action<float> OnTimeScaleChanged;
