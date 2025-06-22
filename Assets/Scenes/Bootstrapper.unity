@@ -5988,6 +5988,14 @@ PrefabInstance:
       propertyPath: orthographic size
       value: 6.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7243723247164602898, guid: 228f79072e26ff4478580ea44a1c9b3d, type: 3}
+      propertyPath: camOffset
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7243723247164602898, guid: 228f79072e26ff4478580ea44a1c9b3d, type: 3}
+      propertyPath: camBlockMargin
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

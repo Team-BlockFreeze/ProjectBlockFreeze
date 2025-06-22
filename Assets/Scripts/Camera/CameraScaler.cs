@@ -2,11 +2,11 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CameraScaler : MonoBehaviour
-{
-    [ReadOnly] [SerializeField] private BlockGrid gridRef;
+public class CameraScaler : MonoBehaviour {
+    [ReadOnly][SerializeField] private BlockGrid gridRef;
 
     [SerializeField] private float camBlockMargin = 4f;
+
     private readonly Vector2 currentScreenSize = Vector2.zero;
 
     private Camera cam;
