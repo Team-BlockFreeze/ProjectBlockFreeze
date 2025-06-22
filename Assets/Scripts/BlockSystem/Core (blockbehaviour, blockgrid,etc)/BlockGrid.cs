@@ -27,6 +27,10 @@ public class BlockGrid : Singleton<BlockGrid> {
 
     [FoldoutGroup("Grid Rendering")]
     [SerializeField]
+    private DynamicGridBorder dynamicGridBorder;
+
+    [FoldoutGroup("Grid Rendering")]
+    [SerializeField]
     private SpriteRenderer validGridSprite;
 
     [FoldoutGroup("Grid Rendering")]
@@ -140,6 +144,8 @@ public class BlockGrid : Singleton<BlockGrid> {
         goalCoord = levelData.GoalCoord;
 
         ResetActiveGrid();
+
+        dynamicGridBorder.SetGridSize(gridSize, 1);
 
         //load blocks from level data SO
         foreach (var bData in levelData.Blocks) {
