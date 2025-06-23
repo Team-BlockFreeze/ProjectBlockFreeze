@@ -55,8 +55,7 @@ public class LevelArea : MonoBehaviour {
     [SerializeField]
     [Tooltip("A container object that will be created to hold the generated branch arrows.")]
     private Transform branchArrowContainer;
-    // ---- END NEW FIELDS ----
-
+    public Transform BranchArrowContainer => branchArrowContainer;
 
     public LevelButton[,] buttonMatrix;
     public List<LevelDataSO> Levels => levels;
@@ -315,7 +314,7 @@ public class LevelArea : MonoBehaviour {
                 continue;
             }
 
-            Debug.Log($"Drawing branch from {sourceButton.Level.name} to {targetButton.Level.name}");
+            // Debug.Log($"Drawing branch from {sourceButton.Level.name} to {targetButton.Level.name}");
             CreateArrow(sourceButton, targetButton);
         }
 
@@ -419,7 +418,7 @@ public class LevelArea : MonoBehaviour {
     }
 
     public Vector2Int GetGridPositionOfLevel(string levelNumber) {
-        Debug.Log("GetGridPositionOfLevel: " + levelNumber);
+        // Debug.Log("GetGridPositionOfLevel: " + levelNumber);
 
         foreach (var level in levels) {
             if (level.name.StartsWith(levelNumber)) {
@@ -442,6 +441,8 @@ public class LevelArea : MonoBehaviour {
                 pos.z = Mathf.Round(pos.z / 2f) * 2f;
                 buttonObj.transform.position = pos;
             }
+        GetComponent<LevelSelectButtonFloor>().GenerateFloor();
+        DrawBranchConnections();
 
         RebuildMatrixFromScene();
 
@@ -499,7 +500,7 @@ public class LevelArea : MonoBehaviour {
         }
 
         layoutXY = maxSize;
-        Debug.Log($"Matrix rebuilt with size {maxSize}. Found {foundButtons.Length} buttons.");
+        // Debug.Log($"Matrix rebuilt with size {maxSize}. Found {foundButtons.Length} buttons.");
 
         DrawBranchConnections();
 

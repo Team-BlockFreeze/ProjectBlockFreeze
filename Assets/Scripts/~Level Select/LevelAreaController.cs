@@ -91,18 +91,27 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
     }
 
     private void OnLevelComplete(LevelDataSO completedLevel) {
-
-
         Debug.Log($"Level completed: {completedLevel.name}");
 
         var selector = GetSelectorForLevel(completedLevel);
-        Debug.Log("Selector: " + selector?.name);
+        // Debug.Log("Selector: " + selector?.name);
 
         if (selector != null) {
             var gridPos = selector.GetGridPosition(completedLevel);
 
             if (gridPos.HasValue) {
                 selector.UnlockAdjacentCells(gridPos.Value);
+                selector.BranchArrowContainer.gameObject.SetActive(true);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(completedLevel.Branch.TargetGroupName)) {
+            var transitions = selector.BranchArrowContainer.GetComponentsInChildren<LevelBranchTransition>(true);
+            foreach (var transition in transitions) {
+                if (transition.transform.parent.name.Contains(completedLevel.name)) {
+                    transition.transform.parent.gameObject.SetActive(true);
+                    transition.UnlockBranchTransition();
+                }
             }
         }
     }
