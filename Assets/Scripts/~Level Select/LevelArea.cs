@@ -198,6 +198,7 @@ public class LevelArea : MonoBehaviour {
         // Convert dictionary to matrix for compatibility
         buttonMatrix = new LevelButton[1, 1];
 
+
         EditorUtility.SetDirty(this);
     }
 
@@ -253,17 +254,18 @@ public class LevelArea : MonoBehaviour {
         }
 
         GameObject arrowInstance = Instantiate(branchArrowPrefab, branchArrowContainer);
+
+        arrowInstance.GetComponent<Canvas>().worldCamera = Camera.main;
         arrowInstance.name = $"Arrow_from_{source.Level.name}";
 
         arrowInstance.transform.position = sourcePos + (chosenDirection * arrowOffset);
-
         arrowInstance.transform.rotation = Quaternion.Euler(0, 0, angle - 90); // Offset by 90
 
     }
 
     [BoxGroup("Branch Visualization")]
     [Button("Draw Branch Connections")]
-    private void DrawBranchConnections() {
+    public void DrawBranchConnections() {
 #if !UNITY_EDITOR
     Debug.LogWarning("This function is intended for Editor use only.");
     return;
@@ -317,7 +319,7 @@ public class LevelArea : MonoBehaviour {
             CreateArrow(sourceButton, targetButton);
         }
 
-
+        branchArrowContainer.transform.position += new Vector3(0, 0, 0.5f);
 
         EditorUtility.SetDirty(this);
     }
@@ -498,6 +500,9 @@ public class LevelArea : MonoBehaviour {
 
         layoutXY = maxSize;
         Debug.Log($"Matrix rebuilt with size {maxSize}. Found {foundButtons.Length} buttons.");
+
+        DrawBranchConnections();
+
 
 #if UNITY_EDITOR
         EditorUtility.SetDirty(this);

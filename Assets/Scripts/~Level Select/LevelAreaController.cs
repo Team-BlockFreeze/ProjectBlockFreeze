@@ -62,7 +62,12 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
 #if UNITY_EDITOR
         if (!Application.isPlaying) return;
 #endif
-        foreach (var selector in selectors) selector.RebuildMatrixFromScene();
+        foreach (var selector in selectors) {
+            selector.RebuildMatrixFromScene();
+            selector.SnapButtonsToWorldGrid();
+            selector.DrawBranchConnections();
+        }
+
     }
 
     private void Start() {
