@@ -45,6 +45,18 @@ public class LevelArea : MonoBehaviour {
 
     [ReadOnly][SerializeField] private List<GameObject> LevelButtons = new();
 
+    [BoxGroup("Branch Visualization")]
+    [SerializeField]
+    [Tooltip("A prefab with a RectTransform and an Image (pointing right by default) to represent a branch connection.")]
+    private GameObject branchArrowPrefab;
+
+    [BoxGroup("Branch Visualization")]
+    [ReadOnly]
+    [SerializeField]
+    [Tooltip("A container object that will be created to hold the generated branch arrows.")]
+    private Transform branchArrowContainer;
+    // ---- END NEW FIELDS ----
+
 
     public LevelButton[,] buttonMatrix;
     public List<LevelDataSO> Levels => levels;
@@ -81,7 +93,7 @@ public class LevelArea : MonoBehaviour {
         foreach (var button in LevelButtons) button.SetActive(false);
 
         //! Dirty sol: hides the plane
-        var plane = transform.Find("Plane");
+        var plane = transform.Find("FloorContainer");
         if (plane != null) plane.gameObject.SetActive(false);
     }
 
@@ -90,7 +102,7 @@ public class LevelArea : MonoBehaviour {
 
 
         //! Dirty sol: hides the plane
-        var plane = transform.Find("Plane");
+        var plane = transform.Find("FloorContainer");
         if (plane != null) plane.gameObject.SetActive(true);
     }
 
@@ -127,7 +139,6 @@ public class LevelArea : MonoBehaviour {
             DestroyImmediate(b);
         LevelButtons.Clear();
 
-        // Use a dictionary to track occupied positions instead of a fixed matrix
         var occupiedPositions = new HashSet<Vector2Int>();
         var buttonPositions = new Dictionary<Vector2Int, LevelButton>();
 
@@ -178,26 +189,23 @@ public class LevelArea : MonoBehaviour {
                     currentPos += randomDir;
                 }
                 else {
-                    // If no adjacent spots available, find any free spot near existing buttons
+                    // If no adjacent spots available
                     currentPos = FindNearestFreePosition(occupiedPositions);
                 }
             }
         }
 
-        // Convert dictionary to matrix for compatibility (optional, if other code needs buttonMatrix)
-        buttonMatrix = new LevelButton[1, 1]; // Minimal matrix since we're using dictionary
+        // Convert dictionary to matrix for compatibility
+        buttonMatrix = new LevelButton[1, 1];
 
         EditorUtility.SetDirty(this);
     }
 
     private Vector2Int FindNearestFreePosition(HashSet<Vector2Int> occupiedPositions) {
-        // Check positions in expanding rings around existing buttons
         for (int radius = 1; radius < 100; radius++) {
             foreach (var occupied in occupiedPositions) {
-                // Check all positions at this radius from each occupied position
                 for (int x = -radius; x <= radius; x++) {
                     for (int y = -radius; y <= radius; y++) {
-                        // Only check positions on the edge of the radius (not inside)
                         if (Mathf.Abs(x) == radius || Mathf.Abs(y) == radius) {
                             var candidate = occupied + new Vector2Int(x, y);
                             if (!occupiedPositions.Contains(candidate)) {
@@ -209,8 +217,124 @@ public class LevelArea : MonoBehaviour {
             }
         }
 
-        // Fallback: return a position far away (should never happen)
         return new Vector2Int(100, 100);
+    }
+
+    private void CreateArrow(LevelButton source, LevelButton target) {
+        const float arrowOffset = 1.2f;
+
+        Vector3 sourcePos = source.transform.position;
+        Vector3 targetPos = target.transform.position;
+
+        Vector3 delta = targetPos - sourcePos;
+
+        Vector3 chosenDirection;
+        float angle;
+
+        if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y)) {
+            if (delta.x > 0) {
+                chosenDirection = Vector3.right;
+                angle = 0;
+            }
+            else {
+                chosenDirection = Vector3.left;
+                angle = 180;
+            }
+        }
+        else {
+            if (delta.y > 0) {
+                chosenDirection = Vector3.up;
+                angle = 90;
+            }
+            else {
+                chosenDirection = Vector3.down;
+                angle = -90;
+            }
+        }
+
+        GameObject arrowInstance = Instantiate(branchArrowPrefab, branchArrowContainer);
+        arrowInstance.name = $"Arrow_from_{source.Level.name}";
+
+        arrowInstance.transform.position = sourcePos + (chosenDirection * arrowOffset);
+
+        arrowInstance.transform.rotation = Quaternion.Euler(0, 0, angle - 90); // Offset by 90
+
+    }
+
+    [BoxGroup("Branch Visualization")]
+    [Button("Draw Branch Connections")]
+    private void DrawBranchConnections() {
+#if !UNITY_EDITOR
+    Debug.LogWarning("This function is intended for Editor use only.");
+    return;
+#endif
+
+        if (branchArrowPrefab == null) {
+            Debug.LogError("Branch Arrow Prefab is not assigned!", this);
+            return;
+        }
+
+        // Clean up old arrows
+        if (branchArrowContainer != null) {
+            DestroyImmediate(branchArrowContainer.gameObject);
+        }
+
+        // Create a new container
+        branchArrowContainer = new GameObject("BranchArrowContainer").transform;
+        branchArrowContainer.SetParent(this.transform);
+
+        var allLevelAreas = FindObjectsByType<LevelArea>(FindObjectsSortMode.None);
+        if (allLevelAreas.Length == 0) {
+            Debug.LogWarning("No LevelAreas found in the scene.");
+            return;
+        }
+
+        foreach (var buttonGO in LevelButtons) {
+            var sourceButton = buttonGO.GetComponent<LevelButton>();
+            if (sourceButton == null || sourceButton.Level == null || !sourceButton.Level.HasBranch) {
+                continue;
+            }
+
+            var branch = sourceButton.Level.Branch;
+
+            LevelArea targetArea = allLevelAreas.FirstOrDefault(area =>
+                !string.IsNullOrEmpty(area.GroupName) &&
+                area.GroupName.Equals(branch.TargetGroupName, StringComparison.OrdinalIgnoreCase));
+
+            if (targetArea == null) {
+                Debug.LogWarning($"Could not find target LevelArea with GroupName '{branch.TargetGroupName}' for branch from level '{sourceButton.Level.name}'.", sourceButton);
+                continue;
+            }
+
+            LevelButton targetButton = targetArea.GetButtonByLevelName(branch.TargetLevelName);
+
+            if (targetButton == null) {
+                Debug.LogWarning($"Could not find target LevelButton with name '{branch.TargetLevelName}' in Area '{targetArea.GroupName}'.", sourceButton);
+                continue;
+            }
+
+            Debug.Log($"Drawing branch from {sourceButton.Level.name} to {targetButton.Level.name}");
+            CreateArrow(sourceButton, targetButton);
+        }
+
+
+
+        EditorUtility.SetDirty(this);
+    }
+
+    /// <summary>
+    /// Finds a LevelButton component in this LevelArea by the name of its associated LevelDataSO.
+    /// </summary>
+    /// <param name="levelName">The exact name of the LevelDataSO asset.</param>
+    /// <returns>The LevelButton component or null if not found.</returns>
+    public LevelButton GetButtonByLevelName(string levelName) {
+        foreach (var buttonGO in LevelButtons) {
+            var button = buttonGO.GetComponent<LevelButton>();
+            if (button != null && button.Level != null && button.Level.name.Equals(levelName, StringComparison.OrdinalIgnoreCase)) {
+                return button;
+            }
+        }
+        return null;
     }
 
 

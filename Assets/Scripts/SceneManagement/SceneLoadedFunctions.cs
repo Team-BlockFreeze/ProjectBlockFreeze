@@ -15,7 +15,7 @@ public class SceneLoadedFunctions : MonoBehaviour {
     }
 
     private void LevelSelectLoaded() {
-        Debug.Log("Camera orthographicSize = 6 on LevelSelect loaded");
-        Camera.main.orthographicSize = 7;
+        // Debug.Log("Camera orthographicSize = 6 on LevelSelect loaded");
+        Camera.main.orthographicSize = 9;
     }
 }

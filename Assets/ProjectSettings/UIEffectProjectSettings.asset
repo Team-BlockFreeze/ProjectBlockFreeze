@@ -118,3 +118,5 @@ ShaderVariantCollection:
         passType: 0
       - keywords: TRANSITION_FADE
         passType: 0
+      - keywords: TRANSITION_PATTERN
+        passType: 0

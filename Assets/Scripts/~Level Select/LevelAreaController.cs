@@ -194,7 +194,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
     [Button("Auto-Link All Levels", ButtonSizes.Large), GUIColor(0.2f, 0.8f, 0.2f)]
     [PropertySpace(20)]
     private void AutoLinkAllLevels() {
-        // 1. Find all LevelDataSO assets in the project
+        // Find all LevelDataSO assets in the project
         string[] guids = AssetDatabase.FindAssets("t:LevelDataSO");
         var allLevels = new List<LevelDataSO>(guids.Length);
         foreach (var guid in guids) {
@@ -207,8 +207,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
             return;
         }
 
-        // 2. Create a lookup dictionary using the BASE name (before any '_').
-        // This is the key to solving the 'A8_D1' problem. We can now find 'a8' regardless of its branch.
+        // Create a lookup dictionary using the BASE name (before any '_').
         var levelLookupByBaseName = new Dictionary<string, LevelDataSO>();
         foreach (var level in allLevels) {
             var baseName = level.name.Split('_')[0].ToLower();
@@ -216,14 +215,13 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
                 levelLookupByBaseName.Add(baseName, level);
             }
             else {
-                // This warns you if you have, for example, 'A8_D1' and 'A8_E1'. The system can only link TO one of them.
                 Debug.LogWarning($"Duplicate base name found: '{baseName}'. Using '{levelLookupByBaseName[baseName].name}' and ignoring '{level.name}'. Please ensure base level names are unique.");
             }
         }
 
         Debug.Log($"Found {allLevels.Count} levels. Processing links...");
 
-        // 3. Iterate through each level and link it.
+        // Iterate through each level and link it.
         foreach (var currentLevel in allLevels) {
             SerializedObject so = new SerializedObject(currentLevel);
             var nextLevelProp = so.FindProperty("_nextLevelInSequence");
@@ -238,7 +236,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
             var nameParts = currentFullName.Split('_');
             var baseName = nameParts[0];
 
-            // --- Step A: Check if THIS level has a branch ---
+            // 1: Check if THIS level has a branch ---
             if (nameParts.Length > 1 && !string.IsNullOrEmpty(nameParts[1])) {
                 var branchTargetName = nameParts[1];
                 var branchGroupName = new string(branchTargetName.TakeWhile(char.IsLetter).ToArray());
@@ -247,7 +245,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
                 branchProp.FindPropertyRelative("TargetLevelName").stringValue = branchTargetName;
                 Debug.Log($"[{currentLevel.name}] is a branch level. Target: {branchTargetName}. No sequential next level.");
             }
-            // --- Step B: If it's NOT a branch level, find its successor ---
+            // 2: If it's NOT a branch level, find its successor ---
             else {
                 var groupPart = new string(baseName.TakeWhile(char.IsLetter).ToArray());
                 var remainder = baseName.Substring(groupPart.Length);
@@ -258,15 +256,14 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
 
                 LevelDataSO nextLevelAsset = null;
 
-                // --- Linking Logic with Correct Precedence ---
 
-                // Priority 1: Check for the next bonus level in the same series (e.g., A5a -> A5b).
+                // 1: Check for the next bonus level in the same series (e.g., A5a -> A5b).
                 if (!string.IsNullOrEmpty(bonusPart)) {
                     var nextBonusChar = (char)(bonusPart[0] + 1);
                     var nextBonusName = $"{groupPart}{levelNum}{nextBonusChar}".ToLower();
                     levelLookupByBaseName.TryGetValue(nextBonusName, out nextLevelAsset);
                 }
-                // Priority 2: If we are a base level (like A5), check for its first bonus level (A5a).
+                // 2: If we are a base level (like A5), check for its first bonus level (A5a).
                 else // bonusPart is empty
                 {
                     var firstBonusName = $"{groupPart}{levelNum}a".ToLower();
@@ -274,13 +271,13 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
                 }
 
 
-                // Priority 3: If no next/first bonus was found, look for the next main number (e.g., A5 or A5b -> A6).
+                // 3: If no next/first bonus was found, look for the next main number (e.g., A5 or A5b -> A6).
                 if (nextLevelAsset == null) {
                     var nextMainLevelName = $"{groupPart}{levelNum + 1}".ToLower();
                     levelLookupByBaseName.TryGetValue(nextMainLevelName, out nextLevelAsset);
                 }
 
-                // Priority 4: If still no level found, try to find the start of the next group (e.g., A8 -> B1).
+                // 4: If still no level found, try to find the start of the next group (e.g., A8 -> B1).
                 if (nextLevelAsset == null && groupPart.Length == 1) {
                     var nextGroupChar = (char)(groupPart[0] + 1);
 
@@ -292,7 +289,6 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
                     }
                 }
 
-                // --- Assign the found level ---
                 if (nextLevelAsset != null) {
                     nextLevelProp.objectReferenceValue = nextLevelAsset;
                     Debug.Log($"[{currentLevel.name}] --> linked to next: [{nextLevelAsset.name}]");
