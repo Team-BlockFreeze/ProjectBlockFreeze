@@ -64,7 +64,6 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
 #endif
         foreach (var selector in selectors) {
             selector.RebuildMatrixFromScene();
-            selector.SnapButtonsToWorldGrid();
             selector.DrawBranchConnections();
         }
 
@@ -144,7 +143,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
         return currentLevel.NextLevelInSequence;
     }
 
-    private void TransitionToLevelArea(LevelDataSO.BranchTarget branch) {
+    public void TransitionToLevelArea(LevelDataSO.BranchTarget branch) {
         if (branch == null) return;
 
         var targetArea = GetSelectorForGroup(branch.TargetGroupName);
