@@ -108,9 +108,10 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
         if (!string.IsNullOrEmpty(completedLevel.Branch.TargetGroupName)) {
             var transitions = selector.BranchArrowContainer.GetComponentsInChildren<LevelBranchTransition>(true);
             foreach (var transition in transitions) {
-                if (transition.transform.parent.name.Contains(completedLevel.name)) {
+                if (transition.transform.parent.name.Contains(completedLevel.name) || transition.transform.parent.name.Contains($"{completedLevel.name.Split('_')[1]}_{completedLevel.name.Split('_')[0]}")) {
                     transition.transform.parent.gameObject.SetActive(true);
                     transition.UnlockBranchTransition();
+
                 }
             }
         }

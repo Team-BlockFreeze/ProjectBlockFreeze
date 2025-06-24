@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
-  m_Name: A5b_j1
+  m_Name: A5b
   m_EditorClassIdentifier: 
-  _nextLevelInSequence: {fileID: 0}
+  _nextLevelInSequence: {fileID: 11400000, guid: d2269441cbe333e4681832ca40be0a18, type: 2}
   _branch:
-    TargetGroupName: j
-    TargetLevelName: j1
+    TargetGroupName: 
+    TargetLevelName: 
   autoplayOnStart: 0
   autoPlayOnStartDelay: 0.5
   GridSize: {x: 8, y: 5}

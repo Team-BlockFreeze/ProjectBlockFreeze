@@ -145,7 +145,7 @@ public class BlockGrid : Singleton<BlockGrid> {
 
         ResetActiveGrid();
 
-        dynamicGridBorder.SetGridSize(gridSize, 1);
+        dynamicGridBorder.SetGridSize(gridSize, 0.5f);
 
         //load blocks from level data SO
         foreach (var bData in levelData.Blocks) {

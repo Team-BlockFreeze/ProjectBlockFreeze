@@ -255,7 +255,9 @@ public class LevelArea : MonoBehaviour {
         GameObject arrowInstance = Instantiate(branchArrowPrefab, branchArrowContainer);
 
         arrowInstance.GetComponent<Canvas>().worldCamera = Camera.main;
-        arrowInstance.name = $"Arrow_from_{source.Level.name}";
+        string sourceBase = source.Level.name.Split('_')[0];
+        string targetBase = target.Level.name.Split('_')[0];
+        arrowInstance.name = $"Arrow_from_{sourceBase}_{targetBase}";
 
         arrowInstance.transform.position = sourcePos + (chosenDirection * arrowOffset);
         arrowInstance.transform.rotation = Quaternion.Euler(0, 0, angle - 90); // Offset by 90
@@ -316,6 +318,7 @@ public class LevelArea : MonoBehaviour {
 
             // Debug.Log($"Drawing branch from {sourceButton.Level.name} to {targetButton.Level.name}");
             CreateArrow(sourceButton, targetButton);
+            CreateArrow(targetButton, sourceButton);
         }
 
         branchArrowContainer.transform.position += new Vector3(0, 0, 0.5f);

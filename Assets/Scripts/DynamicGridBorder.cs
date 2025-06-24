@@ -5,7 +5,7 @@ using UnityEngine;
 public class DynamicGridBorder : MonoBehaviour {
     [Tooltip("The prefab to use for each floor tile.")]
     [SerializeField] private GameObject tilePrefab;
-    [SerializeField] private float zPos = 0.5f;
+    [SerializeField] private float zPos = 0f;
     [SerializeField] private float zScale = 12f;
 
     private GameObject floorContainer;
@@ -32,7 +32,7 @@ public class DynamicGridBorder : MonoBehaviour {
     /// <param name="gridSize">Sisze of inner game grid.</param>
     /// <param name="borderSize">Size of border around grid.</param>
     [Button("Generate Floor")]
-    public void SetGridSize(Vector2Int gridSize, int borderSize) {
+    public void SetGridSize(Vector2Int gridSize, float borderSize) {
         // Force only 1 instance of floorContainer
         if (floorContainer != null) {
             if (Application.isPlaying)
