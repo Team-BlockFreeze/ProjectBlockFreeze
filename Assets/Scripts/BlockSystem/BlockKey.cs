@@ -27,7 +27,7 @@ public class BlockKey : LoggerMonoBehaviour {
         if (block.coord != block.GridRef.GoalCoord) return;
 
         BlockCoordinator.Coordinator.StopAllCoroutines();
-        Invoke(nameof(LevelCompleteAnimation), .25f);
+        Invoke(nameof(LevelCompleteAnimation), .5f);
         // Log("Recognised Level Complete");
     }
 

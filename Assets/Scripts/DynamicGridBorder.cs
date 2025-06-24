@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -33,6 +34,7 @@ public class DynamicGridBorder : MonoBehaviour {
     /// <param name="borderSize">Size of border around grid.</param>
     [Button("Generate Floor")]
     public void SetGridSize(Vector2Int gridSize, float borderSize) {
+
         // Force only 1 instance of floorContainer
         if (floorContainer != null) {
             Transform parent = floorContainer.transform.parent;
@@ -45,13 +47,19 @@ public class DynamicGridBorder : MonoBehaviour {
 
             // Dirty fix to destroy any other instances
             if (parent != null) {
+                var toDelete = new List<GameObject>();
+
                 foreach (Transform child in parent) {
-                    if (child.name == "floorContainer") {
-                        if (Application.isPlaying)
-                            Destroy(child.gameObject);
-                        else
-                            DestroyImmediate(child.gameObject);
+                    if (child.name == "FloorContainer") {
+                        toDelete.Add(child.gameObject);
                     }
+                }
+
+                foreach (var obj in toDelete) {
+                    if (Application.isPlaying)
+                        Destroy(obj);
+                    else
+                        DestroyImmediate(obj);
                 }
             }
         }
