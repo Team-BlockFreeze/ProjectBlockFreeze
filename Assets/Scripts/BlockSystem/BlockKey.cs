@@ -23,11 +23,11 @@ public class BlockKey : LoggerMonoBehaviour {
         block.Event_NextMoveBegan.RemoveListener(HasKeyReachedGoal);
     }
 
-    private void HasKeyReachedGoal() {
+    public void HasKeyReachedGoal() {
         if (block.coord != block.GridRef.GoalCoord) return;
 
         BlockCoordinator.Coordinator.StopAllCoroutines();
-        Invoke(nameof(LevelCompleteAnimation), 1.5f);
+        Invoke(nameof(LevelCompleteAnimation), .25f);
         // Log("Recognised Level Complete");
     }
 

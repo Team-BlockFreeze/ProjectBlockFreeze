@@ -76,6 +76,8 @@ public class BlockTeleportTile : TileEffectBase {
         }
 
         teleportDestination = finalTeleportDestination;
+
+
     }
 
     public override void OnBlockEnter(BlockBehaviour enteringBlock) {
@@ -117,6 +119,11 @@ public class BlockTeleportTile : TileEffectBase {
 
                         // In case the block landed on another special tile (e.g., a void).
                         BlockCoordinator.Instance.ProcessTileEffectsAfterTeleport();
+
+                        if (blockToTeleport.blockType.Contains("key") && blockToTeleport.coord == Grid.GoalCoord) {
+                            Log("Key Tp'd to goal");
+                            blockToTeleport.GetComponent<BlockKey>().HasKeyReachedGoal();
+                        }
                     });
             });
     }
