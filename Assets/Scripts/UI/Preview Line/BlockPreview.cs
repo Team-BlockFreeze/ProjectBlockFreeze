@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -107,6 +106,8 @@ public class BlockPreview : LoggerMonoBehaviour {
             previewShown = true;
         }
 
+        if (endDotInstance == null) return;
+
         SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
         Color currentColor = endDotSpriteRenderer.color;
 
@@ -139,9 +140,10 @@ public class BlockPreview : LoggerMonoBehaviour {
 
 
 
-        SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
-
-        endDotSpriteRenderer.DOColor(endColor, duration).SetEase(easeType);
+        if (endDotInstance != null) {
+            SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
+            endDotSpriteRenderer.DOColor(endColor, duration).SetEase(easeType);
+        }
     }
 
     private bool previewShown = false;
@@ -164,9 +166,10 @@ public class BlockPreview : LoggerMonoBehaviour {
             duration
         ).SetEase(easeType);
 
-        SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
-
-        endDotSpriteRenderer.DOColor(endColor, duration).SetEase(easeType);
+        if (endDotInstance != null) {
+            SpriteRenderer endDotSpriteRenderer = endDotInstance.GetComponent<SpriteRenderer>();
+            endDotSpriteRenderer.DOColor(endColor, duration).SetEase(easeType);
+        }
     }
 
 

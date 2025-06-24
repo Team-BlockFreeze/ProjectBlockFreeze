@@ -295,13 +295,12 @@ public class BlockBehaviour : LoggerMonoBehaviour {
             moveTween.Play();
         }
 
+        Event_NextMoveBegan?.Invoke();
 
         if (frozen) return;
         AdvanceMoveIdx();
         blocked = false;
 
-        UpdateMovementVisualiser();
-        Event_NextMoveBegan?.Invoke();
         UpdateMovementVisualiser();
         Log($"{gameObject.name} tried to move from {coord - currentForceVec2I} to {coord}");
     }
@@ -310,14 +309,11 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [Button]
 
     public void UpdateMovementVisualiser() {
-        // === Main Movement Indicator ===
         var mainIndicatorTransform = moveIntentionVisual.transform;
         var mainIndicatorSprite = moveIntentionVisual; // Assuming SpriteRenderer or similar
 
-        // Call the NEW visual-only method.
         Vector2Int currentVisualIntent = GetVisualMovementIntention();
 
-        // The logic now only cares if the block has a programmed move, regardless of freeze state.
         if (currentVisualIntent == Vector2Int.zero) {
             mainIndicatorSprite.enabled = false;
         }
@@ -326,11 +322,9 @@ public class BlockBehaviour : LoggerMonoBehaviour {
             mainIndicatorTransform.up = (Vector3Int)currentVisualIntent;
         }
 
-        // === Next Movement Indicator ===
         var nextIndicatorTransform = littleDirTriangle.transform;
         var nextIndicatorSprite = littleDirTriangle;
 
-        // Call the NEW visual-only "peek" method.
         Vector2Int nextVisualIntent = PeekNextVisualMovementIntention();
 
         if (nextVisualIntent == Vector2Int.zero) {
@@ -350,7 +344,6 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     /// </summary>
     /// <returns>The direction the block would move if it were not frozen.</returns>
     public Vector2Int GetVisualMovementIntention() {
-        // NOTICE: The 'if (frozen)' check is intentionally removed from this version.
         Direction moveDir;
         moveDir = movePath != null && movePath.Length > 0 ? movePath[moveIdx] : Direction.wait;
 
@@ -370,16 +363,13 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     /// Peeks at the next movement intention purely for VISUAL purposes, ignoring the frozen state.
     /// </summary>
     public Vector2Int PeekNextVisualMovementIntention() {
-        // This method simulates a step forward to see the next visual.
         var holdIdx = moveIdx;
         var holdForward = pingpongIsForward;
 
         AdvanceMoveIdx();
 
-        // It calls our new visual method, not the physics one.
         var moveIntent = GetVisualMovementIntention();
 
-        // Restore the state so this method has no side effects.
         moveIdx = holdIdx;
         pingpongIsForward = holdForward;
 
