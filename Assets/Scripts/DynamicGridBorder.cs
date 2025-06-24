@@ -35,10 +35,25 @@ public class DynamicGridBorder : MonoBehaviour {
     public void SetGridSize(Vector2Int gridSize, float borderSize) {
         // Force only 1 instance of floorContainer
         if (floorContainer != null) {
+            Transform parent = floorContainer.transform.parent;
+
+            // Destroy the main reference
             if (Application.isPlaying)
                 Destroy(floorContainer);
             else
                 DestroyImmediate(floorContainer);
+
+            // Dirty fix to destroy any other instances
+            if (parent != null) {
+                foreach (Transform child in parent) {
+                    if (child.name == "floorContainer") {
+                        if (Application.isPlaying)
+                            Destroy(child.gameObject);
+                        else
+                            DestroyImmediate(child.gameObject);
+                    }
+                }
+            }
         }
 
         floorContainer = new GameObject("FloorContainer");
