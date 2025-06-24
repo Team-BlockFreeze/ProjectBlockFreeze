@@ -31,6 +31,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
     /// </summary>
     /// <param name="currentLevel"></param>
     [SerializeField] private List<LevelArea> selectors;
+    public List<LevelArea> Selectors => selectors;
 
     [SerializeField][ReadOnly] private string currentBranch;
 
@@ -110,7 +111,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
             foreach (var transition in transitions) {
                 if (transition.transform.parent.name.Contains(completedLevel.name) || transition.transform.parent.name.Contains($"{completedLevel.name.Split('_')[1]}_{completedLevel.name.Split('_')[0]}")) {
                     transition.transform.parent.gameObject.SetActive(true);
-                    transition.UnlockBranchTransition();
+                    transition.UnlockBranch();
 
                 }
             }

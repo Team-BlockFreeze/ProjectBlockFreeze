@@ -4,7 +4,13 @@ using UnityEngine.EventSystems;
 public class LevelBranchTransition : MonoBehaviour, IPointerClickHandler {
     private const string NAME_PREFIX = "Arrow_from_";
 
-    public void UnlockBranchTransition() {
+    public bool unlocked = false;
+
+    public void UnlockBranch() {
+        unlocked = true;
+    }
+
+    public void ActivateBranchTransition() {
         this.gameObject.SetActive(true);
     }
 

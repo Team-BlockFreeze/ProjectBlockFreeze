@@ -18,5 +18,9 @@ public class SceneLoadedFunctions : MonoBehaviour {
         Camera.main.orthographicSize = 10;
         Debug.Log($"Camera orthographicSize = {Camera.main.orthographicSize} on LevelSelect loaded");
 
+        foreach (var branch in LevelAreaController.Instance.GetComponentsInChildren<LevelBranchTransition>(true)) {
+            if (branch.unlocked) branch.ActivateBranchTransition();
+        }
+
     }
 }
