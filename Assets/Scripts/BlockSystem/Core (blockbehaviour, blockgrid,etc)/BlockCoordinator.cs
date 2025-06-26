@@ -362,6 +362,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     #endregion
 
     #region Blocked block logic
+
     public bool CheckBlockedBlocks() {
         var changes = false;
 
@@ -373,7 +374,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
             // Skip blocks that shouldn't be checked.
 
-            if (b.blockType == "wall") continue;
 
 
             //! Never skip any assumed blocked blocks anymore
