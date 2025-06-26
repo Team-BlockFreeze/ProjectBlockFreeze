@@ -45,38 +45,6 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 0
     movePath: 03000000
-  - gridCoord: {x: 0, y: 1}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 03000000
-  - gridCoord: {x: 2, y: 1}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 04000000
-  - gridCoord: {x: 3, y: 1}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 04000000
-  - gridCoord: {x: 1, y: 1}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 00000000
   - gridCoord: {x: 1, y: 3}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
