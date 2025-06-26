@@ -285,27 +285,17 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             if (b.phaseThrough) continue;
 
             var moveIntent = b.GetMovementIntention();
+            var targetCell = b.coord + moveIntent;
 
             b.lastForces = new CellForce();
             b.lastForces.SetForceFromVector2Int(moveIntent);
 
-            // Apply X-axis force
-            if (moveIntent.x != 0) {
-                var xTargetCell = b.coord + new Vector2Int(moveIntent.x, 0);
-                if (gridRef.isValidGridCoord(xTargetCell)) {
-                    Log($"{b.name} is applying X-force of {moveIntent.x} to {xTargetCell}");
-                    forceGrid[xTargetCell.x, xTargetCell.y].AddForceFromCell(new CellForce(new Vector2Int(moveIntent.x, 0)));
-                }
-            }
+            //block target cell isnt on grid (at edge)
+            if (!gridRef.isValidGridCoord(targetCell)) continue;
+            Log(
+                $"{b.name} just set force to {b.lastForces.QueryForce()} at {targetCell} from moveIntent {b.GetMovementIntention()}");
 
-            // Apply Y-axis force
-            if (moveIntent.y != 0) {
-                var yTargetCell = b.coord + new Vector2Int(0, moveIntent.y);
-                if (gridRef.isValidGridCoord(yTargetCell)) {
-                    Log($"{b.name} is applying Y-force of {moveIntent.y} to {yTargetCell}");
-                    forceGrid[yTargetCell.x, yTargetCell.y].AddForceFromCell(new CellForce(new Vector2Int(0, moveIntent.y)));
-                }
-            }
+            forceGrid[targetCell.x, targetCell.y].AddForceFromCell(b.lastForces);
         }
     }
 
@@ -318,19 +308,30 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
             if (collapsedForce == Vector2Int.zero) continue;
 
-            // Apply X-axis force
-            if (collapsedForce.x != 0) {
-                var xTargetCell = b.coord + new Vector2Int(collapsedForce.x, 0);
-                if (gridRef.isValidGridCoord(xTargetCell)) {
-                    forceGrid[xTargetCell.x, xTargetCell.y].AddForceFromCell(new CellForce(new Vector2Int(collapsedForce.x, 0)));
-                }
+            // Handle the combined (potentially diagonal) force application. 
+            // Recursive checks should now not stop at path blocks tryiung to go off grid
+            var targetCell = b.coord + collapsedForce;
+            if (gridRef.isValidGridCoord(targetCell)) {
+                forceGrid[targetCell.x, targetCell.y].AddForceFromCell(new CellForce(collapsedForce));
+                Log($"{b.name} adding combined force {collapsedForce} to grid at {targetCell}");
             }
 
-            // Apply Y-axis force
-            if (collapsedForce.y != 0) {
-                var yTargetCell = b.coord + new Vector2Int(0, collapsedForce.y);
-                if (gridRef.isValidGridCoord(yTargetCell)) {
-                    forceGrid[yTargetCell.x, yTargetCell.y].AddForceFromCell(new CellForce(new Vector2Int(0, collapsedForce.y)));
+            // If the force is diagonal, ALWAYS attempt to propagate its orthogonal components.
+            if (collapsedForce.x != 0 && collapsedForce.y != 0) {
+                Log($"{b.name} has diagonal force {collapsedForce}, propagating orthogonal components.");
+
+                // Handle X-component force
+                var xTarget = b.coord + new Vector2Int(collapsedForce.x, 0);
+                if (gridRef.isValidGridCoord(xTarget)) {
+                    forceGrid[xTarget.x, xTarget.y].AddForceFromCell(new CellForce(new Vector2Int(collapsedForce.x, 0)));
+                    Log($"  - Added X-force component to {xTarget}");
+                }
+
+                // Handle Y-component force
+                var yTarget = b.coord + new Vector2Int(0, collapsedForce.y);
+                if (gridRef.isValidGridCoord(yTarget)) {
+                    forceGrid[yTarget.x, yTarget.y].AddForceFromCell(new CellForce(new Vector2Int(0, collapsedForce.y)));
+                    Log($"  - Added Y-force component to {yTarget}");
                 }
             }
         }
@@ -638,11 +639,12 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             Gizmos.DrawWireCube(pos, Vector3.one * size);
         }
 
-        // Draw directional indicators
-        DrawEnhancedCube(center + Vector3.up * dist, cellForce.up);
-        DrawEnhancedCube(center + Vector3.left * dist, cellForce.left);
-        DrawEnhancedCube(center + Vector3.right * dist, cellForce.right);
-        DrawEnhancedCube(center + Vector3.down * dist, cellForce.down);
+        // z offset
+        var zOffset = Vector3.forward * -2f;
+        DrawEnhancedCube(center + Vector3.up * dist + zOffset, cellForce.up);
+        DrawEnhancedCube(center + Vector3.left * dist + zOffset, cellForce.left);
+        DrawEnhancedCube(center + Vector3.right * dist + zOffset, cellForce.right);
+        DrawEnhancedCube(center + Vector3.down * dist + zOffset, cellForce.down);
     }
 #endif
 
