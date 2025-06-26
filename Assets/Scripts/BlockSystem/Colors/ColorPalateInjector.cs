@@ -2,8 +2,7 @@
 using UnityEngine;
 using UnityUtils;
 
-public class ColorPalateInjector : Singleton<ColorPalateInjector>
-{
+public class ColorPalateInjector : Singleton<ColorPalateInjector> {
     [InlineEditor] public ColorPalateSO colorPalateSO;
 
 
@@ -28,6 +27,7 @@ public class ColorPalateInjector : Singleton<ColorPalateInjector>
         blockGridInstance.pingpongMAT = colorPalateSO.pingPongBlock;
         blockGridInstance.wallMAT = colorPalateSO.wallBlock;
         blockGridInstance.keyMAT = colorPalateSO.keyBlock;
+        blockGridInstance.key_pingpongMAT = colorPalateSO.key_pingpongMAT;
 
         // Inject base colors
         blockGridInstance.frozenMAT.SetColor("_EmissionColor", colorPalateSO.frozenColor);
@@ -36,6 +36,7 @@ public class ColorPalateInjector : Singleton<ColorPalateInjector>
         blockGridInstance.pingpongMAT.SetColor("_BaseColor", colorPalateSO.pingPongBlockColor);
         blockGridInstance.wallMAT.SetColor("_BaseColor", colorPalateSO.wallBlockColor);
         blockGridInstance.keyMAT.SetColor("_BaseColor", colorPalateSO.keyBlockColor);
+        blockGridInstance.key_pingpongMAT.SetColor("_BaseColor", colorPalateSO.key_pingpongBlockColor);
     }
 
     private void InjectIslandMaterials() {

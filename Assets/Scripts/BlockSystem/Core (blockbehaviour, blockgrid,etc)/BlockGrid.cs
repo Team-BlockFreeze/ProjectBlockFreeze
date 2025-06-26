@@ -65,6 +65,10 @@ public class BlockGrid : Singleton<BlockGrid> {
     [SerializeField]
     public Material keyMAT;
 
+    [FoldoutGroup("Block Materials")]
+    [SerializeField]
+    public Material key_pingpongMAT;
+
     [FoldoutGroup("Special Properties Icons")]
     public Sprite nofreezeBlockIcon;
 
@@ -233,6 +237,11 @@ public class BlockGrid : Singleton<BlockGrid> {
         }
 
         if (isKey) {
+            if (newBlock.moveMode == BlockBehaviour.BlockMoveState.pingpong) {
+                blockRenderer.sharedMaterial = key_pingpongMAT;
+                newBlock.BlockMaterial = key_pingpongMAT;
+                return;
+            }
             blockRenderer.sharedMaterial = keyMAT;
             newBlock.BlockMaterial = keyMAT;
             return;

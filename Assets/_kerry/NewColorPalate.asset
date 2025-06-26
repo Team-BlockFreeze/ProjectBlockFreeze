@@ -18,6 +18,7 @@ MonoBehaviour:
   islandMiddle: {fileID: 2100000, guid: b720916f84c05c445a1e56e7d5ac7c34, type: 2}
   loopBlock: {fileID: 2100000, guid: bc1e9afb091ffcb4fa8d158dfd7bdcf2, type: 2}
   pingPongBlock: {fileID: 2100000, guid: 73bf28de5c20f4944b633dd229e3d706, type: 2}
+  key_pingpongMAT: {fileID: 2100000, guid: 010d7bda5ccc02f4d905ff74c4bf99b8, type: 2}
   keyBlock: {fileID: 2100000, guid: c73e452a25ffb724f92e773027d3a2c4, type: 2}
   wallBlock: {fileID: 2100000, guid: 2d82e2ced154dfc49a836469b5d364d1, type: 2}
   frozen: {fileID: 2100000, guid: 6553f9e4d30cb1b469189d915c02d5de, type: 2}
@@ -26,5 +27,6 @@ MonoBehaviour:
   loopBlockColor: {r: 0.8207547, g: 0.8207547, b: 0.8207547, a: 1}
   pingPongBlockColor: {r: 0.20038268, g: 0.50281215, b: 0.745283, a: 1}
   keyBlockColor: {r: 0.9150943, g: 0.12517802, b: 0.12517802, a: 1}
+  key_pingpongBlockColor: {r: 0.36867404, g: 0.18039213, b: 0.8509804, a: 0}
   wallBlockColor: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
   frozenColor: {r: 0.14462443, g: 0.41176313, b: 0.4716981, a: 0}
