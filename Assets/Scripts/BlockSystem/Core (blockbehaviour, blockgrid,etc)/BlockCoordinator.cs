@@ -285,17 +285,27 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             if (b.phaseThrough) continue;
 
             var moveIntent = b.GetMovementIntention();
-            var targetCell = b.coord + moveIntent;
 
             b.lastForces = new CellForce();
             b.lastForces.SetForceFromVector2Int(moveIntent);
 
-            //block target cell isnt on grid (at edge)
-            if (!gridRef.isValidGridCoord(targetCell)) continue;
-            Log(
-                $"{b.name} just set force to {b.lastForces.QueryForce()} at {targetCell} from moveIntent {b.GetMovementIntention()}");
+            // Apply X-axis force
+            if (moveIntent.x != 0) {
+                var xTargetCell = b.coord + new Vector2Int(moveIntent.x, 0);
+                if (gridRef.isValidGridCoord(xTargetCell)) {
+                    Log($"{b.name} is applying X-force of {moveIntent.x} to {xTargetCell}");
+                    forceGrid[xTargetCell.x, xTargetCell.y].AddForceFromCell(new CellForce(new Vector2Int(moveIntent.x, 0)));
+                }
+            }
 
-            forceGrid[targetCell.x, targetCell.y].AddForceFromCell(b.lastForces);
+            // Apply Y-axis force
+            if (moveIntent.y != 0) {
+                var yTargetCell = b.coord + new Vector2Int(0, moveIntent.y);
+                if (gridRef.isValidGridCoord(yTargetCell)) {
+                    Log($"{b.name} is applying Y-force of {moveIntent.y} to {yTargetCell}");
+                    forceGrid[yTargetCell.x, yTargetCell.y].AddForceFromCell(new CellForce(new Vector2Int(0, moveIntent.y)));
+                }
+            }
         }
     }
 
@@ -305,23 +315,23 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             if (b.phaseThrough) continue;
 
             var collapsedForce = b.lastForces.QueryForce();
-            var targetCell = b.coord + collapsedForce;
 
-            //block target cell isnt on grid (at edge)
-            if (!gridRef.isValidGridCoord(targetCell) || targetCell == b.coord) {
-                Log($"{gameObject.name} can't add force to grid, target cell out of bounds");
-                continue;
+            if (collapsedForce == Vector2Int.zero) continue;
+
+            // Apply X-axis force
+            if (collapsedForce.x != 0) {
+                var xTargetCell = b.coord + new Vector2Int(collapsedForce.x, 0);
+                if (gridRef.isValidGridCoord(xTargetCell)) {
+                    forceGrid[xTargetCell.x, xTargetCell.y].AddForceFromCell(new CellForce(new Vector2Int(collapsedForce.x, 0)));
+                }
             }
 
-            forceGrid[targetCell.x, targetCell.y].AddForceFromCell(new CellForce(collapsedForce));
-            Log($"{gameObject.name} adding force {collapsedForce} to grid at {targetCell}");
-            //diagonal force
-            if (collapsedForce.x != 0 && collapsedForce.y != 0) {
-                var xTarget = b.coord + new Vector2Int(collapsedForce.x, 0);
-                forceGrid[xTarget.x, xTarget.y].AddForceFromCell(new CellForce(new Vector2Int(collapsedForce.x, 0)));
-                var yTarget = b.coord + new Vector2Int(0, collapsedForce.y);
-                forceGrid[yTarget.x, yTarget.y].AddForceFromCell(new CellForce(new Vector2Int(0, collapsedForce.y)));
-                Log($"{gameObject} is moving diagonally, adding orthogonal forces at {xTarget} and {yTarget}");
+            // Apply Y-axis force
+            if (collapsedForce.y != 0) {
+                var yTargetCell = b.coord + new Vector2Int(0, collapsedForce.y);
+                if (gridRef.isValidGridCoord(yTargetCell)) {
+                    forceGrid[yTargetCell.x, yTargetCell.y].AddForceFromCell(new CellForce(new Vector2Int(0, collapsedForce.y)));
+                }
             }
         }
     }
