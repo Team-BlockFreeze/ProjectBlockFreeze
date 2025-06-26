@@ -169,6 +169,8 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
     private void ProcessTileEffects() {
         if (undoStack.Count == 0) return;
 
+        BlockTeleportTile.ClearTeleportIntentsForTick();
+
         var previousGridState = undoStack.Peek();
 
         foreach (var effect in tileEffects) {
@@ -178,7 +180,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
             List<BlockBehaviour> currentBlocksOnTile = gridRef.QueryGridCoordForAllBlocks(tileCoord);
             List<BlockBehaviour> previousBlocksOnTile = previousGridState.GetBlocksAtCoord(tileCoord);
 
-            // OnBlockEnter ---
             foreach (var currentBlock in currentBlocksOnTile) {
                 if (currentBlock == effectBlock) continue;
 
@@ -188,7 +189,6 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
                 }
             }
 
-            // OnBlockExit ---
             foreach (var previousBlock in previousBlocksOnTile) {
                 if (previousBlock == effectBlock) continue;
 
@@ -198,7 +198,10 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
                 }
             }
         }
+
+        BlockTeleportTile.ProcessPendingTeleports();
     }
+
 
     #endregion
 
