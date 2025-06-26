@@ -99,8 +99,11 @@ public class BlockTeleportTile : TileEffectBase {
     private void OnValidate() {
         UnityEditor.EditorApplication.delayCall += UpdateLineRenderer;
     }
-    private void UpdateLineRenderer() {
+    public void UpdateLineRenderer() {
         if (Grid == null || lineRenderer == null) return;
+
+
+        teleportIndicator.SetActive(true);
 
         Vector3 start = transform.position;
         Vector3 end = Grid.GetWorldSpaceFromCoord(teleportDestination);
