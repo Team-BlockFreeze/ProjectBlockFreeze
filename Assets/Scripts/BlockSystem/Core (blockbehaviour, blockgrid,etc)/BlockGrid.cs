@@ -174,7 +174,7 @@ public class BlockGrid : Singleton<BlockGrid> {
             //! If teleport block, update destination
             newBlock.GetComponent<BlockTeleportTile>()?.UpdateTeleportDestination();
 
-            // Animation finishes in 0.5s. dirty fix for updating line renderer after reload animation finishes
+            // Animation finishes in 0.5s (see IngameCanvasButtons.ReloadLevel(): moveDuration variablke). dirty fix for updating line renderer after reload animation finishes
             DOVirtual.DelayedCall(0.5f, () => {
                 newBlock.GetComponent<BlockTeleportTile>()?.UpdateLineRenderer();
             });

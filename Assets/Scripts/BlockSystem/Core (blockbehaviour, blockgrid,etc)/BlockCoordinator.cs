@@ -158,15 +158,18 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
         }
     }
 
-    public void ProcessTileEffectsAfterTeleport() {
+    public void ProcessTileEffectsAfterTeleport(bool skipTeleport = false) {
         Log("Re-processing tile effects after a teleport event.");
-        ProcessTileEffects();
+
+
+
+        ProcessTileEffects(skipTeleport);
     }
 
     /// <summary>
     /// This method will check all tile effects after a move.
     /// </summary>
-    private void ProcessTileEffects() {
+    private void ProcessTileEffects(bool skipTeleport = false) {
         if (undoStack.Count == 0) return;
 
         BlockTeleportTile.ClearTeleportIntentsForTick();
@@ -185,6 +188,10 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
                 if (!previousBlocksOnTile.Contains(currentBlock)) {
                     Log($"Block entered tile {effectBlock.name}: {currentBlock.name}");
+
+                    if (effect is BlockTeleportTile && skipTeleport) {
+                        continue;
+                    }
                     effect.OnBlockEnter(currentBlock);
                 }
             }

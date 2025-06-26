@@ -167,7 +167,7 @@ public class BlockTeleportTile : TileEffectBase {
                         blockToTeleport.phaseThrough = false;
 
                         // In case the block landed on another special tile (e.g., a void).
-                        BlockCoordinator.Instance.ProcessTileEffectsAfterTeleport();
+                        BlockCoordinator.Instance.ProcessTileEffectsAfterTeleport(true);
 
                         if (blockToTeleport.blockType.Contains("key") && blockToTeleport.coord == Grid.GoalCoord) {
                             Log("Key TP'd to goal");
