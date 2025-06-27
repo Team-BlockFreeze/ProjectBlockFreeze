@@ -313,7 +313,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         var mainIndicatorSprite = moveIntentionVisual; // Assuming SpriteRenderer or similar
 
         Vector2Int currentVisualIntent = GetVisualMovementIntention();
-        Debug.Log(currentVisualIntent);
+        // Debug.Log(currentVisualIntent);
 
         if (currentVisualIntent == Vector2Int.zero) {
             mainIndicatorSprite.enabled = false;
@@ -328,7 +328,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         var nextIndicatorSprite = littleDirTriangle;
 
         Vector2Int nextVisualIntent = PeekNextVisualMovementIntention();
-        Debug.Log(nextVisualIntent);
+        // Debug.Log(nextVisualIntent);
 
 
         //! Next movement intent only shows if currentmoveintent is wait. Too much visual clutter on icons -Kerry

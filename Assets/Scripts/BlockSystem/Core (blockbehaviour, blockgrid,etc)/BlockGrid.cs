@@ -185,7 +185,7 @@ public class BlockGrid : Singleton<BlockGrid> {
 
 
             newBlock.blockType = bData.GetBlockType();
-            Debug.Log(newBlock.blockType);
+            // Debug.Log(newBlock.blockType);
             newBlock.SetBlockTypeIcons(GetIconsForBlockType(newBlock.blockType));
 
             newBlock.UpdateMovementVisualiser();
