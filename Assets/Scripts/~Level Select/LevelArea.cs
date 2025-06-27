@@ -312,9 +312,8 @@ public class LevelArea : MonoBehaviour {
             LevelButton targetButton = targetArea.GetButtonByLevelName(branch.TargetLevelName);
 
             if (targetButton == null) {
-                targetButton = targetArea.GetButtonByLevelName(branch.TargetLevelName.Split('_')[0]);
                 Debug.LogWarning($"Could not find target LevelButton with name '{branch.TargetLevelName}' in Area '{targetArea.GroupName}'.", sourceButton);
-                // continue;
+                continue;
             }
 
             // Debug.Log($"Drawing branch from {sourceButton.Level.name} to {targetButton.Level.name}");
