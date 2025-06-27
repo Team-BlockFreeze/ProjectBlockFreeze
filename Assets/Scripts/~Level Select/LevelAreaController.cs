@@ -101,7 +101,9 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
             var gridPos = selector.GetGridPosition(completedLevel);
 
             if (gridPos.HasValue) {
+                selector.SetCellAsCompleted(gridPos.Value);
                 selector.UnlockAdjacentCells(gridPos.Value);
+                selector.UpdateVisuals();
                 selector.BranchArrowContainer.gameObject.SetActive(true);
             }
         }

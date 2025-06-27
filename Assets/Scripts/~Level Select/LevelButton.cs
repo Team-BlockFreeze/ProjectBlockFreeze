@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using Systems.SceneManagement;
@@ -18,6 +19,10 @@ public class LevelButton : LoggerMonoBehaviour {
     [BoxGroup("Grid Info")]
     [SerializeField]
     private bool isUnlocked;
+
+    [BoxGroup("Grid Info")]
+    [SerializeField]
+    private bool isCompleted;
 
     [BoxGroup("UI References")]
     [Required]
@@ -54,7 +59,44 @@ public class LevelButton : LoggerMonoBehaviour {
         set => isUnlocked = value;
     }
 
+    public bool IsCompleted {
+        get => isCompleted;
+        set => isCompleted = value;
+    }
+
+    [SerializeField] private Material completedColor;
+    [SerializeField] private Material unlockedColor;
+    [SerializeField] private Material lockedColor;
+
+    public void UpdateVisuals() {
+        if (isCompleted) { // Completed Lvl
+
+            if (completedColor != null) {
+                meshRenderer.material = completedColor;
+            }
+            return;
+        }
+
+
+        if (isUnlocked) { // Unlocked Lvl
+            if (unlockedColor != null) {
+                meshRenderer.material = unlockedColor;
+            }
+        }
+        else { // Locked lvl
+            if (lockedColor != null) {
+                meshRenderer.material = lockedColor;
+            }
+        }
+    }
+
+    private MeshRenderer meshRenderer;
+
     private void Awake() {
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
+        UpdateVisuals();
+
+
         //levelNumberText.text = "00";
     }
 

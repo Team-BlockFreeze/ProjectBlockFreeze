@@ -388,6 +388,21 @@ public class LevelArea : MonoBehaviour {
     }
 
 
+    public void SetCellAsCompleted(Vector2Int cell) {
+        if (cell.x < 0 || cell.x >= layoutXY.x || cell.y < 0 || cell.y >= layoutXY.y) {
+            Debug.LogWarning("Cell out of bounds: " + cell);
+            return;
+        }
+
+        if (buttonMatrix == null) {
+            Debug.LogWarning("Button matrix not initialized.");
+            return;
+        }
+
+        var button = buttonMatrix[cell.x, cell.y];
+        if (button != null) button.IsCompleted = true;
+    }
+
     [Button]
     public void UnlockAdjacentCells(Vector2Int cell) {
         if (buttonMatrix == null) {
@@ -414,6 +429,15 @@ public class LevelArea : MonoBehaviour {
         }
 
         // Debug.Log("UnlockAdjacentCells: " + cell);
+    }
+
+    public void UpdateVisuals() {
+        foreach (var button in LevelButtons) {
+            var buttonComponent = button.GetComponent<LevelButton>();
+            if (buttonComponent != null) {
+                buttonComponent.UpdateVisuals();
+            }
+        }
     }
 
     public Vector2Int? GetGridPosition(LevelDataSO level) {
@@ -518,4 +542,6 @@ public class LevelArea : MonoBehaviour {
         EditorUtility.SetDirty(this);
 #endif
     }
+
+
 }
