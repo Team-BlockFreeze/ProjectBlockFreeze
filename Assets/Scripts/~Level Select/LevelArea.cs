@@ -94,6 +94,10 @@ public class LevelArea : MonoBehaviour {
         //! Dirty sol: hides the plane
         var plane = transform.Find("FloorContainer");
         if (plane != null) plane.gameObject.SetActive(false);
+
+        var branches = transform.Find("BranchArrowContainer");
+        if (branches != null) branches.gameObject.SetActive(false);
+
     }
 
     public void ShowAllButtons() {
@@ -103,6 +107,8 @@ public class LevelArea : MonoBehaviour {
         //! Dirty sol: hides the plane
         var plane = transform.Find("FloorContainer");
         if (plane != null) plane.gameObject.SetActive(true);
+        var branches = transform.Find("BranchArrowContainer");
+        if (branches != null) branches.gameObject.SetActive(true);
     }
 
     [BoxGroup("Buttons")]

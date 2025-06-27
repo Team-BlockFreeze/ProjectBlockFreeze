@@ -5,25 +5,28 @@ using TMPro;
 using UnityEngine;
 
 [SelectionBase] //! When selecting things in the scene view, it will select the parent object and not the stuff inside
-public class LevelButton : LoggerMonoBehaviour
-{
-    [BoxGroup("Level Info")] [SerializeField]
+public class LevelButton : LoggerMonoBehaviour {
+    [BoxGroup("Level Info")]
+    [SerializeField]
     private LevelDataSO level;
 
-    [BoxGroup("Grid Info")] [ReadOnly] [SerializeField]
+    [BoxGroup("Grid Info")]
+    [ReadOnly]
+    [SerializeField]
     private Vector2Int gridPosition;
 
-    [BoxGroup("Grid Info")] [SerializeField]
+    [BoxGroup("Grid Info")]
+    [SerializeField]
     private bool isUnlocked;
 
-    [BoxGroup("UI References")] [Required] [SerializeField]
+    [BoxGroup("UI References")]
+    [Required]
+    [SerializeField]
     private TMP_Text levelNumberText;
 
-    public LevelDataSO Level
-    {
+    public LevelDataSO Level {
         get => level;
-        set
-        {
+        set {
             level = value;
 
             if (value != null) {
@@ -41,14 +44,12 @@ public class LevelButton : LoggerMonoBehaviour
         }
     }
 
-    public Vector2Int GridPosition
-    {
+    public Vector2Int GridPosition {
         get => gridPosition;
         set => gridPosition = value;
     }
 
-    public bool IsUnlocked
-    {
+    public bool IsUnlocked {
         get => isUnlocked;
         set => isUnlocked = value;
     }
