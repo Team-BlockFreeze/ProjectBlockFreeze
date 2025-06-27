@@ -5495,8 +5495,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8989a879440a59c4995f37178d20c797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logging: 1
   level: {fileID: 0}
+  gridPosition: {x: 0, y: 0}
+  isUnlocked: 0
+  isCompleted: 0
   levelNumberText: {fileID: 7531401734722841167}
+  completedColor: {fileID: 2100000, guid: 8530e7d9649b3e04cab4ca8cd0609218, type: 2}
+  unlockedColor: {fileID: 2100000, guid: bfccc908668f1d746ac3ce2e69b743c9, type: 2}
+  lockedColor: {fileID: 2100000, guid: 738183bcecb02424088dc600b936ba80, type: 2}
 --- !u!1 &7742176443680619843
 GameObject:
   m_ObjectHideFlags: 0
