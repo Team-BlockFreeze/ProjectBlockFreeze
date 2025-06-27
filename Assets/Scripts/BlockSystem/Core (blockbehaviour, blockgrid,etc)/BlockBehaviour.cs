@@ -322,12 +322,15 @@ public class BlockBehaviour : LoggerMonoBehaviour {
             mainIndicatorTransform.up = (Vector3Int)currentVisualIntent;
         }
 
+
         var nextIndicatorTransform = littleDirTriangle.transform;
         var nextIndicatorSprite = littleDirTriangle;
 
         Vector2Int nextVisualIntent = PeekNextVisualMovementIntention();
 
-        if (nextVisualIntent == Vector2Int.zero) {
+
+        //! Next movement intent only shows if currentmoveintent is wait. Too much visual clutter on icons -Kerry
+        if (currentVisualIntent != Vector2Int.zero) {
             nextIndicatorSprite.enabled = false;
         }
         else {
