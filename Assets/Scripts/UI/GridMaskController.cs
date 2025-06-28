@@ -18,6 +18,7 @@ public class GridMaskController : MonoBehaviour {
 
     private void OnEnable() {
         BlockGrid.Instance.StateLoadedFromSO += UpdateMaskBounds;
+        UpdateMaskBounds();
     }
 
     private void OnDisable() {

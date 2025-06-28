@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class CameraScaler : MonoBehaviour {
     [ReadOnly][SerializeField] private BlockGrid gridRef;
 
-    [SerializeField] private float camBlockMargin = 4f;
+    [SerializeField] private float camBlockMargin = 6f;
 
     private readonly Vector2 currentScreenSize = Vector2.zero;
 
