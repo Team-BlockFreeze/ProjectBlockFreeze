@@ -15,11 +15,6 @@ public class SetTimeScale : MonoBehaviour {
     [SerializeField] private SoundID stepForwardSFX;
     [SerializeField] private SoundID undoSFX;
 
-
-    // private void Awake() {
-    //     UndoOnce();
-    // }
-
     private void Start() {
         if (startSelected) {
             GameSettings.Instance.IsAutoPlaying = true;
