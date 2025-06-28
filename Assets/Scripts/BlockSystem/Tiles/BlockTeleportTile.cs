@@ -10,13 +10,6 @@ public class BlockTeleportTile : TileEffectBase {
     [SerializeField]
     private Vector2Int teleportDestination;
 
-    [Title("Visuals & Timing")]
-    [SerializeField, Range(0f, 1f)]
-    private float exitAnimationTime = 0.25f;
-
-    [SerializeField, Range(0f, 1f)]
-    private float enterAnimationTime = 0.25f;
-
     [SerializeField]
     private Ease exitEase = Ease.InBack;
 
@@ -151,18 +144,20 @@ public class BlockTeleportTile : TileEffectBase {
     private void StartTeleportSequence(BlockBehaviour blockToTeleport) {
         blockToTeleport.phaseThrough = true;
 
-        blockToTeleport.transform.DOScale(0, exitAnimationTime).SetEase(exitEase)
+        Grid.ActiveGridState.BlockCoordList.Remove(blockToTeleport.coord);
+        blockToTeleport.coord = teleportDestination;
+        Grid.ActiveGridState.BlockCoordList.Add(teleportDestination);
+
+        float gameTick = GameSettings.Instance.gameTickInSeconds;
+
+        blockToTeleport.transform.DOScale(0, gameTick / 2).SetEase(exitEase)
             .OnComplete(() => {
                 blockToTeleport.transform.DOKill();
-
-                Grid.ActiveGridState.BlockCoordList.Remove(blockToTeleport.coord);
-                blockToTeleport.coord = teleportDestination;
-                Grid.ActiveGridState.BlockCoordList.Add(teleportDestination);
 
                 blockToTeleport.GetComponent<BlockPreview>()?.UpdateLine();
                 blockToTeleport.transform.position = Grid.GetWorldSpaceFromCoord(teleportDestination);
 
-                blockToTeleport.transform.DOScale(1, enterAnimationTime).SetEase(enterEase)
+                blockToTeleport.transform.DOScale(1, gameTick / 2).SetEase(enterEase)
                     .OnComplete(() => {
                         blockToTeleport.phaseThrough = false;
 
