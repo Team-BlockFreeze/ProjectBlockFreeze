@@ -7,6 +7,7 @@
 
 ## Level Selection
 ### Level Area Prefixes
+- `T`: Tutorial
 - `A`: Easy levels
 - `B`: Medium levels
 - `C`: Hard levels
@@ -15,7 +16,7 @@
 - `F`: Teleport levels
 - `G`: No-freeze levels
 - `H`: Void levels
-- `T`: Tutorial
+
 
 ## Level Prerequisites
 
