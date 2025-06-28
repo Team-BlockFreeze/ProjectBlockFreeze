@@ -1,9 +1,9 @@
 # Controls
 ## Movement
-- **M1/Right Arrow**: Step forward
-- **M2/Left Arrow**: Undo
-- **M1 (Hold)**: Autoplay
-- **M1 (Release)**: Stop autoplay
+- **M1/Tap/Right Arrow**: Step forward
+- **M2/Two-Finger Tap/Left Arrow**: Undo
+- **M1/Tap (Hold)**: Autoplay
+- **M1/Tap (Release)**: Stop autoplay
 
 ## Level Selection
 ### Level Area Prefixes
