@@ -1588,7 +1588,6 @@ GameObject:
   - component: {fileID: 3345969170464160199}
   - component: {fileID: 4317617496963841807}
   - component: {fileID: 727541866060651901}
-  - component: {fileID: 1467710975399509208}
   - component: {fileID: 6236821288883479218}
   m_Layer: 0
   m_Name: Right
@@ -1698,33 +1697,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1467710975399509208
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1790535990201558639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af7ca4c7e2961364aa433f9918a53567, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startSelected: 0
-  soloSelectToggle: 0
-  autoPlaySFX:
-    ID: 1073741839
-    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 5455604199408371681}
-  stepForwardSFX:
-    ID: 1073741840
-    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 5455604199408371681}
-  undoSFX:
-    ID: 1073741837
-    _sourceAsset: {fileID: 11400000, guid: 365499101defd914e8ce80e24a980c29, type: 2}
-    <DebugObject>k__BackingField: {fileID: 5455604199408371681}
-  timeScaleToSet: 1
 --- !u!114 &6236821288883479218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1847,7 +1819,6 @@ GameObject:
   - component: {fileID: 1780721029362823594}
   - component: {fileID: 8926237824912913027}
   - component: {fileID: 408068184338300580}
-  - component: {fileID: 8824276371647616956}
   - component: {fileID: 3130814779738866400}
   m_Layer: 0
   m_Name: Left
@@ -1957,33 +1928,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8824276371647616956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2147792920054243905}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af7ca4c7e2961364aa433f9918a53567, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startSelected: 0
-  soloSelectToggle: 0
-  autoPlaySFX:
-    ID: 1073741839
-    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 2147792920054243905}
-  stepForwardSFX:
-    ID: 1073741840
-    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 2147792920054243905}
-  undoSFX:
-    ID: 1073741837
-    _sourceAsset: {fileID: 11400000, guid: 365499101defd914e8ce80e24a980c29, type: 2}
-    <DebugObject>k__BackingField: {fileID: 2147792920054243905}
-  timeScaleToSet: 1
 --- !u!114 &3130814779738866400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2000,7 +1944,7 @@ MonoBehaviour:
   autoPlaySFX:
     ID: 1073741839
     _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 2147792920054243905}
+    <DebugObject>k__BackingField: {fileID: 5455604199408371681}
 --- !u!1 &2261780247520025821
 GameObject:
   m_ObjectHideFlags: 0
@@ -2508,7 +2452,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2151867879767278125
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4349,10 +4293,9 @@ GameObject:
   - component: {fileID: 3760526822032641209}
   - component: {fileID: 5091606627441435051}
   - component: {fileID: 8662272379622861102}
-  - component: {fileID: 2960197048862876088}
   m_Layer: 0
   m_Name: Forward/Backward/Autoplay NEW
-  m_TagString: PausePlayButtons
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4440,33 +4383,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 247
---- !u!114 &2960197048862876088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3943791932877933548}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af7ca4c7e2961364aa433f9918a53567, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startSelected: 0
-  soloSelectToggle: 0
-  autoPlaySFX:
-    ID: 1073741839
-    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 3943791932877933548}
-  stepForwardSFX:
-    ID: 1073741840
-    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 3943791932877933548}
-  undoSFX:
-    ID: 1073741837
-    _sourceAsset: {fileID: 11400000, guid: 365499101defd914e8ce80e24a980c29, type: 2}
-    <DebugObject>k__BackingField: {fileID: 3943791932877933548}
-  timeScaleToSet: 1
 --- !u!1 &4266230568292757884
 GameObject:
   m_ObjectHideFlags: 0
@@ -5424,7 +5340,6 @@ GameObject:
   - component: {fileID: 3600735336825756391}
   - component: {fileID: 2598497474601865870}
   - component: {fileID: 8783118258599346044}
-  - component: {fileID: 3018762077397949197}
   - component: {fileID: 7097844332261620899}
   m_Layer: 0
   m_Name: Down
@@ -5534,33 +5449,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3018762077397949197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5455604199408371681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af7ca4c7e2961364aa433f9918a53567, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startSelected: 0
-  soloSelectToggle: 0
-  autoPlaySFX:
-    ID: 1073741839
-    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 5455604199408371681}
-  stepForwardSFX:
-    ID: 1073741840
-    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 5455604199408371681}
-  undoSFX:
-    ID: 1073741837
-    _sourceAsset: {fileID: 11400000, guid: 365499101defd914e8ce80e24a980c29, type: 2}
-    <DebugObject>k__BackingField: {fileID: 5455604199408371681}
-  timeScaleToSet: 1
 --- !u!114 &7097844332261620899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7505,7 +7393,6 @@ GameObject:
   - component: {fileID: 3477836782425328120}
   - component: {fileID: 4661213283339218295}
   - component: {fileID: 6429068157493039547}
-  - component: {fileID: 798098398684795331}
   - component: {fileID: 4743876763915324224}
   m_Layer: 0
   m_Name: Up
@@ -7615,33 +7502,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &798098398684795331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7898297821249131154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af7ca4c7e2961364aa433f9918a53567, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startSelected: 0
-  soloSelectToggle: 0
-  autoPlaySFX:
-    ID: 1073741839
-    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 7898297821249131154}
-  stepForwardSFX:
-    ID: 1073741840
-    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 7898297821249131154}
-  undoSFX:
-    ID: 1073741837
-    _sourceAsset: {fileID: 11400000, guid: 365499101defd914e8ce80e24a980c29, type: 2}
-    <DebugObject>k__BackingField: {fileID: 7898297821249131154}
-  timeScaleToSet: 1
 --- !u!114 &4743876763915324224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7658,7 +7518,7 @@ MonoBehaviour:
   autoPlaySFX:
     ID: 1073741839
     _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 7898297821249131154}
+    <DebugObject>k__BackingField: {fileID: 5455604199408371681}
 --- !u!1 &7938022201359364585
 GameObject:
   m_ObjectHideFlags: 0

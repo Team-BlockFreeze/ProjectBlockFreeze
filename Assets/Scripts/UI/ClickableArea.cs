@@ -3,7 +3,6 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using Ami.BroAudio;
 
-[RequireComponent(typeof(SetTimeScale))]
 public class ClickableArea : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
     [Header("Input Timings")]
     [Tooltip("How long the user must hold before it's considered a hold action.")]
@@ -17,7 +16,7 @@ public class ClickableArea : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     public SoundID autoPlaySFX;
 
     private void Awake() {
-        uiController = GetComponent<SetTimeScale>();
+        uiController = GameSettings.Instance.setTimeScale;
     }
 
     public void OnPointerDown(PointerEventData eventData) {

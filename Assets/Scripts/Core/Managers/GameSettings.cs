@@ -12,4 +12,6 @@ public class GameSettings : PersistentSingleton<GameSettings> {
     public bool isAutoPlaying;
     public bool IsAutoPlaying { get => isAutoPlaying; set => isAutoPlaying = value; }
 
+    public SetTimeScale setTimeScale;
+
 }

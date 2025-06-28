@@ -124,7 +124,7 @@ public class BlockCoordinator : UnityUtils.Singleton<BlockCoordinator> {
 
 
     public void SetAutoplay(bool isPaused) {
-        GameObject.FindGameObjectWithTag("PausePlayButtons").GetComponent<SetTimeScale>().SetAutoplay(isPaused);
+        GameSettings.Instance.setTimeScale.SetAutoplay(isPaused);
     }
 
     public void TogglePauseResume() {
