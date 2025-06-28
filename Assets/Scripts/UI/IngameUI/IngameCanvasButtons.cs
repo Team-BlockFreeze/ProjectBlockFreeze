@@ -27,8 +27,13 @@ public class IngameCanvasButtons : MonoBehaviour {
         ExitButton();
     }
 
+
     public void ExitButton() {
         ShowOnlyCanvas(buttonsCanvas);
+    }
+
+    public void ShowOnlyCanvasOfGO(GameObject canvasGO) {
+        ShowOnlyCanvas(canvasGO);
     }
 
     public void ShowSettingsMenu() {

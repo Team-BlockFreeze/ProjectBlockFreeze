@@ -8,6 +8,12 @@ using static BlockBehaviour;
 [CreateAssetMenu(fileName = "LevelData", menuName = "ScriptableObjects/Level Data")]
 public class LevelDataSO : ScriptableObject {
 
+    [SerializeField]
+    [TextArea(1,3)]
+    private string levelTitle;
+    public string LevelTitle => levelTitle;
+
+
     [Header("Level Progression")]
     [Tooltip("The next level to load if this one is completed without branching.")]
     [SerializeField] private LevelDataSO _nextLevelInSequence;
@@ -27,7 +33,6 @@ public class LevelDataSO : ScriptableObject {
         [Tooltip("The full name of the specific level to unlock in the target area (e.g., 'C1').")]
         public string TargetLevelName;
     }
-
 
 
 

@@ -4,6 +4,7 @@ using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 using UnityUtils;
 
@@ -87,12 +88,18 @@ public class BlockGrid : Singleton<BlockGrid> {
     public LevelDataSO LevelData => levelData;
     public Vector2Int GoalCoord => goalCoord;
 
+
+    public static UnityEvent<LevelDataSO> Event_LevelFirstLoad = new UnityEvent<LevelDataSO>();
+
     private void Start() {
         //gridSize = startGridStateSO.GridSize;
         if (loadFromLvlSelectOnStart) {
             levelData = LevelAreaController.Instance.ChosenLevel;
             LoadStateFromSO();
         }
+
+        Debug.Log("loading new level for first time as new scene");
+        Event_LevelFirstLoad?.Invoke(levelData);
 
         ActiveGridState.GridBlockStates = new BlockBehaviour[gridSize.x, gridSize.y];
 
