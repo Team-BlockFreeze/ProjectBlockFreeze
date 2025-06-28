@@ -53,6 +53,10 @@ public class LevelDataSO : ScriptableObject {
     private List<BlockData> blocks = new();
 
     public List<BlockData> Blocks => blocks;
+
+    [TextArea(4, 10)]
+    [SerializeField] 
+    private string devNotes;
 }
 
 [Serializable]

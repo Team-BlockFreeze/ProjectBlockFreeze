@@ -67,6 +67,7 @@ MonoBehaviour:
   pingpongMAT: {fileID: 2100000, guid: 73bf28de5c20f4944b633dd229e3d706, type: 2}
   wallMAT: {fileID: 2100000, guid: 2d82e2ced154dfc49a836469b5d364d1, type: 2}
   keyMAT: {fileID: 2100000, guid: c73e452a25ffb724f92e773027d3a2c4, type: 2}
+  key_pingpongMAT: {fileID: 0}
   nofreezeBlockIcon: {fileID: 21300000, guid: d1a5914bd33518f4cb91bac37b8e8d25, type: 3}
   pushableWhenFrozenIcon: {fileID: 21300000, guid: ae08e8b80e376fc4fbce986bc31cc122, type: 3}
   ActiveGridState:
@@ -12732,7 +12733,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8853182069181264001
 Transform:
   m_ObjectHideFlags: 0
