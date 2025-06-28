@@ -26,6 +26,10 @@ public class StartLevelSequence : MonoBehaviour
     [SerializeField]
     private float stallPercent = .2f;
 
+    private enum SequenceState { ActiveTitle, Inactive, ActiveTutorial}
+    [ReadOnly][SerializeField]
+    private SequenceState state = SequenceState.Inactive;
+
     #region subbing
 
     private void OnEnable() {
@@ -50,21 +54,31 @@ public class StartLevelSequence : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// set initial state before title animation
+    /// </summary>
     private void SequencePrepare() {
+        //rayBlockPanel.transform.parent.gameObject.SetActive(true);
+
+        cVT.ShowInterrupter();
+        state = SequenceState.ActiveTitle;
+        
         //setting title offscreen
         var tRT = titleTMP.rectTransform;
         tRT.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Screen.width*2f);
         Vector2 pos = tRT.anchoredPosition;
         pos.x = Screen.width*3f;
         tRT.anchoredPosition = pos;
-
-        rayBlockPanel.gameObject.SetActive(true);
-        //cVT.ShowOnlyCanvasOfGO()
     }
 
+    /// <summary>
+    /// finalise state after title animation
+    /// </summary>
     private void SequenceComplete() {
         titleTweenSeq?.Kill();
-        rayBlockPanel.gameObject.SetActive(false);
+        //rayBlockPanel.gameObject.SetActive(false);
+        cVT.ShowButtons();
+        state = SequenceState.Inactive;
     }
 
     private Sequence titleTweenSeq;
@@ -91,12 +105,27 @@ public class StartLevelSequence : MonoBehaviour
 
         var tRT = titleTMP.rectTransform;
 
-        titleTweenSeq.Append(tRT.DOAnchorPosX(0f, inOutTime).SetEase(Ease.OutSine));
+        titleTweenSeq.AppendCallback(() => Debug.Log("title tween started"));
+        //titleTweenSeq.AppendInterval(.5f);
+        titleTweenSeq.Append(tRT.DOAnchorPosX(0f, inOutTime).SetEase(Ease.OutSine).SetTarget(tRT));
         titleTweenSeq.AppendInterval(titleAnimLength * stallPercent);
-        titleTweenSeq.Append(tRT.DOAnchorPosX(-Screen.width*3f, inOutTime).SetEase(Ease.InSine));
+        titleTweenSeq.Append(tRT.DOAnchorPosX(-Screen.width*3f, inOutTime).SetEase(Ease.InSine).SetTarget(tRT));
         titleTweenSeq.AppendCallback(() => SequenceComplete());
+        titleTweenSeq.AppendCallback(() => Debug.Log("title tween completed"));
+
+        titleTweenSeq.OnKill(() => Debug.Log("Sequence was killed"));
+        titleTweenSeq.OnComplete(() => Debug.Log("Sequence ended cleanly"));
 
         titleTweenSeq.Play();
 
+    }
+
+    private void Update() {
+        if (state == SequenceState.Inactive) return;
+
+        if(Input.anyKeyDown) {
+            Debug.Log("title tween interrupted");
+            SequenceComplete();
+        } 
     }
 }

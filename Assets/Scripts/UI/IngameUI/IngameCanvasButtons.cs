@@ -10,6 +10,7 @@ public class IngameCanvasButtons : MonoBehaviour {
 
     [SerializeField] private GameObject gameSettingsCanvas;
     [SerializeField] private GameObject soundSettingsCanvas;
+    [SerializeField] private GameObject interrupterCanvas;
     [SerializeField] private GameObject buttonsCanvas;
     [SerializeField] private GameObject blurOverlay;
 
@@ -23,7 +24,7 @@ public class IngameCanvasButtons : MonoBehaviour {
     private bool hasCalledReset;
 
     private void Awake() {
-        allCanvases = new[] { settingsMenuCanvas, gameSettingsCanvas, soundSettingsCanvas, buttonsCanvas };
+        allCanvases = new[] { settingsMenuCanvas, gameSettingsCanvas, soundSettingsCanvas, buttonsCanvas, interrupterCanvas};
         ExitButton();
     }
 
@@ -32,8 +33,13 @@ public class IngameCanvasButtons : MonoBehaviour {
         ShowOnlyCanvas(buttonsCanvas);
     }
 
-    public void ShowOnlyCanvasOfGO(GameObject canvasGO) {
-        ShowOnlyCanvas(canvasGO);
+    //public void ShowOnlyCanvasOfGO(GameObject canvasGO) {
+    //    ShowOnlyCanvas(canvasGO);
+    //}
+
+    //Title and Tutorial Messages
+    public void ShowInterrupter() {
+        ShowOnlyCanvas(interrupterCanvas);
     }
 
     public void ShowSettingsMenu() {
@@ -52,15 +58,18 @@ public class IngameCanvasButtons : MonoBehaviour {
         ShowOnlyCanvas(buttonsCanvas);
     }
 
+    private Sequence FadeSequence;
+
     private void ShowOnlyCanvas(GameObject targetCanvas) {
-        var fadeSequence = DOTween.Sequence();
+        FadeSequence?.Kill();
+        FadeSequence = DOTween.Sequence();
 
         foreach (var canvas in allCanvases)
             if (canvas.activeSelf && canvas != targetCanvas) {
                 var cg = canvas.GetComponent<CanvasGroup>();
                 if (cg != null) {
-                    cg.DOKill();
-                    fadeSequence.Append(cg.DOFade(0f, fadeDuration).SetEase(Ease.InQuad).OnComplete(() => {
+                    //cg.DOKill();
+                    FadeSequence.Join(cg.DOFade(0f, fadeDuration).SetEase(Ease.InQuad).OnComplete(() => {
                         canvas.SetActive(false);
                     }));
                 }
@@ -69,12 +78,14 @@ public class IngameCanvasButtons : MonoBehaviour {
                 }
             }
 
-        fadeSequence.AppendCallback(() => {
+        //FadeSequence.AppendInterval(0f);
+
+        FadeSequence.AppendCallback(() => {
             var showBlur = targetCanvas != buttonsCanvas;
             var blurGroup = blurOverlay.GetComponent<CanvasGroup>();
 
             if (blurGroup != null) {
-                blurGroup.DOKill();
+                //blurGroup.DOKill();
 
                 if (showBlur) {
                     blurOverlay.SetActive(true);
@@ -91,17 +102,30 @@ public class IngameCanvasButtons : MonoBehaviour {
                 blurOverlay.SetActive(showBlur);
             }
 
-            var targetGroup = targetCanvas.GetComponent<CanvasGroup>();
-            if (targetGroup != null) {
-                targetCanvas.SetActive(true);
-                targetGroup.alpha = 0f;
-                targetGroup.DOKill();
-                targetGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutQuad);
-            }
-            else {
-                targetCanvas.SetActive(true);
-            }
+            //var targetGroup = targetCanvas.GetComponent<CanvasGroup>();
+            //if (targetGroup != null) {
+            //    targetCanvas.SetActive(true);
+            //    targetGroup.alpha = 0f;
+            //    //targetGroup.DOKill();
+            //    //FadeSequence.Join(targetGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutQuad));
+            //    targetGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutQuad);
+            //}
+            //else {
+            //    targetCanvas.SetActive(true);
+            //}
         });
+
+        var targetGroup = targetCanvas.GetComponent<CanvasGroup>();
+        if (targetGroup != null) {
+            targetCanvas.SetActive(true);
+            targetGroup.alpha = 0f;
+            //targetGroup.DOKill();
+            FadeSequence.Join(targetGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutQuad));
+            //targetGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutQuad);
+        }
+        else {
+            targetCanvas.SetActive(true);
+        }
     }
 
     public void ReloadLevel() {

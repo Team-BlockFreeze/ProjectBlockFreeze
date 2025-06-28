@@ -4878,6 +4878,7 @@ MonoBehaviour:
   settingsMenuCanvas: {fileID: 997321099538099510}
   gameSettingsCanvas: {fileID: 2457927238499535591}
   soundSettingsCanvas: {fileID: 695902966227315351}
+  interrupterCanvas: {fileID: 5378464899931036452}
   buttonsCanvas: {fileID: 5825591538873230071}
   blurOverlay: {fileID: 5979364120093276572}
   fadeDuration: 0.25
@@ -4896,8 +4897,10 @@ MonoBehaviour:
   titleTMP: {fileID: 649940990440191226}
   rayBlockPanel: {fileID: 3157761231593945208}
   titleBannerPanel: {fileID: 3306515739510636981}
-  titleAnimLength: 2
-  stallPercent: 0.2
+  canvasTransitionScript: {fileID: 3828975814466151586}
+  titleAnimLength: 3
+  stallPercent: 1
+  state: 1
 --- !u!1 &4576434246533079431
 GameObject:
   m_ObjectHideFlags: 0
@@ -5444,7 +5447,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6571019587958948280
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5909,7 +5912,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8540521585239646090
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6104,7 +6107,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8398009939664318631
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6146,7 +6149,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!114 &4350252311339490633
 MonoBehaviour:
@@ -6973,7 +6976,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 2000, y: 50}
+  m_SizeDelta: {x: 1876, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5695674693940230860
 CanvasRenderer:
