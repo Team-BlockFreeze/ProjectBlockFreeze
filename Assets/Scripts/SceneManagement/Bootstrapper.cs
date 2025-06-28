@@ -4,6 +4,11 @@ using UnityEngine.SceneManagement;
 public class Bootstrapper : PersistentSingleton<Bootstrapper> {
     private static bool initializeOnLoad = false;
 
+    protected override void Awake() {
+        base.Awake();
+        UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
+    }
+
 
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
