@@ -693,6 +693,7 @@ GameObject:
   - component: {fileID: 279762957}
   - component: {fileID: 279762956}
   - component: {fileID: 279762958}
+  - component: {fileID: 279762959}
   m_Layer: 0
   m_Name: GameSettings Manager
   m_TagString: Untagged
@@ -719,6 +720,7 @@ MonoBehaviour:
   showAllPreviewLinesOnPause: 1
   togglePreviewLine: 1
   isAutoPlaying: 0
+  setTimeScale: {fileID: 279762959}
 --- !u!4 &279762957
 Transform:
   m_ObjectHideFlags: 0
@@ -746,6 +748,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77068bcfe84165a42a8d9320fa37bf14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &279762959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 279762955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af7ca4c7e2961364aa433f9918a53567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startSelected: 0
+  autoPlaySFX:
+    ID: 1073741839
+    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
+    <DebugObject>k__BackingField: {fileID: 279762955}
+  stepForwardSFX:
+    ID: 1073741840
+    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
+    <DebugObject>k__BackingField: {fileID: 279762955}
+  undoSFX:
+    ID: 1073741837
+    _sourceAsset: {fileID: 11400000, guid: 365499101defd914e8ce80e24a980c29, type: 2}
+    <DebugObject>k__BackingField: {fileID: 279762955}
 --- !u!1 &394799426
 GameObject:
   m_ObjectHideFlags: 0

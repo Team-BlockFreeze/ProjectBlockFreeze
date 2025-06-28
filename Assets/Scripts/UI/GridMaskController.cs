@@ -17,6 +17,7 @@ public class GridMaskController : MonoBehaviour {
     private Vector2Int lastKnownGridSize = new Vector2Int(-1, -1);
 
     private void OnEnable() {
+        mainCamera = Camera.main;
         BlockGrid.Instance.StateLoadedFromSO += UpdateMaskBounds;
         UpdateMaskBounds();
     }

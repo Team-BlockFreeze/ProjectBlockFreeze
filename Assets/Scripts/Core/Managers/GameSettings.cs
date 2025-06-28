@@ -14,4 +14,8 @@ public class GameSettings : PersistentSingleton<GameSettings> {
 
     public SetTimeScale setTimeScale;
 
+    protected override void Awake() {
+        base.Awake();
+        setTimeScale = GetComponent<SetTimeScale>();
+    }
 }
