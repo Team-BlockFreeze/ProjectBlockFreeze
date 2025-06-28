@@ -127,6 +127,8 @@ public class BlockGrid : Singleton<BlockGrid> {
 #endif
 
 
+    public Action StateLoadedFromSO;
+
     [PropertyOrder(-10)]
     [FoldoutGroup("Actions")]
     [Button(ButtonSizes.Medium)]
@@ -202,6 +204,7 @@ public class BlockGrid : Singleton<BlockGrid> {
                 });
 
 
+        StateLoadedFromSO?.Invoke();
         EditorUtility.SetDirty(this);
     }
 

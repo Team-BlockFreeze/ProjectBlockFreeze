@@ -150,14 +150,14 @@ public class BlockTeleportTile : TileEffectBase {
 
         float gameTick = GameSettings.Instance.gameTickInSeconds;
 
-        blockToTeleport.transform.DOScale(0, gameTick / 2).SetEase(exitEase)
+        blockToTeleport.transform.DOScale(0, gameTick / 3).SetEase(exitEase)
             .OnComplete(() => {
                 blockToTeleport.transform.DOKill();
 
                 blockToTeleport.GetComponent<BlockPreview>()?.UpdateLine();
                 blockToTeleport.transform.position = Grid.GetWorldSpaceFromCoord(teleportDestination);
 
-                blockToTeleport.transform.DOScale(1, gameTick / 2).SetEase(enterEase)
+                blockToTeleport.transform.DOScale(1, gameTick / 3).SetEase(enterEase)
                     .OnComplete(() => {
                         blockToTeleport.phaseThrough = false;
 

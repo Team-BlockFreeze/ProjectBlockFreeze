@@ -13,7 +13,9 @@ public class SetTimeScale : MonoBehaviour {
 
     [SerializeField] private bool soloSelectToggle;
 
-    [Header("Audio")][SerializeField] private SoundID soundFX;
+    [Header("Audio")][SerializeField] private SoundID autoPlaySFX;
+    [SerializeField] private SoundID stepForwardSFX;
+    [SerializeField] private SoundID undoSFX;
 
     [SerializeField] private float timeScaleToSet = 1f;
 
@@ -79,24 +81,9 @@ public class SetTimeScale : MonoBehaviour {
         EventSystem.current.SetSelectedGameObject(null);
     }
 
-    public void TogglePause() {
-        BlockCoordinator.Instance.TogglePauseResume();
 
-        GameSettings.Instance.IsAutoPlaying = !GameSettings.Instance.IsAutoPlaying;
-        SetColor();
 
-        if (!GameSettings.Instance.IsAutoPlaying) soundFX.Play();
-
-        var pauseSprite = transform.Find("PauseButton");
-        var playSprite = transform.Find("PlayButton");
-
-        if (pauseSprite != null)
-            pauseSprite.gameObject.SetActive(GameSettings.Instance.IsAutoPlaying); // Show when unpaused
-        if (playSprite != null)
-            playSprite.gameObject.SetActive(!GameSettings.Instance.IsAutoPlaying); // Show when paused
-
-        EventSystem.current.SetSelectedGameObject(null);
-    }
+    #region UI Button event function calls
 
     public void SetAutoplay(bool isAutoplay) {
         if (isAutoplay == GameSettings.Instance.IsAutoPlaying) return;
@@ -106,7 +93,6 @@ public class SetTimeScale : MonoBehaviour {
         GameSettings.Instance.IsAutoPlaying = isAutoplay;
         SetColor();
 
-        if (!GameSettings.Instance.IsAutoPlaying) soundFX.Play();
 
         var pauseSprite = transform.Find("PauseButton");
         var playSprite = transform.Find("PlayButton");
@@ -119,21 +105,47 @@ public class SetTimeScale : MonoBehaviour {
         EventSystem.current.SetSelectedGameObject(null);
     }
 
+    public void ClickableArea() {
+        Debug.Log("Clickable Area");
+    }
+
+    public void TogglePause() {
+        BlockCoordinator.Instance.TogglePauseResume();
+
+        GameSettings.Instance.IsAutoPlaying = !GameSettings.Instance.IsAutoPlaying;
+        SetColor();
+
+        if (!GameSettings.Instance.IsAutoPlaying) autoPlaySFX.Play();
+
+        var pauseSprite = transform.Find("PauseButton");
+        var playSprite = transform.Find("PlayButton");
+
+        if (pauseSprite != null)
+            pauseSprite.gameObject.SetActive(GameSettings.Instance.IsAutoPlaying); // Show when unpaused
+        if (playSprite != null)
+            playSprite.gameObject.SetActive(!GameSettings.Instance.IsAutoPlaying); // Show when paused
+
+        EventSystem.current.SetSelectedGameObject(null);
+    }
+
+
+
     public void StepForwardOnce() {
         if (!BlockCoordinator.Instance.IsPaused)
             return;
 
-        // if(BlockCoordinator.Instance.StepForwardOnce())
-        //     soundFX.Play();
 
-        if (BlockCoordinator.Instance.StepForwardWithUndo()) soundFX.Play();
+        if (BlockCoordinator.Instance.StepForwardWithUndo()) stepForwardSFX.Play();
 
         EventSystem.current.SetSelectedGameObject(null);
     }
 
     public void UndoOnce() {
         BlockCoordinator.Instance.UndoLastStep();
+        undoSFX.Play();
 
         EventSystem.current.SetSelectedGameObject(null);
     }
+
+    #endregion
 }
