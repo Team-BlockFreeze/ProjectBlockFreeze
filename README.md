@@ -1,0 +1,31 @@
+# Controls
+## Movement
+- **M1/Right Arrow**: Step forward
+- **M2/Left Arrow**: Undo
+- **M1 (Hold)**: Autoplay
+- **M1 (Release)**: Stop autoplay
+
+## Level Selection
+### Level Area Prefixes
+- `A`: Easy levels
+- `B`: Medium levels
+- `C`: Hard levels
+- `D`: Diagonal levels
+- `E`: Push-while-frozen levels
+- `F`: Teleport levels
+- `G`: No-freeze levels
+- `H`: Void levels
+- `T`: Tutorial
+
+## Level Prerequisites
+
+| Level Area         | Prerequisite(s)            |
+|--------------------|----------------------------|
+| Easy               | Tutorial                   |
+| Medium             | Easy                       |
+| Hard               | Medium & Diagonal          |
+| Diagonal           | Medium                     |
+| Push-while-frozen  | Medium & Diagonal          |
+| Teleport           | Medium & Diagonal          |
+| No-freeze          | Medium & Push-while-frozen |
+| Void               | Hard                       |
