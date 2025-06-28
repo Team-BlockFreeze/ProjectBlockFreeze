@@ -278,7 +278,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
                 (gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)lastForces.firstDir - transform.position) * .15f -
                 Vector3.back * coord.y * .01f;
 
-            moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo)
+            moveTween = transform.DOMove(bumpTargetPos, GameSettings.Instance.gameTickInSeconds / 2f).SetRelative().SetLoops(2, LoopType.Yoyo)
                 .OnComplete(() => { OnAnimationCompleted?.Invoke(); });
 
             moveTween.Play();
@@ -289,7 +289,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
                 (gridRef.GetWorldSpaceFromCoord(coord) + (Vector3Int)currentForceVec2I - transform.position) * .15f -
                 Vector3.back * coord.y * .01f;
 
-            moveTween = transform.DOMove(bumpTargetPos, .15f).SetRelative().SetLoops(2, LoopType.Yoyo)
+            moveTween = transform.DOMove(bumpTargetPos, GameSettings.Instance.gameTickInSeconds / 2f).SetRelative().SetLoops(2, LoopType.Yoyo)
                 .OnComplete(() => { OnAnimationCompleted?.Invoke(); });
 
             moveTween.Play();
