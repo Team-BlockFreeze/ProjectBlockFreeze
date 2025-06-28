@@ -12,12 +12,14 @@ public class ChangeIngameSettings : MonoBehaviour {
     public void SetBlockSpeed(float speedNormalized) {
         float min = 0.2f;
         float max = 0.5f;
+        float targetSpeed = Mathf.Lerp(max, min, speedNormalized);
 
-
-        GameSettings.Instance.gameTickInSeconds = Mathf.Lerp(min, max, speedNormalized);
+        Debug.Log($"Setting block speed to {targetSpeed}");
+        GameSettings.Instance.gameTickInSeconds = targetSpeed;
     }
 
     public void SetSoundVolume(float volume) {
+        Debug.Log("Set sound volume to " + volume);
         AudioListener.volume = volume;
     }
 

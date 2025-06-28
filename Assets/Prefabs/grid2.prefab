@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7934571655528714010}
   - component: {fileID: 5698503633216227949}
   - component: {fileID: 5561404451252994434}
+  - component: {fileID: 6847149325616112325}
   m_Layer: 0
   m_Name: grid2
   m_TagString: Untagged
@@ -114,6 +115,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logging: 1
   colorPalateSO: {fileID: 11400000, guid: 57139fb3105120f4dae100bfda426d00, type: 2}
+--- !u!114 &6847149325616112325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 657480303370009499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5914bf07ef0493408efcd8de76ea993, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundFX:
+    ID: 1073741837
+    _sourceAsset: {fileID: 11400000, guid: 365499101defd914e8ce80e24a980c29, type: 2}
+    <DebugObject>k__BackingField: {fileID: 657480303370009499}
 --- !u!1 &834798806121218300
 GameObject:
   m_ObjectHideFlags: 0
