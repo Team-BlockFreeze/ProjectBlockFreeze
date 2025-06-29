@@ -92,10 +92,19 @@ public class BlockPreview : LoggerMonoBehaviour {
     }
 
     private void Start() {
+    }
+
+    [Button]
+    public void InitializeLine() {
+        // Kill all tweens
+        DOTween.Kill(this);
+        FadeOutPreview(0f);
+
+        lineRenderer.enabled = true;
         movePath = block.GetMovePath();
         UpdateLine();
-
         if (GameSettings.Instance.drawPreviewLinesOnStart) DrawPath();
+        FadeInPreview(1f);
     }
 
     public void ToggleFadePreview(float duration) {
@@ -149,6 +158,7 @@ public class BlockPreview : LoggerMonoBehaviour {
     private bool previewShown = false;
 
     public void FadeInPreview(float duration) {
+
         previewShown = true;
 
         Ease easeType = Ease.Linear;

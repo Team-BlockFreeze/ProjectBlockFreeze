@@ -170,12 +170,18 @@ public class IngameCanvasButtons : MonoBehaviour {
         var returnDuration = GameSettings.Instance.reloadAnimationTime / 10 * 3f;
         var settleDuration = GameSettings.Instance.reloadAnimationTime / 10 * 2f;
 
+        foreach (var blockPreview in BlockGrid.Instance.BlocksListTransform.GetComponentsInChildren<BlockPreview>()) {
+            blockPreview.GetEndDotInstance()?.SetActive(false);
+            blockPreview.FadeOutPreview(0.1f);
+        }
+
         t.DOMoveZ(originalPos.z + moveDistance, moveDuration)
             .SetEase(Ease.InQuad)
             .OnComplete(() => {
                 if (!hasCalledReset) {
                     hasCalledReset = true;
                     BlockGrid.Instance.LoadStateFromSO();
+
                 }
 
                 t.DOMoveZ(originalPos.z - overshootDistance, returnDuration)

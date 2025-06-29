@@ -83,6 +83,7 @@ public class BlockGrid : Singleton<BlockGrid> {
     [FormerlySerializedAs("blocksList")]
     [SerializeField]
     private Transform blocksListTransform;
+    public Transform BlocksListTransform => blocksListTransform;
 
     public Vector2Int GridSize => gridSize;
     public LevelDataSO LevelData => levelData;
@@ -94,9 +95,13 @@ public class BlockGrid : Singleton<BlockGrid> {
     private void Start() {
         //gridSize = startGridStateSO.GridSize;
         if (loadFromLvlSelectOnStart) {
-            levelData = LevelAreaController.Instance.ChosenLevel;
+            if (LevelAreaController.Instance != null) {
+                levelData = LevelAreaController.Instance.ChosenLevel;
+            }
             LoadStateFromSO();
+
         }
+
 
         Debug.Log("loading new level for first time as new scene");
         Event_LevelFirstLoad?.Invoke(levelData);
@@ -188,10 +193,9 @@ public class BlockGrid : Singleton<BlockGrid> {
             newBlock.GetComponent<BlockTeleportTile>()?.UpdateTeleportDestination();
 
             // Animation finishes in 0.5s (see IngameCanvasButtons.ReloadLevel(): moveDuration variablke). dirty fix for updating line renderer after reload animation finishes
-            DOVirtual.DelayedCall(GameSettings.Instance.reloadAnimationTime / 2f + 0.1f, () => { // 0.1fs buffer window
+            DOVirtual.DelayedCall(GameSettings.Instance.reloadAnimationTime / 2f, () => {
+                newBlock.GetComponent<BlockPreview>()?.InitializeLine();
                 newBlock.GetComponent<BlockTeleportTile>()?.UpdateLineRenderer();
-                newBlock.GetComponent<BlockPreview>()?.UpdateLine();
-                newBlock.GetComponent<BlockPreview>()?.DrawPath();
             });
 
 
