@@ -60,6 +60,28 @@ public class IngameCanvasButtons : MonoBehaviour {
 
     private Sequence FadeSequence;
 
+    public void SetBlur(bool showBlur) {
+        var blurGroup = blurOverlay.GetComponent<CanvasGroup>();
+
+        if (blurGroup != null) {
+            blurGroup.DOKill();
+
+            if (showBlur) {
+                blurOverlay.SetActive(true);
+                blurGroup.alpha = 0f;
+                blurGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutQuad);
+            }
+            else {
+                blurGroup.DOFade(0f, fadeDuration).SetEase(Ease.InQuad).OnComplete(() => {
+                    blurOverlay.SetActive(false);
+                });
+            }
+        }
+        else {
+            blurOverlay.SetActive(showBlur);
+        }
+    }
+
     private void ShowOnlyCanvas(GameObject targetCanvas) {
         FadeSequence?.Kill();
         FadeSequence = DOTween.Sequence();

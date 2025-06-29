@@ -3,6 +3,11 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Cysharp.Threading.Tasks;
+using System.Collections;
+
+using TutMessage = LevelDataSO.TutorialMessage;
+using UnityEditor;
 
 /// <summary>
 /// The script to control the intro sequence when loading a new level the first time - not reloading a level. Also triggers tutorial prompts.
@@ -18,7 +23,12 @@ public class StartLevelSequence : MonoBehaviour
         titleBannerPanel;
     [SerializeField]
     private IngameCanvasButtons canvasTransitionScript;
+    [SerializeField]
     private IngameCanvasButtons cVT => canvasTransitionScript;
+    [SerializeField]
+    private CanvasGroup tutCanvasGroup;
+    [SerializeField]
+    private TMP_Text tutMessageTMP;
 
     [Header("TitleAnimValues")]
     [SerializeField]
@@ -41,11 +51,11 @@ public class StartLevelSequence : MonoBehaviour
     }
 
     private void Sub() {
-        BlockGrid.Event_LevelFirstLoad.AddListener(StartSequence);
+        BlockGrid.Event_LevelFirstLoad.AddListener(StartTitleSequence);
     }
 
     private void Unsub() {
-        BlockGrid.Event_LevelFirstLoad.RemoveListener(StartSequence);
+        BlockGrid.Event_LevelFirstLoad.RemoveListener(StartTitleSequence);
     }
 
     #endregion
@@ -57,10 +67,10 @@ public class StartLevelSequence : MonoBehaviour
     /// <summary>
     /// set initial state before title animation
     /// </summary>
-    private void SequencePrepare() {
+    private void TitleSequencePrepare() {
         //rayBlockPanel.transform.parent.gameObject.SetActive(true);
 
-        cVT.ShowInterrupter();
+        //cVT.ShowInterrupter();
         state = SequenceState.ActiveTitle;
         
         //setting title offscreen
@@ -69,13 +79,14 @@ public class StartLevelSequence : MonoBehaviour
         Vector2 pos = tRT.anchoredPosition;
         pos.x = Screen.width*3f;
         tRT.anchoredPosition = pos;
+
+        titleBannerPanel.gameObject.SetActive(true);
     }
 
     /// <summary>
     /// finalise state after title animation
     /// </summary>
-    private void SequenceComplete() {
-        titleTweenSeq?.Kill();
+    private void TitleSequenceComplete() {
         //rayBlockPanel.gameObject.SetActive(false);
         cVT.ShowButtons();
         state = SequenceState.Inactive;
@@ -83,20 +94,27 @@ public class StartLevelSequence : MonoBehaviour
 
     private Sequence titleTweenSeq;
 
-    const bool DEBUG = true;
+    const bool DEBUG = false;
     const string DEFAULT_TITLE = "This Is The Level Title";
 
+    LevelDataSO savedLevelSO;
+
     [Button]
-    private void StartSequence(LevelDataSO lvlDataSO = null) {
-        SequencePrepare();
+    private void StartTitleSequence(LevelDataSO lvlDataSO = null) {
+        cVT.ShowInterrupter();
+        savedLevelSO = lvlDataSO;
+        
+        if (lvlDataSO.LevelTitle == null) {
+            Debug.Log("No level title to load, skipping level title sequence");
+            //cVT.ShowButtons();
+            TryStartTutorialSequence(lvlDataSO);
+            return;
+        }
+
+        TitleSequencePrepare();
 
         //getting title text
-        if (!lvlDataSO.LevelTitle.Equals(""))
-            titleTMP.text = lvlDataSO.LevelTitle;
-        else if(DEBUG)
-            titleTMP.text = DEFAULT_TITLE;
-        else 
-            titleTMP.text = "";
+        titleTMP.text = lvlDataSO.LevelTitle;
 
         float inOutTime = (titleAnimLength * (1-stallPercent)) * .5f;
 
@@ -110,7 +128,8 @@ public class StartLevelSequence : MonoBehaviour
         titleTweenSeq.Append(tRT.DOAnchorPosX(0f, inOutTime).SetEase(Ease.OutSine).SetTarget(tRT));
         titleTweenSeq.AppendInterval(titleAnimLength * stallPercent);
         titleTweenSeq.Append(tRT.DOAnchorPosX(-Screen.width*3f, inOutTime).SetEase(Ease.InSine).SetTarget(tRT));
-        titleTweenSeq.AppendCallback(() => SequenceComplete());
+        //titleTweenSeq.AppendCallback(() => TitleSequenceComplete());
+        titleTweenSeq.AppendCallback(() => TryStartTutorialSequence(lvlDataSO));
         titleTweenSeq.AppendCallback(() => Debug.Log("title tween completed"));
 
         titleTweenSeq.OnKill(() => Debug.Log("Sequence was killed"));
@@ -120,12 +139,130 @@ public class StartLevelSequence : MonoBehaviour
 
     }
 
+    //udpate loop to catch input while title is tweening, will skip ahead
     private void Update() {
-        if (state == SequenceState.Inactive) return;
+        if (state != SequenceState.ActiveTitle) return;
 
         if(Input.anyKeyDown) {
             Debug.Log("title tween interrupted");
-            SequenceComplete();
+            //TitleSequenceComplete();
+            TryStartTutorialSequence(savedLevelSO);
         } 
+    }
+
+
+    private void TryStartTutorialSequence(LevelDataSO lvlDataSO) {
+        TutMessage[] messages = lvlDataSO.TutorialMessages;
+        if (messages == null || messages.Length == 0) {
+            Debug.Log("No tutorial messages found, skipping tutorial sequence");
+            TitleSequenceComplete();
+            return;
+        }
+
+        //fade out title canvas group
+        var titleGroup = titleBannerPanel.GetComponent<CanvasGroup>();
+        DOTween.Kill(titleGroup);
+        titleGroup.DOFade(0f, 1.2f).OnComplete(() => {
+            titleGroup.gameObject.SetActive(false);
+            titleGroup.alpha = 1f;
+        });
+
+        //show canvas if not yet triggered by title sequence
+        //if (state == SequenceState.Inactive)
+        //    cVT.ShowInterrupter();
+
+
+        Debug.Log("Tutorial present, starting tutorial coroutine sequence");
+        StartCoroutine(TutorialCoreography(lvlDataSO));
+    }
+
+    const float MinInterruptDelay = .2f;
+
+    /// <summary>
+    /// coroutine thats active while tutorial messages are being shown, waits for input to go to next message
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator TutorialCoreography(LevelDataSO lvlDataSO) {
+        state = SequenceState.ActiveTutorial;
+
+        TutMessage[] messages = lvlDataSO.TutorialMessages;
+
+        //first message setup
+        tutMessageTMP.text = messages[0].message;
+        var msgRT = tutCanvasGroup.GetComponent<RectTransform>();
+        SetAnchorPivot(msgRT, messages[0].anchorPivot);
+
+        //fade in first message box
+        tutCanvasGroup.alpha = 0f;
+        tutCanvasGroup.gameObject.SetActive(true);
+        tutCanvasGroup.DOKill();
+        tutCanvasGroup.DOFade(1f, .5f);
+
+        yield return new WaitForSeconds(.5f);
+
+        //unblur
+        cVT.SetBlur(false);
+
+        float timeSinceLastInterrupt = Time.time;
+
+        //wait for input before instant switching to next tutorial message
+        for(int i = 0; i<messages.Length; i++) {
+            if (i != 0) {
+                var message = messages[i];
+
+                //hide message
+                tutCanvasGroup.gameObject.SetActive(false);
+
+                //update to next message
+                tutMessageTMP.text = message.message;
+                msgRT = tutCanvasGroup.GetComponent<RectTransform>();
+                SetAnchorPivot(msgRT, message.anchorPivot);
+
+                //display message
+                tutCanvasGroup.gameObject.SetActive(true);
+            }
+
+            //wait for input
+            while(true) {
+                if (Input.anyKeyDown && Time.time > timeSinceLastInterrupt + MinInterruptDelay)
+                    break;
+                yield return null;
+            }
+
+            yield return null;
+        }
+
+        //end tut - dissapear message
+        tutCanvasGroup.alpha = 0f;
+        tutCanvasGroup.gameObject.SetActive(false);
+
+        //fast dissapear interrupter canvas
+        var overallCanvasGroup = rayBlockPanel.gameObject.GetComponentInParent<CanvasGroup>();
+        overallCanvasGroup.alpha = 0;
+        overallCanvasGroup.gameObject.SetActive(false);
+
+        state = SequenceState.Inactive;
+
+        //fade in regular UI
+        cVT.ShowButtons();
+    }
+
+    const float MARGIN = 120f;
+
+    private void SetAnchorPivot(RectTransform rt, TutMessage.Anchor anchorPivot) {
+        Vector2 vec = anchorPivot == TutMessage.Anchor.Bottom ? new Vector2(.5f, 0f) : new Vector2(.5f, 1f);
+
+        rt.anchorMin = vec;
+        rt.anchorMax = vec;
+        rt.pivot = vec;
+
+        switch (anchorPivot) {
+            case TutMessage.Anchor.Top:
+                rt.anchoredPosition = new Vector2(0f, -MARGIN);
+                break;
+            case TutMessage.Anchor.Bottom:
+                rt.anchoredPosition = new Vector2(0f, MARGIN);
+                break;
+        }
     }
 }

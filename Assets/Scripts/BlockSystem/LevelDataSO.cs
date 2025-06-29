@@ -13,6 +13,22 @@ public class LevelDataSO : ScriptableObject {
     private string levelTitle;
     public string LevelTitle => levelTitle;
 
+    [System.Serializable]
+    public class TutorialMessage {
+        public enum Anchor { Top, Bottom}
+        public Anchor anchorPivot = Anchor.Bottom;
+
+        [TextArea(1, 6)]
+        [HideLabel]
+        public string message;
+    }
+
+    
+    [SerializeField]
+    //[ShowInInspector]
+    //[ListDrawerSettings(ShowFoldout = true)]
+    private List<TutorialMessage> tutorialMessages;
+    public TutorialMessage[] TutorialMessages => tutorialMessages.ToArray();
 
     [Header("Level Progression")]
     [Tooltip("The next level to load if this one is completed without branching.")]

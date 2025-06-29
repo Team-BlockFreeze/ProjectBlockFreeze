@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
   m_Name: T2
   m_EditorClassIdentifier: 
+  levelTitle: Freeze! And Stay Out The Way
+  tutorialMessages: []
   _nextLevelInSequence: {fileID: 11400000, guid: d2269441cbe333e4681832ca40be0a18, type: 2}
   _branch:
     TargetGroupName: 

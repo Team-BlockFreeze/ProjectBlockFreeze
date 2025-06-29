@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: T1
   m_EditorClassIdentifier: 
   levelTitle: The Red Key Goes In The Square Hole
+  tutorialMessages:
+  - anchorPivot: 0
+    message: The objective of each level is to get the <color=red><b>Red Key Block</b></color>
+      into the <b>Square Goal Hole.</b> Press the play button to start the level.
   _nextLevelInSequence: {fileID: 11400000, guid: 4e0da4c434958a847a2477de670845f5, type: 2}
   _branch:
     TargetGroupName: 
