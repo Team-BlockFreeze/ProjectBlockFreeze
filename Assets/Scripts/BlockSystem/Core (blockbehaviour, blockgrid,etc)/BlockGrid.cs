@@ -188,8 +188,10 @@ public class BlockGrid : Singleton<BlockGrid> {
             newBlock.GetComponent<BlockTeleportTile>()?.UpdateTeleportDestination();
 
             // Animation finishes in 0.5s (see IngameCanvasButtons.ReloadLevel(): moveDuration variablke). dirty fix for updating line renderer after reload animation finishes
-            DOVirtual.DelayedCall(0.5f, () => {
+            DOVirtual.DelayedCall(GameSettings.Instance.reloadAnimationTime / 2f + 0.1f, () => { // 0.1fs buffer window
                 newBlock.GetComponent<BlockTeleportTile>()?.UpdateLineRenderer();
+                newBlock.GetComponent<BlockPreview>()?.UpdateLine();
+                newBlock.GetComponent<BlockPreview>()?.DrawPath();
             });
 
 
@@ -214,6 +216,7 @@ public class BlockGrid : Singleton<BlockGrid> {
         StateLoadedFromSO?.Invoke();
         EditorUtility.SetDirty(this);
     }
+
 
     private Dictionary<string, Sprite> GetIconsForBlockType(string blockType) {
         if (blockType.Contains("wall")) return new Dictionary<string, Sprite>();

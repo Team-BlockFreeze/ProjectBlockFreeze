@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 public class GameSettings : PersistentSingleton<GameSettings> {
     public float gameTickInSeconds = 1f;
@@ -13,6 +14,8 @@ public class GameSettings : PersistentSingleton<GameSettings> {
     public bool IsAutoPlaying { get => isAutoPlaying; set => isAutoPlaying = value; }
 
     public SetTimeScale setTimeScale;
+    [Range(0f, 2f)]
+    public float reloadAnimationTime = 1f;
 
     protected override void Awake() {
         base.Awake();

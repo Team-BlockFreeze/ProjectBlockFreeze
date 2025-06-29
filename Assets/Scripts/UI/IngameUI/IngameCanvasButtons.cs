@@ -24,7 +24,7 @@ public class IngameCanvasButtons : MonoBehaviour {
     private bool hasCalledReset;
 
     private void Awake() {
-        allCanvases = new[] { settingsMenuCanvas, gameSettingsCanvas, soundSettingsCanvas, buttonsCanvas, interrupterCanvas};
+        allCanvases = new[] { settingsMenuCanvas, gameSettingsCanvas, soundSettingsCanvas, buttonsCanvas, interrupterCanvas };
         ExitButton();
     }
 
@@ -165,10 +165,10 @@ public class IngameCanvasButtons : MonoBehaviour {
         hasCalledReset = false;
 
         var moveDistance = 100f;
-        var moveDuration = 0.5f;
+        var moveDuration = GameSettings.Instance.reloadAnimationTime / 2f;
         var overshootDistance = 5f;
-        var returnDuration = 0.3f;
-        var settleDuration = 0.2f;
+        var returnDuration = GameSettings.Instance.reloadAnimationTime / 10 * 3f;
+        var settleDuration = GameSettings.Instance.reloadAnimationTime / 10 * 2f;
 
         t.DOMoveZ(originalPos.z + moveDistance, moveDuration)
             .SetEase(Ease.InQuad)

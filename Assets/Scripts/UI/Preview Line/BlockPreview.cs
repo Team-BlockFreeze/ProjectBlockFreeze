@@ -246,6 +246,9 @@ public class BlockPreview : LoggerMonoBehaviour {
         }
         else {
             endDotInstance.transform.position = endPos;
+            Vector3 pos = endDotInstance.transform.position;
+            pos.z = 0;
+            endDotInstance.transform.position = pos;
         }
 
         endDotInstance.transform.localScale = Vector3.one * 0.3f;
