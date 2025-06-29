@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -150,7 +151,13 @@ public class IngameCanvasButtons : MonoBehaviour {
         }
     }
 
+
+    private bool cooldown = false;
     public void ReloadLevel() {
+        if (cooldown) return;
+
+        StartCoroutine(ReloadButtonCooldownCoroutine());
+
         var levelRoot = GetRootObjectByName("Level Design");
 
         if (levelRoot == null) {
@@ -197,6 +204,13 @@ public class IngameCanvasButtons : MonoBehaviour {
             });
     }
 
+    private System.Collections.IEnumerator ReloadButtonCooldownCoroutine() {
+        if (cooldown) yield break;
+
+        cooldown = true;
+        yield return new WaitForSeconds(GameSettings.Instance.reloadAnimationTime + 0.5f);
+        cooldown = false;
+    }
 
     private GameObject GetRootObjectByName(string name) {
         List<Scene> validScenes = new();

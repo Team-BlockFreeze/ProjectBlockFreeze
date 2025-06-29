@@ -105,7 +105,7 @@ public class BlockPreview : LoggerMonoBehaviour {
         movePath = block.GetMovePath();
         UpdateLine();
         if (GameSettings.Instance.drawPreviewLinesOnStart) DrawPath();
-        FadeInPreview(1f);
+        FadeInPreview(fadeDuration);
     }
 
     public void ToggleFadePreview(float duration) {

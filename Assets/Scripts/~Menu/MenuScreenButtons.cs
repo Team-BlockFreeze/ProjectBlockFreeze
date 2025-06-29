@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Systems.SceneManagement;
 
 public class MenuScreenButtons : MonoBehaviour {
     [Header("References")]
@@ -36,8 +37,10 @@ public class MenuScreenButtons : MonoBehaviour {
 
 
     public void FadeOutOverlay() {
+
         Color overlayColor = overlayFade.color;
         overlayFade.DOKill();
         overlayFade.DOColor(new Color(overlayColor.r, overlayColor.g, overlayColor.b, 0f), fadeDuration).SetEase(Ease.InQuad);
     }
+
 }

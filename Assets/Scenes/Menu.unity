@@ -507,7 +507,6 @@ MonoBehaviour:
   logging: 0
   gridRef: {fileID: 972607040}
   moveMode: 1
-  canBeFrozen: 1
   coord: {x: 0, y: 4}
   movePath: 01000000010000000100000001000000
   cubeRenderer: {fileID: 1732191523}
@@ -516,8 +515,15 @@ MonoBehaviour:
   pingpongMAT: {fileID: 2100000, guid: e8d379a722d03a24b9be9ddb6e0ef962, type: 2}
   moveIntentionVisual: {fileID: 408170891}
   littleDirTriangle: {fileID: 1368707666}
+  blockTypeIcon_topleft: {fileID: 0}
+  blockTypeIcon_topright: {fileID: 0}
+  blockTrail: {fileID: 0}
+  blockType: 
   frozen: 0
   blocked: 0
+  pushableWhenFrozen: 0
+  canBeFrozen: 1
+  phaseThrough: 0
   lastForces:
     up: 0
     down: 0
@@ -527,6 +533,7 @@ MonoBehaviour:
   Event_NextMoveBegan:
     m_PersistentCalls:
       m_Calls: []
+  blockMAT: {fileID: 0}
 --- !u!114 &157058731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1214,9 +1221,9 @@ RectTransform:
   - {fileID: 736543487}
   m_Father: {fileID: 1996818731}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360, y: -275.6294}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 720, y: 67.2096}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &362458691
@@ -1706,9 +1713,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1996818731}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360, y: -124.1707}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 720, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &505615566
@@ -1920,7 +1927,6 @@ MonoBehaviour:
   logging: 0
   gridRef: {fileID: 972607040}
   moveMode: 0
-  canBeFrozen: 1
   coord: {x: 3, y: 0}
   movePath: 04000000
   cubeRenderer: {fileID: 876669463}
@@ -1929,8 +1935,15 @@ MonoBehaviour:
   pingpongMAT: {fileID: 2100000, guid: e8d379a722d03a24b9be9ddb6e0ef962, type: 2}
   moveIntentionVisual: {fileID: 1506035274}
   littleDirTriangle: {fileID: 1204579752}
+  blockTypeIcon_topleft: {fileID: 0}
+  blockTypeIcon_topright: {fileID: 0}
+  blockTrail: {fileID: 0}
+  blockType: 
   frozen: 0
   blocked: 0
+  pushableWhenFrozen: 0
+  canBeFrozen: 1
+  phaseThrough: 0
   lastForces:
     up: 0
     down: 0
@@ -1940,6 +1953,7 @@ MonoBehaviour:
   Event_NextMoveBegan:
     m_PersistentCalls:
       m_Calls: []
+  blockMAT: {fileID: 0}
 --- !u!120 &614571654
 LineRenderer:
   serializedVersion: 2
@@ -2057,6 +2071,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d007e9bc335e26743a25520ed309876d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logging: 1
   block: {fileID: 614571653}
 --- !u!114 &614571656
 MonoBehaviour:
@@ -3345,7 +3360,6 @@ MonoBehaviour:
   logging: 0
   gridRef: {fileID: 972607040}
   moveMode: 1
-  canBeFrozen: 1
   coord: {x: 4, y: 3}
   movePath: 02000000020000000200000002000000
   cubeRenderer: {fileID: 259202072}
@@ -3354,8 +3368,15 @@ MonoBehaviour:
   pingpongMAT: {fileID: 2100000, guid: e8d379a722d03a24b9be9ddb6e0ef962, type: 2}
   moveIntentionVisual: {fileID: 609073307}
   littleDirTriangle: {fileID: 638384326}
+  blockTypeIcon_topleft: {fileID: 0}
+  blockTypeIcon_topright: {fileID: 0}
+  blockTrail: {fileID: 0}
+  blockType: 
   frozen: 0
   blocked: 0
+  pushableWhenFrozen: 0
+  canBeFrozen: 1
+  phaseThrough: 0
   lastForces:
     up: 0
     down: 0
@@ -3365,6 +3386,7 @@ MonoBehaviour:
   Event_NextMoveBegan:
     m_PersistentCalls:
       m_Calls: []
+  blockMAT: {fileID: 0}
 --- !u!212 &868850617
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7309,9 +7331,9 @@ RectTransform:
   - {fileID: 1844582773}
   m_Father: {fileID: 1996818731}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360, y: -332.16095}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 720, y: 49.4535}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1159475208
@@ -8207,7 +8229,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1414427129
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8271,7 +8293,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1695613505}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1414427131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18734,7 +18768,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: levels
+  m_text: 'levels '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9519ff476146fd94dab15b655d8a6621, type: 2}
   m_sharedMaterial: {fileID: -4206780061354199766, guid: 9519ff476146fd94dab15b655d8a6621, type: 2}
@@ -18957,9 +18991,9 @@ RectTransform:
   - {fileID: 1767102163}
   m_Father: {fileID: 1996818731}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360, y: -37.98535}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 720, y: 75.9707}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1751158902
@@ -19682,7 +19716,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1996818731
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19719,6 +19753,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c5ea08bbed91fc42bf57882940b8e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onFillChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1996818733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24998,7 +25035,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playButton: {fileID: 1751158903}
   titlePanel: {fileID: 1266703630}
-  optionsPanel: {fileID: 1414427131}
+  levelSelectPanel: {fileID: 1414427131}
   buttonsPanel: {fileID: 1996818733}
   moveDistance: 150
   scaleFactor: 1.3

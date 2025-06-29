@@ -11,7 +11,7 @@ using Sirenix.OdinInspector;
 public class PressedPlayButton : MonoBehaviour, IPointerDownHandler {
     public Image playButton;
     public Image titlePanel;
-    public Image optionsPanel;
+    public Image levelSelectPanel;
     public Image buttonsPanel;
     public float moveDistance = 100f;
     public float scaleFactor = 1.2f;
@@ -38,18 +38,24 @@ public class PressedPlayButton : MonoBehaviour, IPointerDownHandler {
         transitionParticlesPrefab.SetActive(false);
 
         playText = playButton.GetComponentInChildren<TextMeshProUGUI>();
-        playButtonUI = playButton.GetComponent<Button>();
+
 
         normalColor = playText.color;
 
-        if (playButtonUI != null) {
-            playButtonUI.onClick.AddListener(PlayButtonClicked);
-        }
     }
 
 
+    private void OnEnable() {
+        playButtonUI = playButton.GetComponent<Button>();
+        playButtonUI.onClick.AddListener(PlayButtonClicked);
+    }
+    private void OnDisable() {
+        playButtonUI.onClick.RemoveListener(PlayButtonClicked);
+    }
+
 
     private void PlayButtonClicked() {
+        playButtonUI.onClick.RemoveAllListeners();
         playButtonSFX.Play();
 
         float fadeDuration = 1.25f;
@@ -76,7 +82,7 @@ public class PressedPlayButton : MonoBehaviour, IPointerDownHandler {
         titlePanel.transform.DOMoveY(titlePanel.transform.position.y - moveDistance, animationDuration).SetEase(Ease.InOutSine);
 
         titlePanel.GetComponent<CanvasGroup>().DOFade(0, animationDuration).SetEase(Ease.InOutSine);
-        buttonsPanel.transform.DOMoveY(optionsPanel.transform.position.y - moveDistance, animationDuration).SetEase(Ease.InOutSine);
+        buttonsPanel.transform.DOMoveY(levelSelectPanel.transform.position.y - moveDistance, animationDuration).SetEase(Ease.InOutSine);
         buttonsPanel.GetComponent<CanvasGroup>().DOFade(0, animationDuration).SetEase(Ease.InOutSine);
 
         Sequence playButtonSequence = DOTween.Sequence();
