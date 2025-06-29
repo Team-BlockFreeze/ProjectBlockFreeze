@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
   m_Name: A3
   m_EditorClassIdentifier: 
+  levelTitle: A Level
+  retriggerSequenceOnEveryReload: 1
+  tutorialMessages: []
   _nextLevelInSequence: {fileID: 11400000, guid: e63f954ab150daa4f8a4081cc785f50e, type: 2}
   _branch:
     TargetGroupName: 

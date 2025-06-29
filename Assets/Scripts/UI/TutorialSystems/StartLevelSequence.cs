@@ -36,9 +36,13 @@ public class StartLevelSequence : MonoBehaviour
     [SerializeField]
     private float stallPercent = .2f;
 
-    private enum SequenceState { ActiveTitle, Inactive, ActiveTutorial}
+    private enum SequenceState { ActiveTitle, Inactive, TitlePaused, ActiveTutorial}
     [ReadOnly][SerializeField]
     private SequenceState state = SequenceState.Inactive;
+
+    [Header("settings")]
+    [SerializeField]
+    private bool manualTitleClear = false;
 
     #region subbing
 
@@ -52,16 +56,25 @@ public class StartLevelSequence : MonoBehaviour
 
     private void Sub() {
         BlockGrid.Event_LevelFirstLoad.AddListener(StartTitleSequence);
+        BlockGrid.Event_LevelSubsequentLoad.AddListener(TryRetriggerTitleSequence);
     }
 
     private void Unsub() {
         BlockGrid.Event_LevelFirstLoad.RemoveListener(StartTitleSequence);
+        BlockGrid.Event_LevelSubsequentLoad.RemoveListener(TryRetriggerTitleSequence);
     }
 
     #endregion
 
     private void Start() {
 
+    }
+
+    private void TryRetriggerTitleSequence(LevelDataSO lvlDataSO) {
+        if (!lvlDataSO.RetriggerSequenceOnReload)
+            return;
+
+        StartTitleSequence(lvlDataSO);
     }
 
     /// <summary>
@@ -76,9 +89,9 @@ public class StartLevelSequence : MonoBehaviour
         //setting title offscreen
         var tRT = titleTMP.rectTransform;
         tRT.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Screen.width*2f);
-        Vector2 pos = tRT.anchoredPosition;
-        pos.x = Screen.width*3f;
-        tRT.anchoredPosition = pos;
+        //Vector2 pos = tRT.anchoredPosition;
+        //pos.x = Screen.width*3f;
+        //tRT.anchoredPosition = pos;
 
         titleBannerPanel.gameObject.SetActive(true);
     }
@@ -104,17 +117,16 @@ public class StartLevelSequence : MonoBehaviour
         cVT.ShowInterrupter();
         savedLevelSO = lvlDataSO;
         
-        if (lvlDataSO.LevelTitle == null) {
+        if (lvlDataSO.LevelTitle == null || lvlDataSO.LevelTitle.Equals("")) {
             Debug.Log("No level title to load, skipping level title sequence");
             //cVT.ShowButtons();
             TryStartTutorialSequence(lvlDataSO);
             return;
         }
-
-        TitleSequencePrepare();
-
         //getting title text
         titleTMP.text = lvlDataSO.LevelTitle;
+
+        TitleSequencePrepare();
 
         float inOutTime = (titleAnimLength * (1-stallPercent)) * .5f;
 
@@ -125,9 +137,16 @@ public class StartLevelSequence : MonoBehaviour
 
         titleTweenSeq.AppendCallback(() => Debug.Log("title tween started"));
         //titleTweenSeq.AppendInterval(.5f);
-        titleTweenSeq.Append(tRT.DOAnchorPosX(0f, inOutTime).SetEase(Ease.OutSine).SetTarget(tRT));
+        //titleTweenSeq.Append(tRT.DOAnchorPosX(0f, inOutTime).SetEase(Ease.OutSine).SetTarget(tRT));
         titleTweenSeq.AppendInterval(titleAnimLength * stallPercent);
-        titleTweenSeq.Append(tRT.DOAnchorPosX(-Screen.width*3f, inOutTime).SetEase(Ease.InSine).SetTarget(tRT));
+        if (manualTitleClear) {
+            titleTweenSeq.AppendCallback(() => {
+                titleTweenSeq.Pause();
+                state = SequenceState.TitlePaused;
+            });
+            titleTweenSeq.AppendInterval(.1f);
+        }
+        //titleTweenSeq.Append(tRT.DOAnchorPosX(-Screen.width*3f, inOutTime).SetEase(Ease.InSine).SetTarget(tRT));
         //titleTweenSeq.AppendCallback(() => TitleSequenceComplete());
         titleTweenSeq.AppendCallback(() => TryStartTutorialSequence(lvlDataSO));
         titleTweenSeq.AppendCallback(() => Debug.Log("title tween completed"));
@@ -141,7 +160,7 @@ public class StartLevelSequence : MonoBehaviour
 
     //udpate loop to catch input while title is tweening, will skip ahead
     private void Update() {
-        if (state != SequenceState.ActiveTitle) return;
+        if (state != SequenceState.ActiveTitle && state != SequenceState.TitlePaused) return;
 
         if(Input.anyKeyDown) {
             Debug.Log("title tween interrupted");
