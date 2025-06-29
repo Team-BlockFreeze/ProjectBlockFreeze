@@ -9,17 +9,20 @@ using static BlockBehaviour;
 public class LevelDataSO : ScriptableObject {
 
     [SerializeField]
-    [TextArea(1,3)]
+    [TextArea(1, 3)]
     private string levelTitle;
     public string LevelTitle => levelTitle;
 
     [SerializeField]
-    private bool retriggerSequenceOnEveryReload = false;
-    public bool RetriggerSequenceOnReload => retriggerSequenceOnEveryReload;
+    private bool retriggerSequenceOnReload = false;
+    public bool RetriggerSequenceOnReload {
+        get => retriggerSequenceOnReload;
+        set => retriggerSequenceOnReload = value;
+    }
 
     [System.Serializable]
     public class TutorialMessage {
-        public enum Anchor { Top, Bottom}
+        public enum Anchor { Top, Bottom }
         public Anchor anchorPivot = Anchor.Bottom;
 
         [TextArea(1, 6)]
@@ -27,7 +30,7 @@ public class LevelDataSO : ScriptableObject {
         public string message;
     }
 
-    
+
     [SerializeField]
     //[ShowInInspector]
     //[ListDrawerSettings(ShowFoldout = true)]
@@ -80,7 +83,7 @@ public class LevelDataSO : ScriptableObject {
     public List<BlockData> Blocks => blocks;
 
     [TextArea(4, 10)]
-    [SerializeField] 
+    [SerializeField]
     private string devNotes;
 }
 

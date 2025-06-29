@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
   m_Name: testeditor
   m_EditorClassIdentifier: 
-  levelTitle: 
-  retriggerSequenceOnEveryReload: 0
-  tutorialMessages: []
+  levelTitle: 3efreferferfrewfre
+  retriggerSequenceOnReload: 1
+  tutorialMessages:
+  - anchorPivot: 0
+    message: gergergergregergregregregergwgwerrgwgwergwegrewgee
   _nextLevelInSequence: {fileID: 0}
   _branch:
     TargetGroupName: 
@@ -31,5 +33,13 @@ MonoBehaviour:
     pushableWhenFrozen: 0
     phaseThrough: 0
     startFrozen: 0
-    movePath: 03000000030000000300000003000000
+    movePath: 0300000001000000
+  - gridCoord: {x: 1, y: 3}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 030000000100000001000000
   devNotes: 

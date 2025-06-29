@@ -7,6 +7,7 @@ using System;
 
 using MoveDirection = BlockBehaviour.Direction;
 using UnityEditorInternal;
+using System.Reflection;
 
 public class LevelEditorWindow : EditorWindow {
     private static string PrefKey_DefaultLevelsFolder_Path => "DefaultLevelsFolder_Path";
@@ -212,6 +213,30 @@ public class LevelEditorWindow : EditorWindow {
         GUI.Button(new Rect(gridOffset.x - 5, gridOffset.y - 5, 10, 10), "");
         DrawClearButton();
 
+        GUILayout.Space(10);
+
+        GUILayout.Label("Level Info", EditorStyles.boldLabel);
+        levelData.RetriggerSequenceOnReload = EditorGUILayout.Toggle("Retrigger On Reload", levelData.RetriggerSequenceOnReload);
+
+        FieldInfo titleField = typeof(LevelDataSO).GetField("levelTitle", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (titleField != null) {
+            string currentTitle = (string)titleField.GetValue(levelData);
+            string newTitle = EditorGUILayout.TextField("Level Title", currentTitle);
+            if (newTitle != currentTitle) {
+                titleField.SetValue(levelData, newTitle);
+                EditorUtility.SetDirty(levelData);
+            }
+        }
+
+        InitializeTutorialMessageList();
+
+        if (tutorialMessagesList != null) {
+            GUILayout.Space(10);
+            serializedLevelData.Update();
+            tutorialMessagesList.DoLayoutList();
+            serializedLevelData.ApplyModifiedProperties();
+        }
+
         EditorGUILayout.EndVertical(); // End of Left Side
 
         // ---------------------- RIGHT SIDE ----------------------
@@ -232,6 +257,52 @@ public class LevelEditorWindow : EditorWindow {
     }
 
 
+
+    private void InitializeTutorialMessageList() {
+        if (levelData == null) {
+            serializedLevelData = null;
+            tutorialMessagesList = null;
+            lastInspectedLevelData = null;
+            return;
+        }
+
+        serializedLevelData = new SerializedObject(levelData);
+        lastInspectedLevelData = levelData;
+        var tutorialMessagesProperty = serializedLevelData.FindProperty("tutorialMessages");
+
+        tutorialMessagesList = new ReorderableList(serializedLevelData, tutorialMessagesProperty,
+            draggable: true, displayHeader: true, displayAddButton: true, displayRemoveButton: true);
+
+        tutorialMessagesList.drawHeaderCallback = (Rect rect) => {
+            EditorGUI.LabelField(rect, "Tutorial Messages");
+        };
+
+        tutorialMessagesList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
+            SerializedProperty element = tutorialMessagesList.serializedProperty.GetArrayElementAtIndex(index);
+            rect.y += 2; // vertical paddign
+
+            Rect anchorRect = new Rect(rect.x, rect.y, 120, EditorGUIUtility.singleLineHeight);
+            Rect messageRect = new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight + 4, rect.width, rect.height - EditorGUIUtility.singleLineHeight - 8);
+
+            SerializedProperty anchorProp = element.FindPropertyRelative("anchorPivot");
+            SerializedProperty messageProp = element.FindPropertyRelative("message");
+
+            EditorGUI.PropertyField(anchorRect, anchorProp, GUIContent.none);
+            EditorGUI.PropertyField(messageRect, messageProp, GUIContent.none);
+        };
+
+        tutorialMessagesList.elementHeightCallback = (int index) => {
+            SerializedProperty element = tutorialMessagesList.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty messageProp = element.FindPropertyRelative("message");
+
+            float propertyHeight = EditorGUI.GetPropertyHeight(messageProp);
+            return propertyHeight + EditorGUIUtility.singleLineHeight + 10f; // 10f is for padding
+        };
+    }
+
+    private SerializedObject serializedLevelData;
+    private ReorderableList tutorialMessagesList;
+    private LevelDataSO lastInspectedLevelData;
 
 
 
