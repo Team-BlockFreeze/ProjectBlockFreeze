@@ -12,13 +12,12 @@ using UnityEditor;
 /// <summary>
 /// The script to control the intro sequence when loading a new level the first time - not reloading a level. Also triggers tutorial prompts.
 /// </summary>
-public class StartLevelSequence : MonoBehaviour
-{
+public class StartLevelSequence : MonoBehaviour {
     [Header("References")]
     [SerializeField]
     private TMP_Text titleTMP;
     [SerializeField]
-    private Image 
+    private Image
         rayBlockPanel,
         titleBannerPanel;
     [SerializeField]
@@ -36,8 +35,10 @@ public class StartLevelSequence : MonoBehaviour
     [SerializeField]
     private float stallPercent = .2f;
 
-    private enum SequenceState { ActiveTitle, Inactive, TitlePaused, ActiveTutorial}
-    [ReadOnly][SerializeField]
+    private enum SequenceState { ActiveTitle, Inactive, TitlePaused, ActiveTutorial };
+
+    [ReadOnly]
+    [SerializeField]
     private SequenceState state = SequenceState.Inactive;
 
     [Header("settings")]
@@ -85,10 +86,10 @@ public class StartLevelSequence : MonoBehaviour
 
         //cVT.ShowInterrupter();
         state = SequenceState.ActiveTitle;
-        
+
         //setting title offscreen
         var tRT = titleTMP.rectTransform;
-        tRT.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Screen.width*2f);
+        tRT.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Screen.width * 2f);
         //Vector2 pos = tRT.anchoredPosition;
         //pos.x = Screen.width*3f;
         //tRT.anchoredPosition = pos;
@@ -116,7 +117,7 @@ public class StartLevelSequence : MonoBehaviour
     private void StartTitleSequence(LevelDataSO lvlDataSO = null) {
         cVT.ShowInterrupter();
         savedLevelSO = lvlDataSO;
-        
+
         if (lvlDataSO.LevelTitle == null || lvlDataSO.LevelTitle.Equals("")) {
             Debug.Log("No level title to load, skipping level title sequence");
             //cVT.ShowButtons();
@@ -128,7 +129,7 @@ public class StartLevelSequence : MonoBehaviour
 
         TitleSequencePrepare();
 
-        float inOutTime = (titleAnimLength * (1-stallPercent)) * .5f;
+        float inOutTime = (titleAnimLength * (1 - stallPercent)) * .5f;
 
         titleTweenSeq?.Kill();
         titleTweenSeq = DOTween.Sequence();
@@ -162,11 +163,11 @@ public class StartLevelSequence : MonoBehaviour
     private void Update() {
         if (state != SequenceState.ActiveTitle && state != SequenceState.TitlePaused) return;
 
-        if(Input.anyKeyDown) {
+        if (Input.anyKeyDown) {
             Debug.Log("title tween interrupted");
             //TitleSequenceComplete();
             TryStartTutorialSequence(savedLevelSO);
-        } 
+        }
     }
 
 
@@ -225,7 +226,7 @@ public class StartLevelSequence : MonoBehaviour
         float timeSinceLastInterrupt = Time.time;
 
         //wait for input before instant switching to next tutorial message
-        for(int i = 0; i<messages.Length; i++) {
+        for (int i = 0; i < messages.Length; i++) {
             if (i != 0) {
                 var message = messages[i];
 
@@ -242,7 +243,7 @@ public class StartLevelSequence : MonoBehaviour
             }
 
             //wait for input
-            while(true) {
+            while (true) {
                 if (Input.anyKeyDown && Time.time > timeSinceLastInterrupt + MinInterruptDelay)
                     break;
                 yield return null;
