@@ -204,8 +204,7 @@ public class BlockGrid : Singleton<BlockGrid> {
 
             // Animation finishes in 0.5s (see IngameCanvasButtons.ReloadLevel(): moveDuration variablke). dirty fix for updating line renderer after reload animation finishes
             DOVirtual.DelayedCall(GameSettings.Instance.reloadAnimationTime / 2f, () => {
-                newBlock.GetComponent<BlockPreview>()?.InitializeLine();
-                newBlock.GetComponent<BlockTeleportTile>()?.UpdateLineRenderer();
+                OnReloadAnimationCompleted(newBlock);
             });
 
 
@@ -231,6 +230,15 @@ public class BlockGrid : Singleton<BlockGrid> {
         EditorUtility.SetDirty(this);
     }
 
+    /// <summary>
+    /// Function called after reload 'bounce' animation completes.
+    /// </summary>
+    /// <param name="newBlock"></param>
+    private void OnReloadAnimationCompleted(BlockBehaviour newBlock) {
+        newBlock.GetComponent<BlockPreview>()?.InitializeLine();
+        newBlock.GetComponent<BlockTeleportTile>()?.UpdateLineRenderer();
+        newBlock.blockTrail.Play();
+    }
 
     private Dictionary<string, Sprite> GetIconsForBlockType(string blockType) {
         if (blockType.Contains("wall")) return new Dictionary<string, Sprite>();

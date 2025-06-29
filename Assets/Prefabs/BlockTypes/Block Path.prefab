@@ -299,6 +299,7 @@ MonoBehaviour:
   littleDirTriangle: {fileID: 5501142072554771676}
   blockTypeIcon_topleft: {fileID: 7787844205538151407}
   blockTypeIcon_topright: {fileID: 1852260136754127124}
+  blockTrail: {fileID: 7785811754945001977}
   blockType: 
   frozen: 0
   blocked: 0

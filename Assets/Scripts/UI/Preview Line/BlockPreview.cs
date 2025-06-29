@@ -98,7 +98,8 @@ public class BlockPreview : LoggerMonoBehaviour {
     public void InitializeLine() {
         // Kill all tweens
         DOTween.Kill(this);
-        FadeOutPreview(0f);
+        lineRenderer.startColor = new Color(1f, 1f, 1f, 0f);
+        lineRenderer.endColor = new Color(1f, 1f, 1f, 0f);
 
         lineRenderer.enabled = true;
         movePath = block.GetMovePath();

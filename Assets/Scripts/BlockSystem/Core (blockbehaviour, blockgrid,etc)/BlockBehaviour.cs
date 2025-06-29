@@ -59,6 +59,9 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [SerializeField] public SpriteRenderer blockTypeIcon_topleft;
     [FoldoutGroup("Renderers")]
     [SerializeField] public SpriteRenderer blockTypeIcon_topright;
+    [FoldoutGroup("Renderers")]
+    [SerializeField] public ParticleSystem blockTrail;
+    [FoldoutGroup("Renderers")]
 
     public void SetBlockTypeIcons(Dictionary<string, Sprite> icons) {
         if (icons.ContainsKey("topleft")) blockTypeIcon_topleft.sprite = icons["topleft"];

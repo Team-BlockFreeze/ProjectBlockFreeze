@@ -175,6 +175,10 @@ public class IngameCanvasButtons : MonoBehaviour {
             blockPreview.FadeOutPreview(0.1f);
         }
 
+        foreach (BlockBehaviour block in BlockGrid.Instance.ActiveGridState.BlocksList) {
+            block.blockTrail.Clear();
+        }
+
         t.DOMoveZ(originalPos.z + moveDistance, moveDuration)
             .SetEase(Ease.InQuad)
             .OnComplete(() => {
