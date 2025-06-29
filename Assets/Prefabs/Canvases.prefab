@@ -4903,6 +4903,7 @@ MonoBehaviour:
   titleAnimLength: 3
   stallPercent: 1
   state: 1
+  manualTitleClear: 1
 --- !u!1 &4576434246533079431
 GameObject:
   m_ObjectHideFlags: 0

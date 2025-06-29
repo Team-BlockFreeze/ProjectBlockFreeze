@@ -13,6 +13,10 @@ public class LevelDataSO : ScriptableObject {
     private string levelTitle;
     public string LevelTitle => levelTitle;
 
+    [SerializeField]
+    private bool retriggerSequenceOnEveryReload = false;
+    public bool RetriggerSequenceOnReload => retriggerSequenceOnEveryReload;
+
     [System.Serializable]
     public class TutorialMessage {
         public enum Anchor { Top, Bottom}

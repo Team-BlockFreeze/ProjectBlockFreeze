@@ -90,6 +90,10 @@ public class BlockGrid : Singleton<BlockGrid> {
 
 
     public static UnityEvent<LevelDataSO> Event_LevelFirstLoad = new UnityEvent<LevelDataSO>();
+    public static UnityEvent<LevelDataSO> Event_LevelSubsequentLoad = new UnityEvent<LevelDataSO>();
+
+    private bool firstLoad = true;
+
 
     private void Start() {
         //gridSize = startGridStateSO.GridSize;
@@ -100,6 +104,7 @@ public class BlockGrid : Singleton<BlockGrid> {
 
         Debug.Log("loading new level for first time as new scene");
         Event_LevelFirstLoad?.Invoke(levelData);
+        firstLoad = false;
 
         ActiveGridState.GridBlockStates = new BlockBehaviour[gridSize.x, gridSize.y];
 
@@ -141,6 +146,11 @@ public class BlockGrid : Singleton<BlockGrid> {
     [Button(ButtonSizes.Medium)]
     public void LoadStateFromSO() {
         BlockCoordinator.Instance.ClearUndoStack();
+
+        if (!firstLoad) {
+            Debug.Log("broadcasting subsequent reload");
+            Event_LevelSubsequentLoad?.Invoke(levelData);
+        }
 
         //destroy current blocks
 
