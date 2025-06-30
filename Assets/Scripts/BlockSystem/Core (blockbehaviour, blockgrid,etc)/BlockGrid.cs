@@ -150,6 +150,15 @@ public class BlockGrid : Singleton<BlockGrid> {
     [FoldoutGroup("Actions")]
     [Button(ButtonSizes.Medium)]
     public void LoadStateFromSO() {
+
+        // dirty fix for build submission
+        var floorContainer = transform.Find("FloorContainer");
+        if (floorContainer != null) {
+            while (floorContainer.childCount > 0) {
+                DestroyImmediate(floorContainer.GetChild(0).gameObject);
+            }
+        }
+
         BlockCoordinator.Instance.ClearUndoStack();
 
         if (!firstLoad) {
