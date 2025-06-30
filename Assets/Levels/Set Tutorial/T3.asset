@@ -18,7 +18,7 @@ MonoBehaviour:
   - anchorPivot: 1
     message: '"The <b>White Block</b> loops its move set. A pattern like <b>Down,
       Right</b> will repeat endlessly."'
-  _nextLevelInSequence: {fileID: 0}
+  _nextLevelInSequence: {fileID: 11400000, guid: e547521351486de4da46a6a0a9920956, type: 2}
   _branch:
     TargetGroupName: 
     TargetLevelName: 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: A3
   m_EditorClassIdentifier: 
   levelTitle: A Level
-  retriggerSequenceOnEveryReload: 1
+  retriggerSequenceOnReload: 0
   tutorialMessages: []
   _nextLevelInSequence: {fileID: 11400000, guid: e63f954ab150daa4f8a4081cc785f50e, type: 2}
   _branch:

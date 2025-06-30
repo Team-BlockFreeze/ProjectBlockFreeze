@@ -15,9 +15,9 @@ MonoBehaviour:
   levelTitle: 
   retriggerSequenceOnReload: 0
   tutorialMessages:
-  - anchorPivot: 0
+  - anchorPivot: 1
     message: "\"Hold <b>Left Click</b> near the screen edges to speed things up.\"\r"
-  _nextLevelInSequence: {fileID: 11400000, guid: c528fed38cde63a41b097a3fd19eeb5b, type: 2}
+  _nextLevelInSequence: {fileID: 11400000, guid: 33864cc3e59d6f84e87b02214aecede6, type: 2}
   _branch:
     TargetGroupName: 
     TargetLevelName: 

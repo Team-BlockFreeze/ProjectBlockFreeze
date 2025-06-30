@@ -18,7 +18,7 @@ MonoBehaviour:
   - anchorPivot: 1
     message: '"<b>Left click</b> a block to <color=#00ffff><b>freeze</b></color>
       it"'
-  _nextLevelInSequence: {fileID: 11400000, guid: d2269441cbe333e4681832ca40be0a18, type: 2}
+  _nextLevelInSequence: {fileID: 11400000, guid: 4e59088949c489a45aa8eb2022cfdb8e, type: 2}
   _branch:
     TargetGroupName: 
     TargetLevelName: 

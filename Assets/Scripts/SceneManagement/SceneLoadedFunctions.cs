@@ -24,5 +24,11 @@ public class SceneLoadedFunctions : MonoBehaviour {
             }
         }
 
+        if (loadedForFirstTime) {
+            LevelAreaController.Instance.TransitionToLevelArea(new LevelDataSO.BranchTarget { TargetGroupName = "T", TargetLevelName = "T1" });
+            loadedForFirstTime = false;
+        }
     }
+    bool loadedForFirstTime = true;
+
 }

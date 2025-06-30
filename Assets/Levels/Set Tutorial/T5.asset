@@ -18,7 +18,7 @@ MonoBehaviour:
   - anchorPivot: 1
     message: '"The <color=blue><b>Blue Block</b></color> moves in a ping-pong pattern.
       It moves forward through its path, then back in reverse."'
-  _nextLevelInSequence: {fileID: 0}
+  _nextLevelInSequence: {fileID: 11400000, guid: d78fca81dacfceb46930f2771f72860d, type: 2}
   _branch:
     TargetGroupName: 
     TargetLevelName: 

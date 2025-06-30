@@ -15,12 +15,12 @@ MonoBehaviour:
   levelTitle: 
   retriggerSequenceOnReload: 1
   tutorialMessages:
-  - anchorPivot: 0
+  - anchorPivot: 1
     message: '"The level moves forward when you <b>`Left Click`</b> near the edges
       of the screen."
 
 '
-  _nextLevelInSequence: {fileID: 0}
+  _nextLevelInSequence: {fileID: 11400000, guid: 5223d4ba5d7f9b345bf2b2001d57281b, type: 2}
   _branch:
     TargetGroupName: 
     TargetLevelName: 

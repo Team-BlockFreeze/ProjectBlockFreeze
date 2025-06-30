@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: A1
   m_EditorClassIdentifier: 
   levelTitle: The First Real Level
-  retriggerSequenceOnEveryReload: 1
+  retriggerSequenceOnReload: 0
   tutorialMessages: []
   _nextLevelInSequence: {fileID: 11400000, guid: 89c3f4834bb0955418ab330a746013e0, type: 2}
   _branch:

@@ -10,12 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
-  m_Name: H10_A1
+  m_Name: H10
   m_EditorClassIdentifier: 
+  levelTitle: 
+  retriggerSequenceOnReload: 0
+  tutorialMessages: []
   _nextLevelInSequence: {fileID: 0}
   _branch:
-    TargetGroupName: A
-    TargetLevelName: A1
+    TargetGroupName: 
+    TargetLevelName: 
   autoplayOnStart: 0
   autoPlayOnStartDelay: 0
   GridSize: {x: 9, y: 9}

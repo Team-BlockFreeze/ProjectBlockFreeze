@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
   m_Name: E5a
   m_EditorClassIdentifier: 
+  levelTitle: 
+  retriggerSequenceOnReload: 0
+  tutorialMessages: []
   _nextLevelInSequence: {fileID: 11400000, guid: 58966b9eb6fb68c46a1c8357890fb141, type: 2}
   _branch:
     TargetGroupName: 

@@ -17,7 +17,7 @@ MonoBehaviour:
   tutorialMessages:
   - anchorPivot: 1
     message: '"You can also <b>freeze</b> a block to use it as a barrier"'
-  _nextLevelInSequence: {fileID: 0}
+  _nextLevelInSequence: {fileID: 11400000, guid: 99a4673117b84b24784709097d66b939, type: 2}
   _branch:
     TargetGroupName: 
     TargetLevelName: 

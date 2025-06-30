@@ -18,7 +18,7 @@ MonoBehaviour:
   - anchorPivot: 1
     message: "\"Get the <color=red><b>Red Block</b></color> into the <b>Hole</b>
       to win.\"\r"
-  _nextLevelInSequence: {fileID: 0}
+  _nextLevelInSequence: {fileID: 11400000, guid: 772f2b7db2ea3944793b74b8b80c403d, type: 2}
   _branch:
     TargetGroupName: 
     TargetLevelName: 
