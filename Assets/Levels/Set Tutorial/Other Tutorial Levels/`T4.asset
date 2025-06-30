@@ -10,13 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
-  m_Name: T4
+  m_Name: '`T4'
   m_EditorClassIdentifier: 
-  levelTitle: 
-  retriggerSequenceOnReload: 0
-  tutorialMessages:
-  - anchorPivot: 0
-    message: "\"Hold <b>Left Click</b> near the screen edges to speed things up.\"\r"
   _nextLevelInSequence: {fileID: 11400000, guid: c528fed38cde63a41b097a3fd19eeb5b, type: 2}
   _branch:
     TargetGroupName: 

@@ -10,24 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
-  m_Name: T6
+  m_Name: '`T1'
   m_EditorClassIdentifier: 
-  levelTitle: Freeze! And Stay Out The Way
+  levelTitle: The Red Key Goes In The Square Hole
   retriggerSequenceOnReload: 0
   tutorialMessages:
-  - anchorPivot: 1
-    message: '"<b>Left click</b> a block to <color=#00ffff><b>freeze</b></color>
-      it"'
-  _nextLevelInSequence: {fileID: 11400000, guid: d2269441cbe333e4681832ca40be0a18, type: 2}
+  - anchorPivot: 0
+    message: The objective of each level is to get the <color=red><b>Red Key Block</b></color>
+      into the <b>Square Goal Hole.</b> Press the play button to start the level.
+  _nextLevelInSequence: {fileID: 11400000, guid: 4e0da4c434958a847a2477de670845f5, type: 2}
   _branch:
     TargetGroupName: 
     TargetLevelName: 
   autoplayOnStart: 0
   autoPlayOnStartDelay: 0.5
   GridSize: {x: 7, y: 1}
-  GoalCoord: {x: 4, y: 0}
+  GoalCoord: {x: 6, y: 0}
   blocks:
-  - gridCoord: {x: 2, y: 0}
+  - gridCoord: {x: 0, y: 0}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 030000000300000003000000030000000300000003000000
+  - gridCoord: {x: 4, y: 0}
     blockTypeFab: {fileID: 4010693687487196053, guid: bf951e09032b85348b23fb7f4e81b3d8, type: 3}
     pathMode: 0
     canBeFrozen: 1
@@ -35,20 +43,4 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 0
     movePath: 04000000
-  - gridCoord: {x: 6, y: 0}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 1
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 020000000200000002000000
-  - gridCoord: {x: 0, y: 0}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 1
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 030000000300000003000000
-  devNotes: showcase freeze
+  devNotes: showcase loop block

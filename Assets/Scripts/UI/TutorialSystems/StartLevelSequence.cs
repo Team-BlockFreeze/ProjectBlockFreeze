@@ -172,6 +172,12 @@ public class StartLevelSequence : MonoBehaviour {
 
 
     private void TryStartTutorialSequence(LevelDataSO lvlDataSO) {
+        if (lvlDataSO == null) {
+            Debug.Log("No level data found, skipping tutorial sequence");
+            TitleSequenceComplete();
+            return;
+        }
+
         TutMessage[] messages = lvlDataSO.TutorialMessages;
         if (messages == null || messages.Length == 0) {
             Debug.Log("No tutorial messages found, skipping tutorial sequence");

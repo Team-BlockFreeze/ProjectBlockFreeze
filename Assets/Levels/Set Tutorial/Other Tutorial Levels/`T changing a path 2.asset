@@ -10,38 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a17ef89cc48ebe7498e8740f494de2b2, type: 3}
-  m_Name: A4
+  m_Name: '`T changing a path 2'
   m_EditorClassIdentifier: 
-  levelTitle: 
-  retriggerSequenceOnReload: 0
-  tutorialMessages: []
-  _nextLevelInSequence: {fileID: 11400000, guid: 1a0a17644745bf14ba86c35dc189ccbf, type: 2}
+  _nextLevelInSequence: {fileID: 0}
   _branch:
     TargetGroupName: 
     TargetLevelName: 
   autoplayOnStart: 0
-  autoPlayOnStartDelay: 0
-  GridSize: {x: 4, y: 7}
-  GoalCoord: {x: 1, y: 0}
+  autoPlayOnStartDelay: 0.5
+  GridSize: {x: 6, y: 4}
+  GoalCoord: {x: 5, y: 1}
   blocks:
-  - gridCoord: {x: 0, y: 6}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 030000000100000002000000
-  - gridCoord: {x: 2, y: 5}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 04000000
-  - gridCoord: {x: 2, y: 4}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+  - gridCoord: {x: 3, y: 1}
+    blockTypeFab: {fileID: 4010693687487196053, guid: bf951e09032b85348b23fb7f4e81b3d8, type: 3}
     pathMode: 0
     canBeFrozen: 1
     pushableWhenFrozen: 0
@@ -50,37 +31,21 @@ MonoBehaviour:
     movePath: 04000000
   - gridCoord: {x: 2, y: 3}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
+    pathMode: 1
     canBeFrozen: 1
     pushableWhenFrozen: 0
     phaseThrough: 0
     startFrozen: 0
-    movePath: 04000000
-  - gridCoord: {x: 2, y: 2}
+    movePath: 0100000001000000010000000300000003000000
+  - gridCoord: {x: 0, y: 1}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
+    pathMode: 1
     canBeFrozen: 1
     pushableWhenFrozen: 0
     phaseThrough: 0
-    startFrozen: 0
-    movePath: 04000000
-  - gridCoord: {x: 2, y: 1}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 04000000
-  - gridCoord: {x: 1, y: 1}
-    blockTypeFab: {fileID: 4010693687487196053, guid: bf951e09032b85348b23fb7f4e81b3d8, type: 3}
-    pathMode: 0
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 04000000
-  - gridCoord: {x: 0, y: 5}
+    startFrozen: 1
+    movePath: 0300000003000000
+  - gridCoord: {x: 1, y: 0}
     blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
     pathMode: 3
     canBeFrozen: 0
@@ -88,7 +53,7 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 1
     movePath: 04000000
-  - gridCoord: {x: 0, y: 4}
+  - gridCoord: {x: 0, y: 0}
     blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
     pathMode: 3
     canBeFrozen: 0
@@ -96,7 +61,39 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 1
     movePath: 04000000
-  - gridCoord: {x: 0, y: 3}
+  - gridCoord: {x: 3, y: 2}
+    blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
+    pathMode: 3
+    canBeFrozen: 0
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  - gridCoord: {x: 4, y: 2}
+    blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
+    pathMode: 3
+    canBeFrozen: 0
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  - gridCoord: {x: 3, y: 3}
+    blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
+    pathMode: 3
+    canBeFrozen: 0
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  - gridCoord: {x: 1, y: 3}
+    blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
+    pathMode: 3
+    canBeFrozen: 0
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  - gridCoord: {x: 1, y: 2}
     blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
     pathMode: 3
     canBeFrozen: 0
@@ -112,7 +109,7 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 1
     movePath: 04000000
-  - gridCoord: {x: 0, y: 1}
+  - gridCoord: {x: 5, y: 2}
     blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
     pathMode: 3
     canBeFrozen: 0
@@ -120,4 +117,12 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 1
     movePath: 04000000
-  devNotes: 
+  - gridCoord: {x: 5, y: 0}
+    blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
+    pathMode: 3
+    canBeFrozen: 0
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  devNotes: player tries lvl (bridge easy)

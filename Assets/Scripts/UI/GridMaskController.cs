@@ -28,7 +28,7 @@ public class GridMaskController : MonoBehaviour {
 
     [Header("Mask Settings")]
     [SerializeField]
-    [Tooltip("Higher values = smaller border --- Lower values = larger border.")]
+    [InfoBox("Higher values = smaller border --- Lower values = larger border.")]
     private float borderDivisor = 10f;
 
     [Button]
