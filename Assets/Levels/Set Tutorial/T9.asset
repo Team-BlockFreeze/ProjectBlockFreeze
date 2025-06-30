@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: T9
   m_EditorClassIdentifier: 
   levelTitle: 
-  retriggerSequenceOnReload: 0
+  retriggerSequenceOnReload: 1
   tutorialMessages:
   - anchorPivot: 1
     message: Sometimes, you might need to un-freeze a block. Simply click a frozen
@@ -27,22 +27,6 @@ MonoBehaviour:
   GridSize: {x: 5, y: 6}
   GoalCoord: {x: 4, y: 1}
   blocks:
-  - gridCoord: {x: 1, y: 1}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 04000000
-  - gridCoord: {x: 0, y: 1}
-    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
-    pathMode: 0
-    canBeFrozen: 1
-    pushableWhenFrozen: 0
-    phaseThrough: 0
-    startFrozen: 0
-    movePath: 030000000300000003000000
   - gridCoord: {x: 3, y: 5}
     blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
     pathMode: 0
@@ -204,6 +188,30 @@ MonoBehaviour:
     startFrozen: 1
     movePath: 04000000
   - gridCoord: {x: 0, y: 3}
+    blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
+    pathMode: 3
+    canBeFrozen: 0
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 1
+    movePath: 04000000
+  - gridCoord: {x: 1, y: 1}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 03000000
+  - gridCoord: {x: 2, y: 1}
+    blockTypeFab: {fileID: 4580485001048318355, guid: 618ea0aa729af12458cb59bd7f9cfbe9, type: 3}
+    pathMode: 0
+    canBeFrozen: 1
+    pushableWhenFrozen: 0
+    phaseThrough: 0
+    startFrozen: 0
+    movePath: 04000000
+  - gridCoord: {x: 0, y: 1}
     blockTypeFab: {fileID: 183997941128677022, guid: e8974c3a09bba954dadb7cbdebaa989a, type: 3}
     pathMode: 3
     canBeFrozen: 0

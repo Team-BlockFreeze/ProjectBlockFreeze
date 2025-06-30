@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -19,7 +20,8 @@ public class GridMaskController : MonoBehaviour {
     private void OnEnable() {
         mainCamera = Camera.main;
         BlockGrid.Instance.StateLoadedFromSO += UpdateMaskBounds;
-        UpdateMaskBounds();
+
+        DOVirtual.DelayedCall(0.5f, UpdateMaskBounds);
     }
 
     private void OnDisable() {
