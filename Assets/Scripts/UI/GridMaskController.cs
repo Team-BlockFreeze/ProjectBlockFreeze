@@ -3,6 +3,9 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class GridMaskController : MonoBehaviour {
+    [SerializeField]
+    private Canvas canvasRef;
+
     [Header("Mask Panel References")]
     [SerializeField]
     private RectTransform topMaskPanel;
@@ -24,21 +27,45 @@ public class GridMaskController : MonoBehaviour {
     [InfoBox("Higher values = smaller border --- Lower values = larger border.")]
     private float borderDivisor = 10f;
 
+    #region subbing
+
+    private void OnEnable() {
+        mainCamera = Camera.main;
+        UpdateMaskBounds();
+        BlockGrid.Event_LevelFirstLoad.AddListener(UpdateMaskBoundsHandler);
+    }
+
+    private void OnDisable() {
+        BlockGrid.Event_LevelFirstLoad.RemoveListener(UpdateMaskBoundsHandler);
+    }
+
+    private void UpdateMaskBoundsHandler(LevelDataSO levelDataSO) {
+        UpdateMaskBounds();
+    }
+
+    #endregion
+
     [Button]
     public void UpdateMaskBounds() {
+        Debug.Log("trying to rescale mask buttons");
+
         if (BlockGrid.Instance == null) {
             Debug.LogWarning("GridMaskController: BlockGrid instance not found.", this);
             return;
         }
 
+        float scaleFactor = canvasRef.scaleFactor;
+        Debug.Log("scale factor " +  scaleFactor);
+        //float border = parentRect.rect.height / borderDivisor;
+        float border = Screen.width / scaleFactor / borderDivisor;
+
         Vector3 worldBottomLeft = BlockGrid.Instance.GetBotLeftOriginPos();
         Vector3 worldTopRight = worldBottomLeft + new Vector3(BlockGrid.Instance.GridSize.x, BlockGrid.Instance.GridSize.y, 0);
 
-        Vector2 screenBottomLeft = mainCamera.WorldToScreenPoint(worldBottomLeft);
-        Vector2 screenTopRight = mainCamera.WorldToScreenPoint(worldTopRight);
+        Vector2 screenBottomLeft = mainCamera.WorldToScreenPoint(worldBottomLeft) / scaleFactor;
+        Vector2 screenTopRight = mainCamera.WorldToScreenPoint(worldTopRight) / scaleFactor;
 
         RectTransform parentRect = transform as RectTransform;
-        float border = parentRect.rect.height / borderDivisor;
 
         if (topMaskPanel != null) {
             topMaskPanel.offsetMin = new Vector2(0, screenTopRight.y + border);
@@ -64,6 +91,8 @@ public class GridMaskController : MonoBehaviour {
     }
 
     private void OnDrawGizmos() {
+        if(mainCamera == null) return;
+
         Vector3 worldBottomLeft = BlockGrid.Instance.GetBotLeftOriginPos();
         Vector3 worldTopRight = worldBottomLeft + new Vector3(BlockGrid.Instance.GridSize.x, BlockGrid.Instance.GridSize.y, 0);
         Gizmos.color = Color.red;
