@@ -89,9 +89,9 @@ public class BlockTeleportTile : TileEffectBase {
         // lineRenderer = null; // Do not nullify component reference on disable
         teleportIndicator.SetActive(false);
     }
-    private void OnValidate() {
-        UnityEditor.EditorApplication.delayCall += UpdateLineRenderer;
-    }
+    // private void OnValidate() {
+    //     UnityEditor.EditorApplication.delayCall += UpdateLineRenderer;
+    // }
     public void UpdateLineRenderer() {
         if (Grid == null || lineRenderer == null) return;
 

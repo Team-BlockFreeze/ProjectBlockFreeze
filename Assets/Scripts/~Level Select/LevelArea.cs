@@ -113,99 +113,99 @@ public class LevelArea : MonoBehaviour {
 
     [BoxGroup("Buttons")]
     // [Button]
-    private void LoadLevelsFromPath() {
-        if (levelsPath == null || levelsPath.Length == 0) {
-            Debug.LogWarning("No levels path");
-            return;
-        }
+    // private void LoadLevelsFromPath() {
+    //     if (levelsPath == null || levelsPath.Length == 0) {
+    //         Debug.LogWarning("No levels path");
+    //         return;
+    //     }
 
-        levels.Clear();
+    //     levels.Clear();
 
-        var guids = AssetDatabase.FindAssets("t:LevelDataSO", new[] { levelsPath });
+    //     // var guids = AssetDatabase.FindAssets("t:LevelDataSO", new[] { levelsPath });
 
-        foreach (var guid in guids) {
-            var path = AssetDatabase.GUIDToAssetPath(guid);
-            var level = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
-            if (level != null) levels.Add(level);
-        }
-    }
+    //     foreach (var guid in guids) {
+    //         var path = AssetDatabase.GUIDToAssetPath(guid);
+    //         var level = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
+    //         if (level != null) levels.Add(level);
+    //     }
+    // }
 
-    [BoxGroup("Buttons")]
-    [Button]
-    private void PopulateSceneLevelButtons() {
-        LoadLevelsFromPath();
+    // [BoxGroup("Buttons")]
+    // [Button]
+    // private void PopulateSceneLevelButtons() {
+    //     // LoadLevelsFromPath();
 
-        if (levels == null || levels.Count == 0) {
-            Debug.LogWarning("No levels");
-            return;
-        }
+    //     if (levels == null || levels.Count == 0) {
+    //         Debug.LogWarning("No levels");
+    //         return;
+    //     }
 
-        foreach (var b in LevelButtons)
-            DestroyImmediate(b);
-        LevelButtons.Clear();
+    //     foreach (var b in LevelButtons)
+    //         DestroyImmediate(b);
+    //     LevelButtons.Clear();
 
-        var occupiedPositions = new HashSet<Vector2Int>();
-        var buttonPositions = new Dictionary<Vector2Int, LevelButton>();
+    //     var occupiedPositions = new HashSet<Vector2Int>();
+    //     var buttonPositions = new Dictionary<Vector2Int, LevelButton>();
 
-        // Possible directions: right, down, left, up
-        var directions = new Vector2Int[] {
-            new Vector2Int(1, 0),   // right
-            new Vector2Int(0, -1),  // down
-            new Vector2Int(-1, 0),  // left
-            new Vector2Int(0, 1)    // up
-        };
+    //     // Possible directions: right, down, left, up
+    //     var directions = new Vector2Int[] {
+    //         new Vector2Int(1, 0),   // right
+    //         new Vector2Int(0, -1),  // down
+    //         new Vector2Int(-1, 0),  // left
+    //         new Vector2Int(0, 1)    // up
+    //     };
 
-        var currentPos = Vector2Int.zero; // Start at (0,0)
+    //     var currentPos = Vector2Int.zero; // Start at (0,0)
 
-        for (int i = 0; i < levels.Count; i++) {
-            var l = levels[i];
-            var newButton = Instantiate(buttonFab, transform);
-            var buttonComponent = newButton.GetComponent<LevelButton>();
+    //     for (int i = 0; i < levels.Count; i++) {
+    //         var l = levels[i];
+    //         var newButton = Instantiate(buttonFab, transform);
+    //         var buttonComponent = newButton.GetComponent<LevelButton>();
 
-            buttonComponent.GridPosition = currentPos;
-            buttonComponent.Level = l;
+    //         buttonComponent.GridPosition = currentPos;
+    //         buttonComponent.Level = l;
 
-            // Position the button in world space
-            var worldPos = new Vector2(currentPos.x * 2f, currentPos.y * 2f);
-            newButton.transform.position = worldPos;
+    //         // Position the button in world space
+    //         var worldPos = new Vector2(currentPos.x * 2f, currentPos.y * 2f);
+    //         newButton.transform.position = worldPos;
 
-            // Track this position
-            occupiedPositions.Add(currentPos);
-            buttonPositions[currentPos] = buttonComponent;
-            LevelButtons.Add(newButton.gameObject);
+    //         // Track this position
+    //         occupiedPositions.Add(currentPos);
+    //         buttonPositions[currentPos] = buttonComponent;
+    //         LevelButtons.Add(newButton.gameObject);
 
-            Debug.Log($"Placed button {i} at {currentPos}");
+    //         Debug.Log($"Placed button {i} at {currentPos}");
 
-            // Find next position for the next button (if there is one)
-            if (i < levels.Count - 1) {
-                var availableDirections = new List<Vector2Int>();
+    //         // Find next position for the next button (if there is one)
+    //         if (i < levels.Count - 1) {
+    //             var availableDirections = new List<Vector2Int>();
 
-                // Check all directions for available spots
-                foreach (var dir in directions) {
-                    var nextPos = currentPos + dir;
-                    if (!occupiedPositions.Contains(nextPos)) {
-                        availableDirections.Add(dir);
-                    }
-                }
+    //             // Check all directions for available spots
+    //             foreach (var dir in directions) {
+    //                 var nextPos = currentPos + dir;
+    //                 if (!occupiedPositions.Contains(nextPos)) {
+    //                     availableDirections.Add(dir);
+    //                 }
+    //             }
 
-                // Choose a random available direction
-                if (availableDirections.Count > 0) {
-                    var randomDir = availableDirections[UnityEngine.Random.Range(0, availableDirections.Count)];
-                    currentPos += randomDir;
-                }
-                else {
-                    // If no adjacent spots available
-                    currentPos = FindNearestFreePosition(occupiedPositions);
-                }
-            }
-        }
+    //             // Choose a random available direction
+    //             if (availableDirections.Count > 0) {
+    //                 var randomDir = availableDirections[UnityEngine.Random.Range(0, availableDirections.Count)];
+    //                 currentPos += randomDir;
+    //             }
+    //             else {
+    //                 // If no adjacent spots available
+    //                 currentPos = FindNearestFreePosition(occupiedPositions);
+    //             }
+    //         }
+    //     }
 
-        // Convert dictionary to matrix for compatibility
-        buttonMatrix = new LevelButton[1, 1];
+    //     // Convert dictionary to matrix for compatibility
+    //     buttonMatrix = new LevelButton[1, 1];
 
 
-        EditorUtility.SetDirty(this);
-    }
+    //     EditorUtility.SetDirty(this);
+    // }
 
     private Vector2Int FindNearestFreePosition(HashSet<Vector2Int> occupiedPositions) {
         for (int radius = 1; radius < 100; radius++) {
@@ -329,7 +329,7 @@ public class LevelArea : MonoBehaviour {
 
         branchArrowContainer.transform.position += new Vector3(0, 0, 0.5f);
 
-        EditorUtility.SetDirty(this);
+        // EditorUtility.SetDirty(this);
     }
 
     /// <summary>

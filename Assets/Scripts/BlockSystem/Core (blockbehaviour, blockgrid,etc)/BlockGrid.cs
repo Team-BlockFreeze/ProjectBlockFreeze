@@ -236,7 +236,7 @@ public class BlockGrid : Singleton<BlockGrid> {
 
 
         StateLoadedFromSO?.Invoke();
-        EditorUtility.SetDirty(this);
+        // EditorUtility.SetDirty(this);
     }
 
     /// <summary>
@@ -364,7 +364,7 @@ public class BlockGrid : Singleton<BlockGrid> {
 
     public void SetGoalCoord(Vector2Int coord) {
         goalCoord = coord;
-        EditorUtility.SetDirty(this);
+        // EditorUtility.SetDirty(this);
     }
 
     public bool isValidGridCoord(Vector2Int coord) {
