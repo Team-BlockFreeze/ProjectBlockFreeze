@@ -121,6 +121,7 @@ public class StartLevelSequence : MonoBehaviour {
         if (lvlDataSO.LevelTitle == null || lvlDataSO.LevelTitle.Equals("")) {
             Debug.Log("No level title to load, skipping level title sequence");
             //cVT.ShowButtons();
+            cVT.SetBlur(false);
             TryStartTutorialSequence(lvlDataSO);
             return;
         }
