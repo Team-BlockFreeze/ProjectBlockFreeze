@@ -17,16 +17,7 @@ public class GridMaskController : MonoBehaviour {
     [SerializeField] private Camera mainCamera;
     private Vector2Int lastKnownGridSize = new Vector2Int(-1, -1);
 
-    private void OnEnable() {
-        mainCamera = Camera.main;
-        BlockGrid.Instance.StateLoadedFromSO += UpdateMaskBounds;
 
-        DOVirtual.DelayedCall(0.5f, UpdateMaskBounds);
-    }
-
-    private void OnDisable() {
-        BlockGrid.Instance.StateLoadedFromSO -= UpdateMaskBounds;
-    }
 
     [Header("Mask Settings")]
     [SerializeField]

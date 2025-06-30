@@ -12924,6 +12924,22 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.26562652
       objectReference: {fileID: 0}
+    - target: {fileID: 2598497474601865870, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2950612367918796037, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -1249.9309
+      objectReference: {fileID: 0}
+    - target: {fileID: 2950612367918796037, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -624.96545
+      objectReference: {fileID: 0}
+    - target: {fileID: 3130814779738866400, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
+      propertyPath: autoPlaySFX.<DebugObject>k__BackingField
+      value: 
+      objectReference: {fileID: 1622366522}
     - target: {fileID: 3319409301383485583, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -12944,10 +12960,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -2004.4153
       objectReference: {fileID: 0}
+    - target: {fileID: 4317617496963841807, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4520179577906673407, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
       propertyPath: m_Name
       value: Canvases (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4661213283339218295, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4743876763915324224, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
+      propertyPath: autoPlaySFX.<DebugObject>k__BackingField
+      value: 
+      objectReference: {fileID: 1622366522}
     - target: {fileID: 5825591538873230071, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -12960,6 +12988,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6236821288883479218, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
+      propertyPath: autoPlaySFX.<DebugObject>k__BackingField
+      value: 
+      objectReference: {fileID: 1622366522}
     - target: {fileID: 6662902767072001081, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -13052,7 +13084,12 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -1874.0623
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8926237824912913027, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2207620522361690108, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 9022088747974399529, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
@@ -13063,6 +13100,11 @@ PrefabInstance:
 --- !u!224 &1622366521 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9022088747974399529, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
+  m_PrefabInstance: {fileID: 1622366520}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1622366522 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5455604199408371681, guid: 949fe793690d25c4d9d4328c56127c42, type: 3}
   m_PrefabInstance: {fileID: 1622366520}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1656465653

@@ -94,15 +94,6 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
     private void OnLevelComplete(LevelDataSO completedLevel) {
         Debug.Log($"Level completed: {completedLevel.name}");
 
-        foreach (var blockPreview in BlockGrid.Instance.BlocksListTransform.GetComponentsInChildren<BlockPreview>()) {
-            blockPreview.GetEndDotInstance()?.SetActive(false);
-            blockPreview.FadeOutPreview(0.1f);
-        }
-
-        foreach (BlockBehaviour block in BlockGrid.Instance.ActiveGridState.BlocksList) {
-            block.blockTrail.Clear();
-        }
-
         var selector = GetSelectorForLevel(completedLevel);
         // Debug.Log("Selector: " + selector?.name);
 
