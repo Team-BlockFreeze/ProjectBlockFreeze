@@ -272,6 +272,7 @@ public class StartLevelSequence : MonoBehaviour {
 
         //fade in regular UI
         cVT.ShowButtons();
+        GetComponentInChildren<GridMaskController>().UpdateMaskBounds();
     }
 
     const float MARGIN = 120f;

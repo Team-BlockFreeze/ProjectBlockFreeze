@@ -9398,7 +9398,6 @@ GameObject:
   - component: {fileID: 1492674721348371599}
   - component: {fileID: 4368150574075556784}
   - component: {fileID: 1257848849846333632}
-  - component: {fileID: 2207620522361690108}
   m_Layer: 0
   m_Name: ClickableArea
   m_TagString: Untagged
@@ -9468,25 +9467,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2207620522361690108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8560564452849822637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 586c79dcdddb2fe408e62a3201f2415a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvasRef: {fileID: 4705109327038460421}
-  topMaskPanel: {fileID: 5107843093935240615}
-  bottomMaskPanel: {fileID: 2950612367918796037}
-  leftMaskPanel: {fileID: 293309453990918381}
-  rightMaskPanel: {fileID: 3013206017370701552}
-  mainCamera: {fileID: 0}
-  borderDivisor: 20
 --- !u!1 &8888172389845204142
 GameObject:
   m_ObjectHideFlags: 0
