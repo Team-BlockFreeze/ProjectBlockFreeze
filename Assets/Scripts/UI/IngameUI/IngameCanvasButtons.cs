@@ -75,6 +75,9 @@ public class IngameCanvasButtons : MonoBehaviour {
             else {
                 blurGroup.DOFade(0f, fadeDuration).SetEase(Ease.InQuad).OnComplete(() => {
                     blurOverlay.SetActive(false);
+                    DOVirtual.DelayedCall(0.5f, () => {
+                        GetComponentInChildren<GridMaskController>().UpdateMaskBounds();
+                    });
                 });
             }
         }
@@ -149,6 +152,10 @@ public class IngameCanvasButtons : MonoBehaviour {
         else {
             targetCanvas.SetActive(true);
         }
+
+        DOVirtual.DelayedCall(1f, () => {
+            GetComponentInChildren<GridMaskController>().UpdateMaskBounds();
+        });
     }
 
 
