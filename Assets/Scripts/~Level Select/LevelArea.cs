@@ -435,6 +435,7 @@ public class LevelArea : MonoBehaviour {
         // Debug.Log("UnlockAdjacentCells: " + cell);
     }
 
+    [Button]
     public void UpdateVisuals() {
         foreach (var button in LevelButtons) {
             var buttonComponent = button.GetComponent<LevelButton>();
