@@ -104,6 +104,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
                 selector.SetCellAsCompleted(gridPos.Value);
                 selector.UnlockAdjacentCells(gridPos.Value);
                 selector.UpdateVisuals();
+
                 selector.BranchArrowContainer.gameObject.SetActive(true);
             }
         }
@@ -170,6 +171,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
         var targetGridPos = targetArea.GetGridPositionOfLevel(branch.TargetLevelName);
         if (targetGridPos != null) {
             targetArea.UnlockCell(targetGridPos);
+            targetArea.UpdateVisuals();
         }
         else {
             Debug.LogWarning($"Could not find level '{branch.TargetLevelName}' in area '{branch.TargetGroupName}' to unlock.");
