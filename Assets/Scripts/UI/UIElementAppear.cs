@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UIElementAppear : MonoBehaviour {
     [SerializeField]
-    private GameObject target;
+    private List<GameObject> targets;
 
     private void OnEnable() {
         BlockKey.Event_LevelComplete.AddListener(EnableTarget);
@@ -13,6 +14,8 @@ public class UIElementAppear : MonoBehaviour {
     }
 
     public void EnableTarget(LevelDataSO levelData) {
-        target.SetActive(true);
+        foreach (var target in targets) {
+            target.SetActive(true);
+        }
     }
 }
