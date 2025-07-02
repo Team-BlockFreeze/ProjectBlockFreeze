@@ -504,6 +504,17 @@
                 },
                 {
                     "name": "",
+                    "id": "50467db4-419f-41e4-95f6-c75bf8571ee2",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StepForward",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "4636e99f-67b8-4047-a5b5-79e07b69bb0f",
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
