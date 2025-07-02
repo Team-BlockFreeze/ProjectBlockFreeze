@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ami.BroAudio;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -407,6 +408,11 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         return dirVec;
     }
 
+    [BoxGroup("SFX")]
+    public SoundID freezeSFX;
+    [BoxGroup("SFX")]
+    public SoundID unfreezeSFX;
+
     public void TrySetFreeze(bool? freezeState = null) {
         if (!canBeFrozen) return;
 
@@ -424,10 +430,14 @@ public class BlockBehaviour : LoggerMonoBehaviour {
         // blocked = frozen; // Dont do this anymore because blocks new pushableWhenFrozen variable
 
 
-        if (frozen)
+        if (frozen) {
             cubeRenderer.material.SetFloat("_BlendFactor", 1f);
-        else
+            freezeSFX.Play();
+        }
+        else {
             cubeRenderer.material.SetFloat("_BlendFactor", 0f);
+            unfreezeSFX.Play();
+        }
 
         // if (moveMode == BlockMoveState.pingpong && GetComponent<BlockKey>() == null)
         //     cubeRenderer.material = frozen ? gridRef.frozenMAT : gridRef.pingpongMAT;

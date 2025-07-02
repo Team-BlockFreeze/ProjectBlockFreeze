@@ -316,6 +316,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   blockMAT: {fileID: 0}
+  freezeSFX:
+    ID: 1073741842
+    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
+    <DebugObject>k__BackingField: {fileID: 4580485001048318355}
+  unfreezeSFX:
+    ID: 1073741843
+    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
+    <DebugObject>k__BackingField: {fileID: 4580485001048318355}
 --- !u!114 &5174078030499856777
 MonoBehaviour:
   m_ObjectHideFlags: 0
