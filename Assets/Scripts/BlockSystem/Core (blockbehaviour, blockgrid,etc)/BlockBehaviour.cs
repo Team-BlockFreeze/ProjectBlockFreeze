@@ -413,7 +413,7 @@ public class BlockBehaviour : LoggerMonoBehaviour {
     [BoxGroup("SFX")]
     public SoundID unfreezeSFX;
 
-    public void TrySetFreeze(bool? freezeState = null) {
+    public void TrySetFreeze(bool? freezeState = null, bool playSFX = false) {
         if (!canBeFrozen) return;
 
 
@@ -432,11 +432,14 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
         if (frozen) {
             cubeRenderer.material.SetFloat("_BlendFactor", 1f);
-            freezeSFX.Play();
         }
         else {
             cubeRenderer.material.SetFloat("_BlendFactor", 0f);
-            unfreezeSFX.Play();
+        }
+
+        if (playSFX) {
+            if (frozen) freezeSFX.Play();
+            else unfreezeSFX.Play();
         }
 
         // if (moveMode == BlockMoveState.pingpong && GetComponent<BlockKey>() == null)

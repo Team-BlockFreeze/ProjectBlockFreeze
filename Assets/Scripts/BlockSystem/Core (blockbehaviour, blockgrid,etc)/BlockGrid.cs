@@ -201,7 +201,7 @@ public class BlockGrid : Singleton<BlockGrid> {
             ColorPalateInjector.Instance.InjectColorsIntoScene();
             ApplyMaterialsToBlocks(newBlock);
 
-            if (bData.startFrozen) newBlock.TrySetFreeze(true);
+            if (bData.startFrozen) newBlock.TrySetFreeze(freezeState: true, playSFX: false);
 
 
             if (bData.canBeFrozen == false) newBlock.canBeFrozen = false;
