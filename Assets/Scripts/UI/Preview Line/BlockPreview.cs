@@ -27,7 +27,7 @@ public class BlockPreview : LoggerMonoBehaviour {
 
 
     private void OnShortPressTriggered() {
-        block.TrySetFreeze();
+        block.TrySetFreeze(freezeState: null, playSFX: true);
     }
 
     private void OnLongPressTriggered() {
