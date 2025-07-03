@@ -131,6 +131,11 @@ MonoBehaviour:
     ID: 1073741837
     _sourceAsset: {fileID: 11400000, guid: 365499101defd914e8ce80e24a980c29, type: 2}
     <DebugObject>k__BackingField: {fileID: 657480303370009499}
+  autoPlaySFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 657480303370009499}
+  holdThreshold: 0.5
 --- !u!1 &834798806121218300
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,6 +815,7 @@ MonoBehaviour:
   littleDirTriangle: {fileID: 4467078886765072289}
   blockTypeIcon_topleft: {fileID: 0}
   blockTypeIcon_topright: {fileID: 0}
+  blockTrail: {fileID: 0}
   blockType: path_loop_nofreeze
   frozen: 0
   blocked: 0
@@ -826,6 +832,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   blockMAT: {fileID: 2100000, guid: bc1e9afb091ffcb4fa8d158dfd7bdcf2, type: 2}
+  freezeSFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 0}
+  unfreezeSFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 0}
 --- !u!114 &2463821976413508209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6514,7 +6528,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19215687}
+  m_Color: {r: 0.88679236, g: 0.8545236, b: 0.8545236, a: 0.19215687}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
@@ -6955,6 +6969,7 @@ MonoBehaviour:
   littleDirTriangle: {fileID: 7364050418551670089}
   blockTypeIcon_topleft: {fileID: 0}
   blockTypeIcon_topright: {fileID: 0}
+  blockTrail: {fileID: 0}
   blockType: path_loop
   frozen: 0
   blocked: 0
@@ -6971,6 +6986,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   blockMAT: {fileID: 2100000, guid: bc1e9afb091ffcb4fa8d158dfd7bdcf2, type: 2}
+  freezeSFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 0}
+  unfreezeSFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 0}
 --- !u!114 &7862448413500514670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12626,6 +12649,7 @@ MonoBehaviour:
   tilePrefab: {fileID: 6295675601283064389, guid: 1465dd2b4ad6f5e4dba7c28099f228c4, type: 3}
   zPos: 0.5
   zScale: 12
+  ogIslandMat: {fileID: 2100000, guid: b720916f84c05c445a1e56e7d5ac7c34, type: 2}
 --- !u!1 &9090841685241334970
 GameObject:
   m_ObjectHideFlags: 0
@@ -12800,6 +12824,10 @@ PrefabInstance:
       propertyPath: internalCoord.x
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 3642105501892908272, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5219973361339422048, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2
@@ -12842,7 +12870,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5327627746091663972, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5949555245932228306, guid: 1d9e46945a6dbb34e8d580136344d35c, type: 3}
       propertyPath: m_Name

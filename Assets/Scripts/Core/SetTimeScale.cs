@@ -6,6 +6,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+/// <summary>
+/// UI script that mangages setting time scale, stepping forward and back, and autoplay functionality
+/// </summary>
 public class SetTimeScale : MonoBehaviour {
 
     [SerializeField] private bool startSelected;

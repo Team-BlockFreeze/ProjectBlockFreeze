@@ -11,6 +11,28 @@ public class DynamicGridBorder : MonoBehaviour {
 
     private GameObject floorContainer;
 
+    private void OnEnable() {
+        BlockGrid.Instance.StateLoadedFromSO += UpdateMaterial;
+    }
+
+    private void OnDisable() {
+        BlockGrid.Instance.StateLoadedFromSO -= UpdateMaterial;
+    }
+
+    [SerializeField] private Material ogIslandMat; // Reference the asset in inspector
+    private Material runtimeInstanceMat;
+
+    private void Start() {
+        runtimeInstanceMat = new Material(ogIslandMat);
+        UpdateMaterial();
+    }
+
+    private void UpdateMaterial() {
+        var goalPos = (Vector2)BlockGrid.Instance.GetWorldSpaceFromCoord(BlockGrid.Instance.GoalCoord) - Vector2.one*.5f;
+        runtimeInstanceMat.SetVector("_HoleWorldPos", goalPos);
+    }
+
+
     /// <summary>
     /// DEPRECATED: Original method that looks kinda shit. Stretches a single object.
     /// </summary>
@@ -118,6 +140,7 @@ public class DynamicGridBorder : MonoBehaviour {
                 );
 
                 GameObject tileInstance = Instantiate(tilePrefab, floorContainer.transform);
+                
 
                 tileInstance.transform.localPosition = tilePosition;
                 tileInstance.transform.localScale = new Vector3(
@@ -125,6 +148,12 @@ public class DynamicGridBorder : MonoBehaviour {
                     actualChunkHeight,
                     zScale
                 );
+
+                //assign material instance
+                if (runtimeInstanceMat != null) {
+                    var rend = tileInstance.GetComponentInChildren<Renderer>();
+                    rend.material = runtimeInstanceMat;
+                }
             }
         }
     }

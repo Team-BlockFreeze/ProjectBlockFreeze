@@ -429,12 +429,13 @@ public class BlockBehaviour : LoggerMonoBehaviour {
 
         // blocked = frozen; // Dont do this anymore because blocks new pushableWhenFrozen variable
 
-
-        if (frozen) {
-            cubeRenderer.material.SetFloat("_BlendFactor", 1f);
-        }
-        else {
-            cubeRenderer.material.SetFloat("_BlendFactor", 0f);
+        if (Application.isPlaying) {
+            if (frozen) {
+                cubeRenderer.material.SetFloat("_BlendFactor", 1f);
+            }
+            else {
+                cubeRenderer.material.SetFloat("_BlendFactor", 0f);
+            }
         }
 
         if (playSFX) {
