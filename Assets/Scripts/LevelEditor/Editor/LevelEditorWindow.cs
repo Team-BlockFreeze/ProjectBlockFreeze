@@ -6,8 +6,12 @@ using static BlockStateSO;
 using System;
 
 using MoveDirection = BlockBehaviour.Direction;
+
+#if UNITY_EDITOR
 using UnityEditorInternal;
 using System.Reflection;
+#endif
+
 
 public class LevelEditorWindow : EditorWindow {
     private static string PrefKey_DefaultLevelsFolder_Path => "DefaultLevelsFolder_Path";

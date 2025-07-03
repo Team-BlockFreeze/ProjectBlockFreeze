@@ -90,7 +90,9 @@ public class BlockTeleportTile : TileEffectBase {
         teleportIndicator.SetActive(false);
     }
     private void OnValidate() {
+#if UNITY_EDITOR
         UnityEditor.EditorApplication.delayCall += UpdateLineRenderer;
+#endif
     }
     public void UpdateLineRenderer() {
         if (Grid == null || lineRenderer == null) return;

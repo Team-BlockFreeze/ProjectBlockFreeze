@@ -120,7 +120,7 @@ public class LevelArea : MonoBehaviour {
         }
 
         levels.Clear();
-
+#if UNITY_EDITOR
         var guids = AssetDatabase.FindAssets("t:LevelDataSO", new[] { levelsPath });
 
         foreach (var guid in guids) {
@@ -128,6 +128,7 @@ public class LevelArea : MonoBehaviour {
             var level = AssetDatabase.LoadAssetAtPath<LevelDataSO>(path);
             if (level != null) levels.Add(level);
         }
+#endif
     }
 
     [BoxGroup("Buttons")]
@@ -203,8 +204,9 @@ public class LevelArea : MonoBehaviour {
         // Convert dictionary to matrix for compatibility
         buttonMatrix = new LevelButton[1, 1];
 
-
+#if UNITY_EDITOR
         EditorUtility.SetDirty(this);
+#endif
     }
 
     private Vector2Int FindNearestFreePosition(HashSet<Vector2Int> occupiedPositions) {
@@ -273,11 +275,6 @@ public class LevelArea : MonoBehaviour {
     [BoxGroup("Branch Visualization")]
     [Button("Draw Branch Connections")]
     public void DrawBranchConnections() {
-#if !UNITY_EDITOR
-    Debug.LogWarning("This function is intended for Editor use only.");
-    return;
-#endif
-
         if (branchArrowPrefab == null) {
             Debug.LogError("Branch Arrow Prefab is not assigned!", this);
             return;
@@ -328,8 +325,10 @@ public class LevelArea : MonoBehaviour {
         }
 
         branchArrowContainer.transform.position += new Vector3(0, 0, 0.5f);
+#if UNITY_EDITOR
 
         EditorUtility.SetDirty(this);
+#endif
     }
 
     /// <summary>
