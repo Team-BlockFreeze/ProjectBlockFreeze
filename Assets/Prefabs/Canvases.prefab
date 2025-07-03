@@ -1998,7 +1998,7 @@ MonoBehaviour:
   autoPlaySFX:
     ID: 1073741839
     _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
-    <DebugObject>k__BackingField: {fileID: 7898297821249131154}
+    <DebugObject>k__BackingField: {fileID: 2147792920054243905}
 --- !u!1 &2261780247520025821
 GameObject:
   m_ObjectHideFlags: 0

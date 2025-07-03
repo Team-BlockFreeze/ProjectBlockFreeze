@@ -22,13 +22,14 @@ public class GridMaskController : MonoBehaviour {
 
     private void OnEnable() {
         mainCamera = Camera.main;
-        BlockGrid.Instance.StateLoadedFromSO += UpdateMaskBounds;
+        UpdateMaskBounds();
+        BlockGrid.Event_LevelFirstLoad.AddListener(UpdateMaskBoundsHandler);
 
         DOVirtual.DelayedCall(0.5f, UpdateMaskBounds);
     }
 
     private void OnDisable() {
-        BlockGrid.Instance.StateLoadedFromSO -= UpdateMaskBounds;
+        BlockGrid.Event_LevelFirstLoad.RemoveListener(UpdateMaskBoundsHandler);
     }
 
     [Header("Mask Settings")]
@@ -37,17 +38,6 @@ public class GridMaskController : MonoBehaviour {
     private float borderDivisor = 10f;
 
     #region subbing
-
-    private void OnEnable() {
-        mainCamera = Camera.main;
-        UpdateMaskBounds();
-        BlockGrid.Event_LevelFirstLoad.AddListener(UpdateMaskBoundsHandler);
-    }
-
-    private void OnDisable() {
-        BlockGrid.Event_LevelFirstLoad.RemoveListener(UpdateMaskBoundsHandler);
-    }
-
     private void UpdateMaskBoundsHandler(LevelDataSO levelDataSO) {
         UpdateMaskBounds();
     }
@@ -64,7 +54,7 @@ public class GridMaskController : MonoBehaviour {
         }
 
         float scaleFactor = canvasRef.scaleFactor;
-        Debug.Log("scale factor " +  scaleFactor);
+        Debug.Log("scale factor " + scaleFactor);
         //float border = parentRect.rect.height / borderDivisor;
         float border = Screen.width / scaleFactor / borderDivisor;
 
@@ -100,7 +90,7 @@ public class GridMaskController : MonoBehaviour {
     }
 
     private void OnDrawGizmos() {
-        if(mainCamera == null) return;
+        if (mainCamera == null) return;
 
         Vector3 worldBottomLeft = BlockGrid.Instance.GetBotLeftOriginPos();
         Vector3 worldTopRight = worldBottomLeft + new Vector3(BlockGrid.Instance.GridSize.x, BlockGrid.Instance.GridSize.y, 0);
