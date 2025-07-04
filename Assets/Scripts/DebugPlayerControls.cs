@@ -75,10 +75,8 @@ public class DebugPlayerControls : MonoBehaviour {
         }
     }
 
-    bool isAuto = false;
-
     private void OnPlayPause(InputAction.CallbackContext ctx) {
-        uiController.SetAutoplay(!isAuto);
+        uiController.SetAutoplay(!GameSettings.Instance.isAutoPlaying);
     }
 
     private void OnStepForwardStarted(InputAction.CallbackContext ctx) {
