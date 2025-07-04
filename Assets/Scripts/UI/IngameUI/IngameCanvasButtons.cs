@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class IngameCanvasButtons : MonoBehaviour {
@@ -22,6 +23,21 @@ public class IngameCanvasButtons : MonoBehaviour {
     private float fadeDuration = 0.25f;
 
     private GameObject[] allCanvases;
+
+    private CanvasGroup buttonsCanvasGroup;
+    public bool buttonsActive => buttonsCanvas.activeSelf && GetButtonAlpha();
+    /// <summary>
+    /// wrapper so the canvas can be cached
+    /// </summary>
+    /// <returns></returns>
+    private bool GetButtonAlpha() {
+        if(buttonsCanvas == null)
+            buttonsCanvasGroup = buttonsCanvas.GetComponent<CanvasGroup>();
+
+        return buttonsCanvasGroup.alpha == 1f;
+    }
+
+    public static UnityEvent<bool> Event_OnCanvasFadeButtonState = new UnityEvent<bool>();
 
 
     private bool hasCalledReset;
@@ -176,6 +192,9 @@ public class IngameCanvasButtons : MonoBehaviour {
         DOVirtual.DelayedCall(1f, () => {
             GetComponentInChildren<GridMaskController>().UpdateMaskBounds();
         });
+
+        //broadcasts whether buttons are visible and therefore if controls should be enabled
+        Event_OnCanvasFadeButtonState?.Invoke(targetCanvas == buttonsCanvas);
     }
 
 

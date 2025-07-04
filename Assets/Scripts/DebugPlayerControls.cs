@@ -23,7 +23,20 @@ public class DebugPlayerControls : MonoBehaviour {
 
     private void OnEnable() {
         debugControls = new InputSystem_Actions();
+        SubEnableControls();
 
+        IngameCanvasButtons.Event_OnCanvasFadeButtonState.AddListener(OnCanvasFades);
+    }
+
+    private void OnCanvasFades(bool shouldControlsActive) {
+        if(shouldControlsActive) {
+            SubEnableControls();
+        } else {
+            UnsubDisableControls();
+        }
+    }
+
+    private void SubEnableControls() {
         debugControls.Player.StepForward.started += OnStepForwardStarted;
         debugControls.Player.StepForward.canceled += OnStepForwardCanceled;
         debugControls.Player.Undo.started += _ => UndoOnce();
@@ -34,6 +47,11 @@ public class DebugPlayerControls : MonoBehaviour {
     }
 
     private void OnDisable() {
+        UnsubDisableControls();
+        IngameCanvasButtons.Event_OnCanvasFadeButtonState.RemoveListener(OnCanvasFades);
+    }
+
+    private void UnsubDisableControls() {
         debugControls.Player.StepForward.started -= OnStepForwardStarted;
         debugControls.Player.StepForward.canceled -= OnStepForwardCanceled;
         debugControls.Player.Undo.started -= _ => UndoOnce();
