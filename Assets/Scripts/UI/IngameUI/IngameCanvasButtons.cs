@@ -13,6 +13,8 @@ public class IngameCanvasButtons : MonoBehaviour {
     [SerializeField] private GameObject soundSettingsCanvas;
     [SerializeField] private GameObject interrupterCanvas;
     [SerializeField] private GameObject buttonsCanvas;
+    [SerializeField] private GameObject levelCompleteCanvas;
+
     [SerializeField] private GameObject blurOverlay;
 
     [Header("Fade Settings")]
@@ -25,8 +27,22 @@ public class IngameCanvasButtons : MonoBehaviour {
     private bool hasCalledReset;
 
     private void Awake() {
-        allCanvases = new[] { settingsMenuCanvas, gameSettingsCanvas, soundSettingsCanvas, buttonsCanvas, interrupterCanvas };
+        allCanvases = new[] { settingsMenuCanvas, gameSettingsCanvas, soundSettingsCanvas, buttonsCanvas, interrupterCanvas, levelCompleteCanvas };
         ExitButton();
+    }
+    private void OnEnable() {
+        BlockKey.Event_LevelComplete.AddListener(OnLevelComplete);
+    }
+
+    private void OnDisable() {
+        BlockKey.Event_LevelComplete.RemoveListener(OnLevelComplete);
+    }
+
+    private bool isLevelCompleteShowing = false;
+
+    private void OnLevelComplete(LevelDataSO levelData) {
+        ShowLevelComplete();
+        isLevelCompleteShowing = true;
     }
 
 
@@ -57,6 +73,10 @@ public class IngameCanvasButtons : MonoBehaviour {
 
     public void ShowButtons() {
         ShowOnlyCanvas(buttonsCanvas);
+    }
+
+    public void ShowLevelComplete() {
+        ShowOnlyCanvas(levelCompleteCanvas);
     }
 
     private Sequence FadeSequence;

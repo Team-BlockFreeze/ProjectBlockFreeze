@@ -28,6 +28,8 @@ public class DebugPlayerControls : MonoBehaviour {
         debugControls.Player.StepForward.canceled += OnStepForwardCanceled;
         debugControls.Player.Undo.started += _ => UndoOnce();
 
+        debugControls.Player.PlayPause.started += OnPlayPause;
+
         debugControls.Player.Enable();
     }
 
@@ -35,6 +37,8 @@ public class DebugPlayerControls : MonoBehaviour {
         debugControls.Player.StepForward.started -= OnStepForwardStarted;
         debugControls.Player.StepForward.canceled -= OnStepForwardCanceled;
         debugControls.Player.Undo.started -= _ => UndoOnce();
+
+        debugControls.Player.PlayPause.started -= OnPlayPause;
 
         debugControls.Player.Disable();
     }
@@ -53,7 +57,15 @@ public class DebugPlayerControls : MonoBehaviour {
         }
     }
 
+    bool isAuto = false;
+
+    private void OnPlayPause(InputAction.CallbackContext ctx) {
+        uiController.SetAutoplay(!isAuto);
+    }
+
     private void OnStepForwardStarted(InputAction.CallbackContext ctx) {
+        uiController.SetAutoplay(false);
+
         isHoldingStep = true;
         holdTime = 0f;
         autoplayTriggered = false;
@@ -84,6 +96,8 @@ public class DebugPlayerControls : MonoBehaviour {
     }
 
     public void UndoOnce() {
+        uiController.SetAutoplay(false);
+
         BlockCoordinator.Instance.UndoLastStep();
         soundFX.Play();
         EventSystem.current.SetSelectedGameObject(null);
