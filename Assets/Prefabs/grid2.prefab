@@ -12649,7 +12649,7 @@ MonoBehaviour:
   tilePrefab: {fileID: 6295675601283064389, guid: 1465dd2b4ad6f5e4dba7c28099f228c4, type: 3}
   zPos: 0.5
   zScale: 12
-  ogIslandMat: {fileID: 2100000, guid: b720916f84c05c445a1e56e7d5ac7c34, type: 2}
+  ogIslandMat: {fileID: 2100000, guid: c37ffd451d37abd4dbf1c0a611e1369b, type: 2}
 --- !u!1 &9090841685241334970
 GameObject:
   m_ObjectHideFlags: 0
