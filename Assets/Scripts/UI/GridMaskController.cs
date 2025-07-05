@@ -46,7 +46,7 @@ public class GridMaskController : MonoBehaviour {
 
     [Button]
     public void UpdateMaskBounds() {
-        Debug.Log("trying to rescale mask buttons");
+        // Debug.Log("trying to rescale mask buttons");
 
         if (BlockGrid.Instance == null) {
             Debug.LogWarning("GridMaskController: BlockGrid instance not found.", this);
@@ -54,7 +54,7 @@ public class GridMaskController : MonoBehaviour {
         }
 
         float scaleFactor = canvasRef.scaleFactor;
-        Debug.Log("scale factor " + scaleFactor);
+        // Debug.Log("scale factor " + scaleFactor);
         //float border = parentRect.rect.height / borderDivisor;
         float border = Screen.width / scaleFactor / borderDivisor;
 

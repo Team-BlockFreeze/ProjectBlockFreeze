@@ -193,6 +193,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
 
 
     public void LoadNextLevel() {
+        Debug.Log("Load Next Level");
         BlockCoordinator.Instance.SetAutoplay(false);
 
         var currentLevel = Instance.ChosenLevel;

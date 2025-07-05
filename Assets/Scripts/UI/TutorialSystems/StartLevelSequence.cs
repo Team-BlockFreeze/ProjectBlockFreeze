@@ -200,7 +200,7 @@ public class StartLevelSequence : MonoBehaviour {
 
 
         Debug.Log("Tutorial present, starting tutorial coroutine sequence");
-        StartCoroutine(TutorialCoreography(lvlDataSO));
+        StartCoroutine(TutorialChoreography(lvlDataSO));
     }
 
     const float MinInterruptDelay = .2f;
@@ -209,7 +209,9 @@ public class StartLevelSequence : MonoBehaviour {
     /// coroutine thats active while tutorial messages are being shown, waits for input to go to next message
     /// </summary>
     /// <returns></returns>
-    private IEnumerator TutorialCoreography(LevelDataSO lvlDataSO) {
+    private IEnumerator TutorialChoreography(LevelDataSO lvlDataSO) {
+        Debug.Log("coroutine started");
+
         state = SequenceState.ActiveTutorial;
 
         TutMessage[] messages = lvlDataSO.TutorialMessages;

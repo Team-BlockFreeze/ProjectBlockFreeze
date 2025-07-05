@@ -41,47 +41,69 @@ public class LongPressDetector : MonoBehaviour {
 
     private bool pressStartedOnThisObject = false;
 
-    void Update() {
-#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_ANDROID || UNITY_IOS
-        bool isCurrentlyTouching = IsTouchingThisObject();
+    private void Update() {
+        bool inputBegan = false;
+        bool inputHeld = false;
+        bool inputEnded = false;
+        Vector2 inputPosition = Vector2.zero;
 
-        if (IsInputJustBegan()) {
-            pressStartedOnThisObject = isCurrentlyTouching;
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
+        if (Input.GetMouseButtonDown(0)) inputBegan = true;
+        if (Input.GetMouseButton(0)) inputHeld = true;
+        if (Input.GetMouseButtonUp(0)) inputEnded = true;
+        if (inputHeld) inputPosition = Input.mousePosition;
+
+#elif UNITY_ANDROID || UNITY_IOS
+        if (Input.touchCount > 0) {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began) inputBegan = true;
+            if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled) inputHeld = true;
+            if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) inputEnded = true;
+            if (inputHeld) inputPosition = touch.position;
         }
+#endif
 
-        if (IsInputHeld() && pressStartedOnThisObject && isCurrentlyTouching) {
-            if (!isHolding) {
+        if (inputBegan) {
+            if (IsPositionOverObject(inputPosition)) {
+                pressStartedOnThisObject = true;
                 isHolding = true;
-                holdTimer = 0f;
                 longPressTriggered = false;
-
+                holdTimer = 0f;
                 OnStartPress?.Invoke();
             }
+        }
 
+        if (inputHeld && pressStartedOnThisObject) {
             holdTimer += Time.deltaTime;
 
             if (!longPressTriggered && holdTimer >= HOLD_THRESHOLD) {
                 longPressTriggered = true;
-                LongPressTriggered();
+                OnLongPressTriggered?.Invoke();
             }
         }
-        else if (!IsInputHeld() && isHolding) {
-            if (!longPressTriggered && wasTouching && pressStartedOnThisObject) {
-                ShortPressTriggered();
+
+        if (inputEnded && pressStartedOnThisObject) {
+            if (!longPressTriggered) {
+                OnShortPressTriggered?.Invoke();
             }
 
-            if (pressStartedOnThisObject) {
-                OnStopTouching?.Invoke();
-            }
-
+            OnStopTouching?.Invoke();
             isHolding = false;
-            holdTimer = 0f;
-            longPressTriggered = false;
             pressStartedOnThisObject = false;
+            longPressTriggered = false;
+            holdTimer = 0f;
+        }
+    }
+    private bool IsPositionOverObject(Vector2 screenPosition) {
+        Ray ray = mainCamera.ScreenPointToRay(screenPosition);
+
+        Plane plane = new Plane(-mainCamera.transform.forward, transform.position);
+        if (plane.Raycast(ray, out float enter)) {
+            Vector3 worldPoint = ray.GetPoint(enter);
+            return cubeRenderer.bounds.Contains(worldPoint);
         }
 
-        wasTouching = isCurrentlyTouching;
-#endif
+        return false;
     }
 
 
