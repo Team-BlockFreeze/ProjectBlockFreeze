@@ -12,6 +12,7 @@ public class SceneLoadedFunctions : MonoBehaviour {
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         if (scene.name == "Level Select Blocks") LevelSelectLoaded();
+        if (scene.name == "Empty Grid Level") EmptyGridLevelLoaded();
     }
 
     private void LevelSelectLoaded() {
@@ -29,6 +30,21 @@ public class SceneLoadedFunctions : MonoBehaviour {
             loadedForFirstTime = false;
         }
     }
+
+    private void EmptyGridLevelLoaded() {
+        Debug.Log($"Camera orthographicSize = {Camera.main.orthographicSize} on Empty Grid Level loaded");
+
+        foreach (var levelArea in LevelAreaController.Instance.Selectors) {
+            levelArea.HideAllButtons();
+
+            foreach (var branchArrowContainer in levelArea.BranchArrowContainer.GetComponentsInChildren<LevelBranchTransition>(true)) {
+                branchArrowContainer.DeactivateBranchTransition();
+
+            }
+        }
+
+    }
+
     bool loadedForFirstTime = true;
 
 }

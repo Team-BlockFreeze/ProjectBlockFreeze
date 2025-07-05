@@ -13,6 +13,9 @@ public class LevelBranchTransition : MonoBehaviour, IPointerClickHandler {
     public void ActivateBranchTransition() {
         this.gameObject.SetActive(true);
     }
+    public void DeactivateBranchTransition() {
+        this.gameObject.SetActive(false);
+    }
 
 
     public void OnPointerClick(PointerEventData eventData) {
