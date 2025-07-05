@@ -148,6 +148,7 @@ public class StartLevelSequence : MonoBehaviour {
             });
             titleTweenSeq.AppendInterval(.1f);
         }
+
         //titleTweenSeq.Append(tRT.DOAnchorPosX(-Screen.width*3f, inOutTime).SetEase(Ease.InSine).SetTarget(tRT));
         //titleTweenSeq.AppendCallback(() => TitleSequenceComplete());
         titleTweenSeq.AppendCallback(() => TryStartTutorialSequence(lvlDataSO));
@@ -173,6 +174,9 @@ public class StartLevelSequence : MonoBehaviour {
 
 
     private void TryStartTutorialSequence(LevelDataSO lvlDataSO) {
+        titleTweenSeq?.Kill();
+        state = SequenceState.Inactive;
+
         if (lvlDataSO == null) {
             Debug.Log("No level data found, skipping tutorial sequence");
             TitleSequenceComplete();
