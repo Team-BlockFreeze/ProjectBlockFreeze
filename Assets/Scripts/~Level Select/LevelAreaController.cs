@@ -40,6 +40,32 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
 
     [SerializeField] private SerializedDictionary<string, LevelArea> selectorMap = new();
 
+    [InfoBox("debug onyl")]
+    [Button("Unlock All Levels", ButtonSizes.Large)]
+    [GUIColor(0.4f, 0.8f, 0.4f)]
+    [PropertySpace(10)]
+    private void UnlockAllLevels() {
+        foreach (var selector in selectors) {
+            var transitions = selector.BranchArrowContainer.GetComponentsInChildren<LevelBranchTransition>(true);
+            foreach (var transition in transitions) {
+                transition.transform.parent.gameObject.SetActive(true);
+                transition.UnlockBranch();
+                transition.ActivateBranchTransition();
+            }
+            foreach (var level in selector.levelButtons) {
+                var levelButton = level.GetComponent<LevelButton>();
+                levelButton.IsUnlocked = true;
+
+            }
+            selector.BranchArrowContainer.gameObject.SetActive(true);
+            selector.UpdateVisuals();
+        }
+
+        foreach (var selector in selectors) {
+        }
+
+        ShowAllButtons();
+    }
 
     public string CurrentBranch {
         get => currentBranch;
