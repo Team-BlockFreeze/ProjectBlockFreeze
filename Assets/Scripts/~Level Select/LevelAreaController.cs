@@ -40,7 +40,7 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
 
     [SerializeField] private SerializedDictionary<string, LevelArea> selectorMap = new();
 
-    [InfoBox("debug onyl")]
+    [InfoBox("Debug Only")]
     [Button("Unlock All Levels", ButtonSizes.Large)]
     [GUIColor(0.4f, 0.8f, 0.4f)]
     [PropertySpace(10)]
