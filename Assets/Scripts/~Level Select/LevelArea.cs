@@ -44,6 +44,7 @@ public class LevelArea : MonoBehaviour {
     public SoundID LevelSelectedSFX;
 
     [ReadOnly][SerializeField] private List<GameObject> LevelButtons = new();
+    public List<GameObject> levelButtons => LevelButtons;
 
     [BoxGroup("Branch Visualization")]
     [SerializeField]
