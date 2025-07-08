@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ami.BroAudio;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
@@ -31,7 +32,7 @@ public class IngameCanvasButtons : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     private bool GetButtonAlpha() {
-        if(buttonsCanvas == null)
+        if (buttonsCanvas == null)
             buttonsCanvasGroup = buttonsCanvas.GetComponent<CanvasGroup>();
 
         return buttonsCanvasGroup.alpha == 1f;
@@ -122,7 +123,11 @@ public class IngameCanvasButtons : MonoBehaviour {
         }
     }
 
+    public SoundID buttonClickedSFX;
+
     private void ShowOnlyCanvas(GameObject targetCanvas) {
+        buttonClickedSFX.Play();
+
         FadeSequence?.Kill();
         FadeSequence = DOTween.Sequence();
 
@@ -198,6 +203,8 @@ public class IngameCanvasButtons : MonoBehaviour {
     }
 
 
+    public SoundID reloadLevelSFX;
+
     private bool cooldown = false;
     public void ReloadLevel() {
         if (cooldown) return;
@@ -210,6 +217,9 @@ public class IngameCanvasButtons : MonoBehaviour {
             Debug.LogWarning("Level Design object not found");
             return;
         }
+
+        reloadLevelSFX.Play();
+
 
         BlockCoordinator.Instance.SetAutoplay(false);
 

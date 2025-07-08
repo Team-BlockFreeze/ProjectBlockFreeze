@@ -857,7 +857,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.764151, g: 0.764151, b: 0.764151, a: 1}
@@ -867,7 +867,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: 21300000, guid: 810a8de6c0e4ab9408d958e730dea428, type: 3}
     m_PressedSprite: {fileID: 0}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
@@ -878,7 +878,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 2918038652307393107}
+  m_TargetGraphic: {fileID: 2649842023334597956}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -7118,6 +7118,14 @@ MonoBehaviour:
   levelCompleteCanvas: {fileID: 4067759112825210835}
   blurOverlay: {fileID: 5979364120093276572}
   fadeDuration: 0.25
+  buttonClickedSFX:
+    ID: 1073741844
+    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
+    <DebugObject>k__BackingField: {fileID: 4520179577906673407}
+  reloadLevelSFX:
+    ID: 1073741845
+    _sourceAsset: {fileID: 11400000, guid: 850dd3f0222fc624692e33e0739bf684, type: 2}
+    <DebugObject>k__BackingField: {fileID: 4520179577906673407}
 --- !u!114 &3356829738879859689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9019,7 +9027,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.764151, g: 0.764151, b: 0.764151, a: 1}
@@ -9029,7 +9037,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: 21300000, guid: 810a8de6c0e4ab9408d958e730dea428, type: 3}
     m_PressedSprite: {fileID: 0}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
@@ -9040,7 +9048,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 6111504608589176156}
+  m_TargetGraphic: {fileID: 7583576917018116628}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
