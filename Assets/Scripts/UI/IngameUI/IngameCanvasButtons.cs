@@ -63,7 +63,14 @@ public class IngameCanvasButtons : MonoBehaviour {
     }
 
 
+    private bool exitOnce = false;
     public void ExitButton() {
+        if (!exitOnce) {
+            exitOnce = true;
+        }
+        else {
+            buttonClickedSFX.Play();
+        }
         ShowOnlyCanvas(buttonsCanvas);
     }
 
@@ -73,26 +80,33 @@ public class IngameCanvasButtons : MonoBehaviour {
 
     //Title and Tutorial Messages
     public void ShowInterrupter() {
+        buttonClickedSFX.Play();
         ShowOnlyCanvas(interrupterCanvas);
     }
 
     public void ShowSettingsMenu() {
+        buttonClickedSFX.Play();
         ShowOnlyCanvas(settingsMenuCanvas);
     }
 
     public void ShowGameSettings() {
+        buttonClickedSFX.Play();
         ShowOnlyCanvas(gameSettingsCanvas);
     }
 
     public void ShowSoundSettings() {
+        buttonClickedSFX.Play();
         ShowOnlyCanvas(soundSettingsCanvas);
     }
 
     public void ShowButtons() {
+        buttonClickedSFX.Play();
         ShowOnlyCanvas(buttonsCanvas);
     }
 
     public void ShowLevelComplete() {
+        buttonClickedSFX.Play();
+
         ShowOnlyCanvas(levelCompleteCanvas);
     }
 
@@ -126,7 +140,6 @@ public class IngameCanvasButtons : MonoBehaviour {
     public SoundID buttonClickedSFX;
 
     private void ShowOnlyCanvas(GameObject targetCanvas) {
-        buttonClickedSFX.Play();
 
         FadeSequence?.Kill();
         FadeSequence = DOTween.Sequence();

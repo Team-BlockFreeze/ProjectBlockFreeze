@@ -1,4 +1,5 @@
 using System;
+using Ami.BroAudio;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using Systems.SceneManagement;
@@ -6,6 +7,7 @@ using TMPro;
 using UnityEngine;
 
 [SelectionBase] //! When selecting things in the scene view, it will select the parent object and not the stuff inside
+// [RequireComponent(typeof(Collider))] // Will be in children
 public class LevelButton : LoggerMonoBehaviour {
     [BoxGroup("Level Info")]
     [SerializeField]
@@ -68,15 +70,20 @@ public class LevelButton : LoggerMonoBehaviour {
     [SerializeField] private Material unlockedColor;
     [SerializeField] private Material lockedColor;
 
+    private MeshRenderer meshRenderer;
+
+    private void Awake() {
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
+        UpdateVisuals();
+    }
+
     public void UpdateVisuals() {
         if (isCompleted) { // Completed Lvl
-
             if (completedColor != null) {
                 meshRenderer.material = completedColor;
             }
             return;
         }
-
 
         if (isUnlocked) { // Unlocked Lvl
             if (unlockedColor != null) {
@@ -90,20 +97,28 @@ public class LevelButton : LoggerMonoBehaviour {
         }
     }
 
-    private MeshRenderer meshRenderer;
+    private void Update() {
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) {
+            Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+            RaycastHit hit;
 
-    private void Awake() {
-        meshRenderer = GetComponentInChildren<MeshRenderer>();
-        UpdateVisuals();
-
-
-        //levelNumberText.text = "00";
+            if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject) {
+                HandleInteraction();
+            }
+        }
     }
 
-
     private void OnMouseDown() {
-        if (level == null) Debug.LogError("level button missing level SO", gameObject);
+        HandleInteraction();
+    }
 
+    private void HandleInteraction() {
+        if (level == null) {
+            Debug.LogError("level button missing level SO", gameObject);
+            return;
+        }
+
+        BroAudio.Play(LevelAreaController.Instance.LevelButtonClickedSFX);
 
         // TODO: Spawn particles
         // if (LevelSelector.Instance.clickParticlePrefab != null) {

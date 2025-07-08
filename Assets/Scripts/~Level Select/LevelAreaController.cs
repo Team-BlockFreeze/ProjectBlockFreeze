@@ -8,9 +8,13 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using Ami.BroAudio;
 
 
 public class LevelAreaController : PersistentSingleton<LevelAreaController> {
+    [BoxGroup("SFX")]
+    public SoundID LevelButtonClickedSFX;
+
     private const int baseLevelIdx = 2;
     private const int levelSelectIdx = 1;
 

@@ -217,6 +217,40 @@ MonoBehaviour:
       BPM: 0
       Beats: 0
     SnapToFullVolume: 0
+  - UseAddressables: 0
+    <Name>k__BackingField: LevelButtonClicked
+    <ID>k__BackingField: 1073741846
+    MulticlipsPlayMode: 0
+    _group: {fileID: 0}
+    Clips:
+    - AudioClipAssetReference:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      AudioClip: {fileID: 8300000, guid: bec21d3493a42444db74fe16dcebfcd4, type: 3}
+      Volume: 1
+      Delay: 0
+      StartPosition: 0
+      EndPosition: 0
+      FadeIn: 0
+      FadeOut: 0
+      Weight: 0
+    <MasterVolume>k__BackingField: 1
+    <Loop>k__BackingField: 0
+    <SeamlessLoop>k__BackingField: 0
+    <TransitionTime>k__BackingField: -1
+    <SpatialSetting>k__BackingField: {fileID: 0}
+    <Priority>k__BackingField: 128
+    <Pitch>k__BackingField: 1
+    <PitchRandomRange>k__BackingField: 0
+    <VolumeRandomRange>k__BackingField: 0
+    <RandomFlags>k__BackingField: 0
+    SeamlessTransitionType: 0
+    TransitionTempo:
+      BPM: 0
+      Beats: 0
+    SnapToFullVolume: 0
   Group: {fileID: 0}
   <AssetName>k__BackingField: Menu
   _assetGUID: 365499101defd914e8ce80e24a980c29
