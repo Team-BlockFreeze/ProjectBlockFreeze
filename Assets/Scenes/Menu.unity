@@ -534,6 +534,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   blockMAT: {fileID: 0}
+  freezeSFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 0}
+  unfreezeSFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 0}
 --- !u!114 &157058731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1954,6 +1962,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   blockMAT: {fileID: 0}
+  freezeSFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 0}
+  unfreezeSFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 0}
 --- !u!120 &614571654
 LineRenderer:
   serializedVersion: 2
@@ -3387,6 +3403,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   blockMAT: {fileID: 0}
+  freezeSFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 0}
+  unfreezeSFX:
+    ID: 0
+    _sourceAsset: {fileID: 0}
+    <DebugObject>k__BackingField: {fileID: 0}
 --- !u!212 &868850617
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -25918,8 +25942,8 @@ ParticleSystem:
     radiusThickness: 1
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
-    m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 10, y: 20, z: 5}
+    m_Rotation: {x: -0, y: 0, z: 0}
+    m_Scale: {x: 40.423424, y: 31.112894, z: 0}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -26117,7 +26141,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 20
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -30048,7 +30072,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b6c188524fc50b14e89e03f8d5f11481, type: 2}
+  - {fileID: 2100000, guid: 32fac6e45890e9d48961b3db7c93c0be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -113,8 +113,14 @@ public class LevelAreaController : PersistentSingleton<LevelAreaController> {
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         if (scene.name == "Level Select Blocks")
             ShowAllButtons();
-        else
-            Debug.Log("Current Level: " + ChosenLevel.name);
+        else {
+            if (LevelAreaController.Instance != null) {
+                HideAllButtons();
+            }
+            if (chosenLevel != null) {
+                Debug.Log("Current Level: " + ChosenLevel.name);
+            }
+        }
     }
 
     private void OnLevelComplete(LevelDataSO completedLevel) {
