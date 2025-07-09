@@ -56,4 +56,7 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 0
     movePath: 03000000030000000300000003000000
-  devNotes: 
+  devNotes: 'not sure what idea is here
+
+    one block has waits but it doesnt meaningfully
+    affect level solution'

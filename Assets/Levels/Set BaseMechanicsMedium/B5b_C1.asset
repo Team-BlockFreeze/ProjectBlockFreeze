@@ -72,4 +72,4 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 0
     movePath: 04000000
-  devNotes: 
+  devNotes: not sure if meant to be tricky or i missed intended solution

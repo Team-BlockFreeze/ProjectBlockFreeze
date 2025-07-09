@@ -64,4 +64,7 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 0
     movePath: 03000000
-  devNotes: 
+  devNotes: 'good level - have to cancel forces to allow a make a block slide out
+    of the way
+
+    massive spike in complexity'

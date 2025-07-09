@@ -15,7 +15,7 @@ MonoBehaviour:
   levelTitle: 
   retriggerSequenceOnReload: 0
   tutorialMessages: []
-  _nextLevelInSequence: {fileID: 11400000, guid: aeb3b53b1a39dec47a106bc0dc966d51, type: 2}
+  _nextLevelInSequence: {fileID: 11400000, guid: 6819e1c0f16e4ac458a03efac8d158d5, type: 2}
   _branch:
     TargetGroupName: 
     TargetLevelName: 

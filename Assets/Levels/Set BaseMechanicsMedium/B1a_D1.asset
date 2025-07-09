@@ -48,4 +48,4 @@ MonoBehaviour:
     phaseThrough: 0
     startFrozen: 0
     movePath: 03000000030000000300000003000000
-  devNotes: 
+  devNotes: first enforced basic diagonal
