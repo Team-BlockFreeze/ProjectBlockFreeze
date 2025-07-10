@@ -72,3 +72,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 Assets/Materials/GridValidOverlay.mat
 Assets/Materials/GridWithHoleMat.mat
+/Blender
