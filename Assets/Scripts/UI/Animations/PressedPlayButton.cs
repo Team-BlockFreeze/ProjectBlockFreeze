@@ -104,5 +104,7 @@ public class PressedPlayButton : MonoBehaviour, IPointerDownHandler {
 
     private void SpawnTransitionEffect() {
         transitionParticlesPrefab.SetActive(true);
+        transitionParticlesPrefab.transform.SetParent(null);
+        DontDestroyOnLoad(transitionParticlesPrefab);
     }
 }

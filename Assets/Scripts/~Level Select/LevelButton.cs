@@ -121,9 +121,11 @@ public class LevelButton : LoggerMonoBehaviour {
         BroAudio.Play(LevelAreaController.Instance.LevelButtonClickedSFX);
 
         // TODO: Spawn particles
-        // if (LevelSelector.Instance.clickParticlePrefab != null) {
-        //     Instantiate(LevelSelector.Instance.clickParticlePrefab, transform.position, Quaternion.identity, transform.parent);
-        // }
+        if (GetComponentInParent<LevelArea>().clickParticlePrefab != null) {
+            ParticleSystem particle = Instantiate(GetComponentInParent<LevelArea>().clickParticlePrefab, transform.position, Quaternion.identity, transform.parent);
+            particle.transform.SetParent(null);
+            DontDestroyOnLoad(particle);
+        }
 
         var animationDuration = 0.3f;
         transform.DOPunchScale(Vector3.one * 0.2f, animationDuration, 6, 0.8f)
