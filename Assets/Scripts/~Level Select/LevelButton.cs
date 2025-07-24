@@ -30,6 +30,7 @@ public class LevelButton : LoggerMonoBehaviour {
     [Required]
     [SerializeField]
     private TMP_Text levelNumberText;
+    public TMP_Text LevelNumberText => levelNumberText;
 
     public LevelDataSO Level {
         get => level;
