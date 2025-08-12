@@ -6,7 +6,7 @@ public class LevelSelectButtonFloor : MonoBehaviour {
 
     [SerializeField] private LevelArea levelArea;
     [SerializeField] private GameObject FloorTilePrefab_1x1;
-    [SerializeField] private float zOffset = 6.25f;
+    [SerializeField] private float zOffset = 0.25f;
 
     [Button(ButtonSizes.Large)]
     [GUIColor(0.4f, 0.8f, 1f)]
